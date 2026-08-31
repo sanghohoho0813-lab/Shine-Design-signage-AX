@@ -3,6 +3,7 @@ import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/store";
 import { Presentation } from "@/components/Presentation";
+import { Toaster } from "@/components/Toast";
 
 const noto = Noto_Sans_KR({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppProvider>
           {children}
           <Presentation />
+          <Toaster />
         </AppProvider>
       </body>
     </html>

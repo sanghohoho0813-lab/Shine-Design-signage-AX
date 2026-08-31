@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useApp, Inquiry } from "@/lib/store";
 import { IMG } from "@/lib/data";
+import { toast } from "@/components/Toast";
 
 const CLIENT_TYPES = ["공공기관", "공기업", "병원", "학교", "일반기업", "상업시설", "기타"];
 const PROJECT_TYPES = ["외부 간판", "실내사인", "안내·유도사인", "종합 사인시스템", "환경그래픽", "제작·시공", "디자인만", "기타"];
@@ -52,6 +53,7 @@ export default function InquiryPage() {
       phone: form.phone,
     });
     setDone(q);
+    toast("문의가 접수되어 Business AX 파이프라인에 등록되었습니다");
   };
 
   if (done) {
@@ -139,6 +141,19 @@ export default function InquiryPage() {
         )}
         {step === 4 && (
           <div className="space-y-4">
+            {/* 입력 요약 확인 */}
+            <div className="rounded-xl bg-canvas p-4">
+              <p className="text-xs font-bold tracking-wide text-muted">문의 내용 확인</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {[form.clientType, form.projectType, form.status, form.location, form.schedule, form.budget, form.sites && `현장 ${form.sites}곳`]
+                  .filter(Boolean)
+                  .map((v) => (
+                    <span key={v as string} className="rounded-full border border-line bg-surface px-2.5 py-1 text-xs font-medium text-ink-2">
+                      {v}
+                    </span>
+                  ))}
+              </div>
+            </div>
             <p className="font-bold text-ink">연락받으실 정보를 입력해 주세요</p>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="담당자 성함 *">

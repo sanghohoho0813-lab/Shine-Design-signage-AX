@@ -1,5 +1,6 @@
 import { IMG } from "@/lib/data";
 import Link from "next/link";
+import { Reveal } from "@/components/Reveal";
 
 export const metadata = { title: "사업분야 — 샤인디자인" };
 
@@ -61,8 +62,8 @@ export default function ServicesPage() {
 
       <section className="mx-auto max-w-7xl space-y-6 px-4 py-14 sm:px-6">
         {AREAS.map((a, i) => (
+          <Reveal key={a.en}>
           <div
-            key={a.en}
             className={`grid items-stretch overflow-hidden rounded-2xl border border-line bg-surface shadow-sm lg:grid-cols-5 ${
               i % 2 ? "lg:[direction:rtl]" : ""
             }`}
@@ -88,6 +89,7 @@ export default function ServicesPage() {
               </div>
             </div>
           </div>
+          </Reveal>
         ))}
       </section>
 

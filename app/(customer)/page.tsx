@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { IMG, trustCategories, portfolio } from "@/lib/data";
+import { IMG, trustCategories } from "@/lib/data";
 import { useApp } from "@/lib/store";
+import { Reveal, CountUp } from "@/components/Reveal";
 
 const HERO_TRUST = [
   { icon: "🏛", title: "한국도로교통공단 전국 실적", desc: "지부·시험장·교통방송 60여 건" },
@@ -75,6 +76,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ------------------------------ STATS BAND ---------------------------- */}
+      <section className="bg-shell">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-y-8 px-4 py-12 sm:px-6 lg:grid-cols-4">
+          {[
+            { v: 60, suffix: "+", label: "한국도로교통공단 실적", sub: "전국 지부·시험장·교통방송" },
+            { v: 21, suffix: "건", label: "게재 포트폴리오", sub: "2024년 실제 수행 프로젝트" },
+            { v: 2, suffix: "개", label: "자체 공장", sub: "화성 제1 · 남양주 제2" },
+            { v: 6, suffix: "종", label: "공공 자격", sub: "여성기업 · 산업디자인전문회사 외" },
+          ].map((s, i) => (
+            <Reveal key={s.label} delay={i * 80} className="text-center">
+              <p className="text-4xl font-black text-accent sm:text-5xl">
+                <CountUp value={s.v} suffix={s.suffix} />
+              </p>
+              <p className="mt-2 text-sm font-bold text-nav-active">{s.label}</p>
+              <p className="mt-0.5 text-xs text-nav-muted">{s.sub}</p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
       {/* --------------------------- TRUST SECTION --------------------------- */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
         <div className="mb-8 flex items-end justify-between">
@@ -87,11 +108,11 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {trustCategories.map((c) => (
+          {trustCategories.map((c, i) => (
+            <Reveal key={c.label} delay={i * 60}>
             <Link
-              key={c.label}
               href="/portfolio"
-              className="img-zoom tap hover-lift group overflow-hidden rounded-xl border border-line bg-surface shadow-sm"
+              className="img-zoom tap hover-lift group block overflow-hidden rounded-xl border border-line bg-surface shadow-sm"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={c.image} alt={c.label} className="h-full w-full object-cover" loading="lazy" />
@@ -102,6 +123,7 @@ export default function Home() {
               </div>
               <p className="px-2.5 py-2 text-[11px] text-muted">{c.desc}</p>
             </Link>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -121,11 +143,11 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
-            {HOME_SERVICES.map((s) => (
+            {HOME_SERVICES.map((s, i) => (
+              <Reveal key={s.title} delay={i * 90}>
               <Link
-                key={s.title}
                 href="/services"
-                className="img-zoom tap hover-lift group overflow-hidden rounded-2xl border border-line bg-surface shadow-sm"
+                className="img-zoom tap hover-lift group block overflow-hidden rounded-2xl border border-line bg-surface shadow-sm"
               >
                 <div className="aspect-[3/2] overflow-hidden">
                   <img src={s.img} alt={s.title} className="h-full w-full object-cover" loading="lazy" />
@@ -135,6 +157,7 @@ export default function Home() {
                   <p className="mt-1 text-sm text-muted">{s.desc}</p>
                 </div>
               </Link>
+              </Reveal>
             ))}
           </div>
         </div>

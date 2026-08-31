@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useApp, THEMES, ROLE_LABELS, Role, FontScale } from "@/lib/store";
+import { toast } from "@/components/Toast";
 
 export default function SettingsPage() {
   const app = useApp();
@@ -12,21 +13,29 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-3xl space-y-5 p-4 sm:p-6">
       {/* 화면 */}
       <Card title="화면" desc="Theme · Font Scale · Motion — PC와 모바일에 동일하게 적용됩니다.">
-        <p className="text-xs font-semibold text-ink-2">Theme (6종)</p>
+        <p className="text-xs font-semibold text-ink-2">
+          Theme ({THEMES.length}종) <span className="font-normal text-muted">— 각 테마는 6개 핵심 토큰으로 구성됩니다</span>
+        </p>
         <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
           {THEMES.map((t) => (
             <button
               key={t.id}
               onClick={() => app.setTheme(t.id)}
               aria-pressed={app.theme === t.id}
-              className={`tap rounded-xl border-2 p-3 text-left ${app.theme === t.id ? "border-accent" : "border-line hover:border-secondary"}`}
+              className={`tap hover-lift rounded-xl border-2 p-3 text-left ${app.theme === t.id ? "border-accent bg-accent/5" : "border-line hover:border-secondary"}`}
             >
-              <span className="flex gap-1" aria-hidden>
-                <span className="h-5 w-5 rounded-md" style={{ background: t.shell }} />
-                <span className="h-5 w-5 rounded-md" style={{ background: t.accent }} />
+              {/* 해당 테마의 6개 토큰 실시간 스와치 */}
+              <span data-theme={t.id} className="flex gap-1" aria-hidden>
+                {["--shell", "--primary", "--accent", "--secondary", "--soft", "--canvas"].map((v) => (
+                  <span key={v} className="h-5 w-5 rounded-md border border-black/8" style={{ background: `var(${v})` }} />
+                ))}
               </span>
               <span className="mt-1.5 block text-[11px] font-bold text-ink">{t.name}</span>
-              {app.theme === t.id && <span className="text-[10px] font-semibold text-accent">사용 중 ✓</span>}
+              {app.theme === t.id ? (
+                <span className="text-[10px] font-semibold text-accent">사용 중 ✓</span>
+              ) : (
+                <span className="text-[10px] text-muted">{t.id === "shine" ? "브랜드 기본" : "라이브러리"}</span>
+              )}
             </button>
           ))}
         </div>
@@ -112,6 +121,7 @@ export default function SettingsPage() {
                 localStorage.removeItem("shine-ax-tutorial-seen");
               } catch {}
               setResetDone(true);
+              toast("데모 데이터가 초기 상태로 복원되었습니다");
               setTimeout(() => setResetDone(false), 2500);
             }}
             className="tap hover-lift rounded-xl border border-[var(--ic-risk)]/30 p-4 text-left hover:bg-[var(--ic-risk)]/5"

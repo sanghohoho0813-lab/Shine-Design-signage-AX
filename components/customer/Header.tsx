@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Overlay } from "../Overlay";
@@ -39,12 +39,24 @@ export default function CustomerHeader() {
   const pathname = usePathname();
   const [drawer, setDrawer] = useState(false);
   const [future, setFuture] = useState<FutureMenu | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const featuredFuture = FUTURE_MENUS[0];
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const close = () => setDrawer(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-surface/95 backdrop-blur">
+    <header
+      className={`sticky top-0 z-50 border-b bg-surface/95 backdrop-blur transition-shadow ${
+        scrolled ? "border-transparent shadow-[0_2px_16px_rgba(0,0,0,0.08)]" : "border-line"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <Logo />
 

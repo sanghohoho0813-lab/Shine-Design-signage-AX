@@ -1,6 +1,7 @@
 import { portfolio } from "@/lib/data";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Gallery from "@/components/customer/Gallery";
 
 export function generateStaticParams() {
   return portfolio.map((p) => ({ id: p.id }));
@@ -38,19 +39,11 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
             <p className="mt-3 text-[15px] leading-relaxed text-ink-2">{p.detail}</p>
           </div>
 
-          {p.gallery && p.gallery.length > 0 && (
-            <div className="rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
-              <p className="text-xs font-bold tracking-[0.15em] text-accent">GALLERY</p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                {p.gallery.map((g) => (
-                  <div key={g} className="img-zoom overflow-hidden rounded-xl border border-line">
-                    <img src={g} alt={`${p.title} 현장 사진`} className="aspect-[4/3] w-full object-cover" loading="lazy" />
-                  </div>
-                ))}
-              </div>
-              <p className="mt-3 text-[11px] text-muted">※ 실제 시공 현장 사진 (회사소개서 수록)</p>
-            </div>
-          )}
+          <div className="rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
+            <p className="text-xs font-bold tracking-[0.15em] text-accent">GALLERY</p>
+            <Gallery images={[p.image, ...(p.gallery ?? [])]} title={p.title} />
+            <p className="mt-3 text-[11px] text-muted">※ 실제 시공 현장 사진 (회사소개서 수록)</p>
+          </div>
         </div>
 
         <aside>

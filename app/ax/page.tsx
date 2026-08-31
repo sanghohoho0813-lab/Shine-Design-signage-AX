@@ -18,20 +18,21 @@ export default function AxDashboard() {
   const risky = projects.filter((p) => p.risk === "높음");
   const canSeeMoney = role === "ceo";
 
+  // 최근 8주 추이 (DEMO) — 스파크라인용
   const kpis = [
-    { label: "진행 프로젝트", value: `${active.length}건`, delta: "▲ 신규 문의 " + inquiries.length + "건", href: "/ax/pipeline" },
-    { label: "견적·디자인 단계", value: `${quoting.length}건`, delta: "이번달 견적 예정", href: "/ax/quotes" },
-    { label: "제작 진행", value: `${making.length}건`, delta: `발주 ${seedProduction.filter((m) => m.status === "제작중").length}건 제작중`, href: "/ax/production" },
-    { label: "설치 예정", value: `${installing.length}건`, delta: "이번주 일정 확인", href: "/ax/pipeline" },
+    { label: "진행 프로젝트", value: `${active.length}건`, delta: "▲ 신규 문의 " + inquiries.length + "건", href: "/ax/pipeline", spark: [5, 6, 6, 7, 7, 8, 8, active.length] },
+    { label: "견적·디자인 단계", value: `${quoting.length}건`, delta: "이번달 견적 예정", href: "/ax/quotes", spark: [1, 2, 1, 3, 2, 2, 3, quoting.length] },
+    { label: "제작 진행", value: `${making.length}건`, delta: `발주 ${seedProduction.filter((m) => m.status === "제작중").length}건 제작중`, href: "/ax/production", spark: [1, 1, 2, 1, 2, 3, 2, making.length] },
+    { label: "설치 예정", value: `${installing.length}건`, delta: "이번주 일정 확인", href: "/ax/pipeline", spark: [0, 1, 1, 2, 1, 1, 2, installing.length] },
     canSeeMoney
-      ? { label: "예상 매출", value: fmtKRWshort(revenue), delta: "진행 프로젝트 합계", href: "/ax/quotes" }
+      ? { label: "예상 매출", value: fmtKRWshort(revenue), delta: "진행 프로젝트 합계", href: "/ax/quotes", spark: [1.2, 1.4, 1.3, 1.6, 1.8, 1.7, 2.0, revenue / 100000000] }
       : { label: "예상 매출", value: "권한 제한", delta: "대표 전용 지표", href: "/ax/settings" },
     canSeeMoney
-      ? { label: "예상 Margin", value: margin.toFixed(1) + "%", delta: margin >= 30 ? "▲ 목표(30%) 이상" : "▼ 목표(30%) 미만", href: "/ax/quotes" }
+      ? { label: "예상 Margin", value: margin.toFixed(1) + "%", delta: margin >= 30 ? "▲ 목표(30%) 이상" : "▼ 목표(30%) 미만", href: "/ax/quotes", spark: [28, 27, 29, 26, 28, 27, 26, margin], warn: margin < 30 }
       : { label: "예상 Margin", value: "권한 제한", delta: "대표 전용 지표", href: "/ax/settings" },
-    { label: "입찰 준비 건", value: `${seedBids.length}건`, delta: `준비도 최고 ${Math.max(...seedBids.map((b) => b.readiness))}%`, href: "/ax/bids" },
-    { label: "리스크 프로젝트", value: `${risky.length}건`, delta: risky.length ? "즉시 확인 필요" : "안정", href: "/ax/briefing" },
-  ];
+    { label: "입찰 준비 건", value: `${seedBids.length}건`, delta: `준비도 최고 ${Math.max(...seedBids.map((b) => b.readiness))}%`, href: "/ax/bids", spark: [1, 1, 2, 2, 3, 3, 4, seedBids.length] },
+    { label: "리스크 프로젝트", value: `${risky.length}건`, delta: risky.length ? "즉시 확인 필요" : "안정", href: "/ax/briefing", spark: [0, 1, 1, 0, 1, 2, 1, risky.length], warn: risky.length > 0 },
+  ] as { label: string; value: string; delta: string; href: string; spark?: number[]; warn?: boolean }[];
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
@@ -44,10 +45,11 @@ export default function AxDashboard() {
       {/* KPI row */}
       <section data-tutorial="kpi-row" className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
         {kpis.map((k) => (
-          <Link key={k.label} href={k.href} className="tap hover-lift rounded-xl border border-line bg-surface p-3.5 shadow-sm">
+          <Link key={k.label} href={k.href} className="tap hover-lift group relative overflow-hidden rounded-xl border border-line bg-surface p-3.5 shadow-sm">
             <p className="text-[11px] font-medium text-muted">{k.label}</p>
             <p className="mt-1 text-lg font-black tabular-nums text-ink">{k.value}</p>
             <p className={`mt-0.5 truncate text-[10px] ${k.delta.startsWith("▼") || k.delta.includes("즉시") ? "text-[var(--ic-risk)]" : "text-secondary"}`}>{k.delta}</p>
+            {k.spark && <Sparkline data={k.spark} warn={k.warn} />}
           </Link>
         ))}
       </section>
@@ -208,6 +210,33 @@ export default function AxDashboard() {
         </section>
       </div>
     </div>
+  );
+}
+
+/* KPI 미니 추이선 — 단일 시리즈, 얇은 선 + 은은한 영역, 축·격자 없음 */
+function Sparkline({ data, warn }: { data: number[]; warn?: boolean }) {
+  const w = 96;
+  const h = 22;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const span = max - min || 1;
+  const pts = data.map((v, i) => [
+    (i / (data.length - 1)) * w,
+    h - 2 - ((v - min) / span) * (h - 5),
+  ]);
+  const line = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join("");
+  const color = warn ? "var(--ic-risk)" : "var(--secondary)";
+  return (
+    <svg
+      viewBox={`0 0 ${w} ${h}`}
+      className="pointer-events-none absolute bottom-0 right-0 h-[22px] w-24 opacity-50 transition-opacity group-hover:opacity-90"
+      aria-hidden
+      preserveAspectRatio="none"
+    >
+      <path d={`${line}L${w},${h}L0,${h}Z`} fill={color} opacity="0.12" />
+      <path d={line} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="2.4" fill={color} />
+    </svg>
   );
 }
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useApp } from "@/lib/store";
 import { STAGES, Stage, Project, fmtKRWshort, costTotal, marginOf } from "@/lib/data";
 import { Overlay } from "@/components/Overlay";
+import { toast } from "@/components/Toast";
 
 const STAGE_COLORS: Record<Stage, string> = {
   문의: "var(--ic-overview)",
@@ -54,6 +55,11 @@ export default function PipelinePage() {
                     key={p.id}
                     onClick={() => setSel(p)}
                     className="tap hover-lift block w-full rounded-lg border border-line bg-surface p-3 text-left shadow-sm"
+                    style={{
+                      borderLeftWidth: 3,
+                      borderLeftColor:
+                        p.risk === "높음" ? "var(--ic-risk)" : p.risk === "보통" ? "var(--ic-sales)" : "var(--line)",
+                    }}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-[13px] font-bold leading-snug text-ink">{p.client}</p>
@@ -137,7 +143,15 @@ export default function PipelinePage() {
             <div className="border-t border-line p-5">
               {current.stage !== "완료" ? (
                 <button
-                  onClick={() => advanceProject(current.id)}
+                  onClick={() => {
+                    const next = STAGES[STAGES.indexOf(current.stage) + 1];
+                    advanceProject(current.id);
+                    toast(
+                      next === "완료"
+                        ? `${current.client} 완료 — 증빙·포트폴리오 자산으로 전환됨`
+                        : `${current.client} → '${next}' 단계로 이동`,
+                    );
+                  }}
                   className="tap hover-lift w-full rounded-lg bg-shell py-3 text-sm font-bold text-white hover:bg-shell-2"
                 >
                   다음 단계로 이동 → {STAGES[STAGES.indexOf(current.stage) + 1]}

@@ -15,6 +15,7 @@ export const THEMES = [
   { id: "burgundy", name: "Burgundy Gold", shell: "#3a1523", accent: "#c5a15a" },
   { id: "indigo", name: "Indigo Lavender", shell: "#25265b", accent: "#b59ae7" },
   { id: "forest", name: "Forest Sand", shell: "#173d32", accent: "#c9a66b" },
+  { id: "copper", name: "Graphite Copper", shell: "#20242a", accent: "#c37b4a" },
 ] as const;
 export type ThemeId = (typeof THEMES)[number]["id"];
 

@@ -65,6 +65,16 @@
   --soft: #e5efe9;
   --canvas: #faf7f0;
 }
+[data-theme="copper"] {
+  --shell: #20242a;
+  --shell-2: #292e36;
+  --shell-3: #333a44;
+  --primary: #424a52;
+  --accent: #c37b4a;
+  --secondary: #64707a;
+  --soft: #ecedef;
+  --canvas: #fafaf8;
+}
 
 :root {
   /* Global utility tokens shared by every theme (v1.2 Pure White Surface Contract) */
@@ -221,6 +231,51 @@ a {
 ::selection {
   background: var(--accent);
   color: #fff;
+}
+
+/* Keyboard focus — visible, theme-aware */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scroll reveal (JS adds .in when the element enters the viewport) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 480ms ease-out,
+    transform 480ms ease-out;
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+[data-motion="reduced"] .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+/* Count-up numbers keep width stable */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Toast */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.anim-toast {
+  animation: toast-in 200ms ease-out;
 }
 
 .scrollbar-thin::-webkit-scrollbar {

@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { CATEGORIES, portfolio, IMG } from "@/lib/data";
+import { Reveal } from "@/components/Reveal";
 
 export default function PortfolioPage() {
   const [cat, setCat] = useState<string>("전체");
   const items = portfolio.filter((p) => cat === "전체" || p.category === cat);
+  const countOf = (c: string) => (c === "전체" ? portfolio.length : portfolio.filter((p) => p.category === c).length);
 
   return (
     <>
@@ -24,7 +26,7 @@ export default function PortfolioPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-        {/* Filters */}
+        {/* Filters with counts */}
         <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-thin" role="tablist" aria-label="포트폴리오 분야 필터">
           {CATEGORIES.map((c) => (
             <button
@@ -32,37 +34,44 @@ export default function PortfolioPage() {
               role="tab"
               aria-selected={cat === c}
               onClick={() => setCat(c)}
-              className={`tap shrink-0 rounded-full px-4 py-2 text-sm font-medium ${
+              className={`tap flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium ${
                 cat === c ? "bg-shell text-white shadow" : "border border-line bg-surface text-ink-2 hover:bg-soft"
               }`}
             >
               {c}
+              <span className={`text-[11px] tabular-nums ${cat === c ? "text-accent" : "text-muted"}`}>{countOf(c)}</span>
             </button>
           ))}
         </div>
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((p) => (
-            <Link
-              key={p.id}
-              href={`/portfolio/${p.id}`}
-              className="img-zoom tap hover-lift group overflow-hidden rounded-2xl border border-line bg-surface shadow-sm"
-            >
-              <div className="relative aspect-[3/2] overflow-hidden">
-                <img src={p.image} alt={p.title} className="h-full w-full object-cover" loading="lazy" />
-                <span className="absolute left-3 top-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
-                  {p.category}
-                </span>
-              </div>
-              <div className="p-5">
-                <h2 className="font-bold leading-snug text-ink group-hover:text-primary">{p.title}</h2>
-                <p className="mt-1 text-sm text-muted">
-                  {p.client} · {p.year}
-                </p>
-                <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-ink-2">{p.summary}</p>
-                <p className="mt-3 text-xs font-semibold text-accent">View Project →</p>
-              </div>
-            </Link>
+          {items.map((p, i) => (
+            <Reveal key={p.id} delay={(i % 3) * 70}>
+              <Link
+                href={`/portfolio/${p.id}`}
+                className="img-zoom tap hover-lift group block overflow-hidden rounded-2xl border border-line bg-surface shadow-sm"
+              >
+                <div className="relative aspect-[3/2] overflow-hidden">
+                  <img src={p.image} alt={p.title} className="h-full w-full object-cover" loading="lazy" />
+                  <span className="absolute left-3 top-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
+                    {p.category}
+                  </span>
+                  {/* hover overlay */}
+                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    <span className="m-4 flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-xs font-bold text-shell">
+                      View Project <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+                    </span>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h2 className="font-bold leading-snug text-ink group-hover:text-primary">{p.title}</h2>
+                  <p className="mt-1 text-sm text-muted">
+                    {p.client} · {p.year}
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-ink-2">{p.summary}</p>
+                </div>
+              </Link>
+            </Reveal>
           ))}
         </div>
         {items.length === 0 && (
