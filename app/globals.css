@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   SHINE DESIGN — Theme Library (6 themes, 6 core tokens each)
+   Default: 01 Shine Graphite Gold (brand)
+--------------------------------------------------------------------------- */
+:root,
+[data-theme="shine"] {
+  --shell: #16181d;
+  --shell-2: #1f232b;
+  --shell-3: #2a2f39;
+  --primary: #3f4854;
+  --accent: #c4a15f;
+  --secondary: #6b7280;
+  --soft: #ecedef;
+  --canvas: #faf9f7;
+}
+[data-theme="navy"] {
+  --shell: #0f2747;
+  --shell-2: #16325a;
+  --shell-3: #1e3f6e;
+  --primary: #1d4ed8;
+  --accent: #d4a94f;
+  --secondary: #2f6f8f;
+  --soft: #e8eef7;
+  --canvas: #f7f9fc;
+}
+[data-theme="teal"] {
+  --shell: #073b3f;
+  --shell-2: #0b4a4f;
+  --shell-3: #105a60;
+  --primary: #0e7377;
+  --accent: #c9a76a;
+  --secondary: #4fa7a2;
+  --soft: #ddefea;
+  --canvas: #f7f5f0;
+}
+[data-theme="burgundy"] {
+  --shell: #3a1523;
+  --shell-2: #4a1c2e;
+  --shell-3: #5c2439;
+  --primary: #7c2845;
+  --accent: #c5a15a;
+  --secondary: #a75c73;
+  --soft: #f1e3e7;
+  --canvas: #fbf7f4;
+}
+[data-theme="indigo"] {
+  --shell: #25265b;
+  --shell-2: #2e2f6e;
+  --shell-3: #383a82;
+  --primary: #4c51bf;
+  --accent: #b59ae7;
+  --secondary: #6b70d6;
+  --soft: #eae8f7;
+  --canvas: #f8f8fc;
+}
+[data-theme="forest"] {
+  --shell: #173d32;
+  --shell-2: #1e4a3d;
+  --shell-3: #265a4b;
+  --primary: #2e6b55;
+  --accent: #c9a66b;
+  --secondary: #679b7f;
+  --soft: #e5efe9;
+  --canvas: #faf7f0;
+}
+
+:root {
+  /* Global utility tokens shared by every theme (v1.2 Pure White Surface Contract) */
+  --surface: #ffffff;
+  --ink: #111827;
+  --ink-2: #374151;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  /* Dark-shell readability (v1.2 Dark Shell Readability Contract) */
+  --nav-active: #ffffff;
+  --nav-primary: #f3f4f6;
+  --nav-inactive: #e5e7eb;
+  --nav-label: #aeb7c3;
+  --nav-muted: #94a3b8;
+  /* Sidebar / menu icon accents (v1.1 icon color system) */
+  --ic-overview: #5b8def;
+  --ic-ops: #3aafa9;
+  --ic-sales: #d79a43;
+  --ic-crm: #a66bbe;
+  --ic-ai: #7376d9;
+  --ic-evidence: #3c9a75;
+  --ic-risk: #d66a5e;
+  --ic-partner: #c37b4a;
+  --ic-system: #718096;
+
+  --font-scale: 1;
+}
+
+@theme inline {
+  --color-shell: var(--shell);
+  --color-shell-2: var(--shell-2);
+  --color-shell-3: var(--shell-3);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-secondary: var(--secondary);
+  --color-soft: var(--soft);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-nav-active: var(--nav-active);
+  --color-nav-primary: var(--nav-primary);
+  --color-nav-inactive: var(--nav-inactive);
+  --color-nav-label: var(--nav-label);
+  --color-nav-muted: var(--nav-muted);
+}
+
+html {
+  font-size: calc(16px * var(--font-scale));
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-noto), "Apple SD Gothic Neo", "Malgun Gothic",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Interaction quality baseline (v1.2 Motion Contract) */
+.tap,
+button,
+a {
+  transition:
+    background-color 160ms ease-out,
+    color 160ms ease-out,
+    border-color 160ms ease-out,
+    box-shadow 160ms ease-out,
+    transform 160ms ease-out,
+    opacity 160ms ease-out;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+.hover-lift:active {
+  transform: translateY(0);
+  opacity: 0.9;
+}
+.img-zoom img {
+  transition: transform 240ms ease-out;
+}
+.img-zoom:hover img {
+  transform: scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce), (max-width: 0px) {
+  .hover-lift:hover,
+  .img-zoom:hover img {
+    transform: none;
+  }
+}
+[data-motion="reduced"] .hover-lift:hover,
+[data-motion="reduced"] .img-zoom:hover img {
+  transform: none;
+}
+[data-motion="reduced"] * {
+  transition-duration: 1ms !important;
+  animation-duration: 1ms !important;
+}
+
+/* Overlay transitions */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.anim-fade {
+  animation: fade-in 180ms ease-out;
+}
+.anim-sheet {
+  animation: slide-up 220ms ease-out;
+}
+.anim-drawer-l {
+  animation: slide-in-left 220ms ease-out;
+}
+.anim-drawer-r {
+  animation: slide-in-right 220ms ease-out;
+}
+.anim-reveal {
+  animation: slide-up 180ms ease-out;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 3px;
+}
