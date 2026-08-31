@@ -42,7 +42,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
             href={m.href}
             onClick={onNavigate}
             data-tutorial={`menu-${m.href.replace(/\//g, "-")}`}
-            className={`tap flex items-center gap-3 rounded-xl px-2.5 py-2 text-[14px] ${
+            className={`tap flex items-center gap-3 rounded-xl px-2.5 py-2 text-[0.875rem] ${
               active
                 ? "bg-white/12 font-semibold text-nav-active shadow-[inset_2px_0_0_0_var(--accent)]"
                 : "font-medium text-nav-inactive hover:bg-white/7 hover:text-nav-active"
@@ -66,7 +66,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
           onNavigate?.();
           window.dispatchEvent(new Event("shine-presentation"));
         }}
-        className="tap flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-[14px] font-medium text-nav-inactive hover:bg-white/7 hover:text-nav-active"
+        className="tap flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-[0.875rem] font-medium text-nav-inactive hover:bg-white/7 hover:text-nav-active"
       >
         <span
           className="flex h-8 w-8 items-center justify-center rounded-lg [&>svg]:h-[17px] [&>svg]:w-[17px]"
@@ -81,7 +81,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
         href="/"
         onClick={onNavigate}
         data-tutorial="customer-view"
-        className="tap flex items-center gap-3 rounded-xl px-2.5 py-2 text-[14px] font-medium text-nav-inactive hover:bg-white/7 hover:text-nav-active"
+        className="tap flex items-center gap-3 rounded-xl px-2.5 py-2 text-[0.875rem] font-medium text-nav-inactive hover:bg-white/7 hover:text-nav-active"
       >
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-nav-primary [&>svg]:h-[17px] [&>svg]:w-[17px]" aria-hidden>
           {Icons.globe}
@@ -129,34 +129,35 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh bg-canvas">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[280px] flex-col bg-shell lg:flex" data-tutorial="sidebar">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-w)] flex-col bg-shell lg:flex" data-tutorial="sidebar">
         <div className="flex items-center gap-2.5 border-b border-white/10 px-5 py-4">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-lg font-black text-shell">S</span>
           <div className="leading-tight">
-            <p className="text-[15px] font-black tracking-wide text-nav-active">SHINE DESIGN</p>
-            <p className="text-[10px] font-medium tracking-[0.2em] text-nav-muted">사인디자인 AX</p>
+            <p className="text-[0.9375rem] font-black tracking-wide text-nav-active">SHINE DESIGN</p>
+            <p className="text-[0.625rem] font-medium tracking-[0.2em] text-nav-muted">사인디자인 AX</p>
           </div>
         </div>
         <NavList />
         <SidebarFooter />
       </aside>
 
-      <div className="flex min-h-dvh min-w-0 flex-1 flex-col lg:pl-[280px]">
+      <div className="flex min-h-dvh min-w-0 flex-1 flex-col lg:pl-[var(--sidebar-w)]">
         {/* Topbar */}
         <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
-          <div className="flex h-14 items-center justify-between gap-2 px-3 sm:px-5">
-            <div className="flex min-w-0 items-center gap-1.5">
+          {/* 글자 확대 시 잘리지 않도록 가변 높이 + 줄바꿈 허용 */}
+          <div className="flex min-h-14 flex-wrap items-center justify-between gap-x-2 gap-y-1 px-3 py-1.5 sm:px-5">
+            <div className="flex min-w-[8rem] flex-1 items-center gap-1.5">
               <button onClick={() => setDrawer(true)} className="tap rounded-lg p-2 text-ink-2 hover:bg-soft lg:hidden" aria-label="AX 메뉴 열기">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
               </button>
-              <h1 className="truncate text-[15px] font-bold text-ink">{current?.label ?? "Business AX"}</h1>
-              <span className="ml-1 hidden rounded bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold text-accent sm:block">DEMO</span>
+              <h1 className="truncate text-[0.9375rem] font-bold text-ink">{current?.label ?? "Business AX"}</h1>
+              <span className="ml-1 hidden rounded bg-accent/15 px-1.5 py-0.5 text-[0.625rem] font-bold text-accent sm:block">DEMO</span>
             </div>
 
-            <div className="flex items-center gap-1 sm:gap-2">
-              <div className="text-right leading-tight" data-tutorial="clock" aria-label="현재 날짜와 시각">
-                <span className="hidden text-[13px] font-medium tabular-nums text-ink-2 md:block">{clock.full}</span>
-                <span className="block text-[11px] font-medium text-muted md:hidden">
+            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+              <div className="whitespace-nowrap text-right leading-tight" data-tutorial="clock" aria-label="현재 날짜와 시각">
+                <span className="hidden text-[0.8125rem] font-medium tabular-nums text-ink-2 md:block">{clock.full}</span>
+                <span className="block text-[0.6875rem] font-medium text-muted md:hidden">
                   {clock.compact}
                   <span className="ml-1 tabular-nums text-ink-2">{clock.time}</span>
                 </span>
@@ -168,7 +169,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
               >
                 {Icons.bell}
                 {alerts.length > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--ic-risk)] px-1 text-[9px] font-bold text-white">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--ic-risk)] px-1 text-[0.5625rem] font-bold text-white">
                     {alerts.length}
                   </span>
                 )}
@@ -178,10 +179,10 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
               </span>
               <Link
                 href="/ax/settings"
-                className="tap flex items-center gap-1.5 rounded-full border border-line py-1 pl-1 pr-3 hover:bg-soft"
+                className="tap flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-line py-1 pl-1 pr-3 hover:bg-soft"
                 aria-label="역할 및 설정"
               >
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-shell text-[10px] font-bold text-accent">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-shell text-[0.625rem] font-bold text-accent">
                   {hydrated ? ROLE_LABELS[role][0] : "대"}
                 </span>
                 <span className="text-xs font-semibold text-ink-2">{hydrated ? ROLE_LABELS[role] : "대표"}</span>
@@ -200,7 +201,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
             <Link
               key={m.href}
               href={m.href}
-              className={`tap flex flex-col items-center gap-0.5 py-2 text-[10px] ${pathname === m.href ? "font-semibold text-nav-active" : "text-nav-muted"}`}
+              className={`tap flex flex-col items-center gap-0.5 whitespace-nowrap py-2 text-[0.625rem] leading-tight ${pathname === m.href ? "font-semibold text-nav-active" : "text-nav-muted"}`}
             >
               <span className="[&>svg]:h-5 [&>svg]:w-5" style={{ color: pathname === m.href ? m.color : undefined }} aria-hidden>
                 {Icons[m.icon]}
@@ -208,8 +209,8 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
               {m.label.split("·")[0].replace(" 관리", "")}
             </Link>
           ))}
-          <button onClick={() => setDrawer(true)} className="tap flex flex-col items-center gap-0.5 py-2 text-[10px] text-nav-muted" aria-label="전체 메뉴">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          <button onClick={() => setDrawer(true)} className="tap flex flex-col items-center gap-0.5 whitespace-nowrap py-2 text-[0.625rem] leading-tight text-nav-muted" aria-label="전체 메뉴">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><path d="M4 7h16M4 12h16M4 17h16" /></svg>
             메뉴
           </button>
         </div>
@@ -218,13 +219,13 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
       {/* Mobile drawer */}
       {drawer && (
         <Overlay onClose={() => setDrawer(false)} align="left">
-          <div className="anim-drawer-l flex h-dvh w-[290px] flex-col overflow-y-auto bg-shell">
+          <div className="anim-drawer-l flex h-dvh w-[min(88vw,var(--sidebar-w))] flex-col overflow-y-auto bg-shell">
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-lg font-black text-shell">S</span>
                 <div className="leading-tight">
-                  <p className="text-[15px] font-black tracking-wide text-nav-active">SHINE DESIGN</p>
-                  <p className="text-[10px] font-medium tracking-[0.2em] text-nav-muted">사인디자인 AX</p>
+                  <p className="text-[0.9375rem] font-black tracking-wide text-nav-active">SHINE DESIGN</p>
+                  <p className="text-[0.625rem] font-medium tracking-[0.2em] text-nav-muted">사인디자인 AX</p>
                 </div>
               </div>
               <button onClick={() => setDrawer(false)} className="tap rounded-lg p-2 text-nav-inactive hover:bg-white/10" aria-label="메뉴 닫기">✕</button>

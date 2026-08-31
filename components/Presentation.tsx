@@ -119,15 +119,15 @@ export function Presentation() {
       <div className="anim-sheet pointer-events-auto w-full max-w-xl rounded-2xl bg-shell/97 p-5 text-nav-primary shadow-2xl backdrop-blur">
         <div className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2">
-            <span className="rounded-md bg-accent px-2 py-0.5 text-[10px] font-black text-shell">시연 모드</span>
-            <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-bold text-nav-label">{s.tag}</span>
+            <span className="rounded-md bg-accent px-2 py-0.5 text-[0.625rem] font-black text-shell">시연 모드</span>
+            <span className="rounded-md bg-white/10 px-2 py-0.5 text-[0.625rem] font-bold text-nav-label">{s.tag}</span>
           </span>
-          <span className="text-[11px] tabular-nums text-nav-muted">
+          <span className="text-[0.6875rem] tabular-nums text-nav-muted">
             {step + 1} / {STEPS.length}
           </span>
         </div>
         <h3 className="mt-2.5 font-black text-nav-active">{s.title}</h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-nav-inactive">{s.body}</p>
+        <p className="mt-1 text-[0.8125rem] leading-relaxed text-nav-inactive">{s.body}</p>
         {/* progress */}
         <div className="mt-3 flex gap-1" aria-hidden>
           {STEPS.map((_, i) => (

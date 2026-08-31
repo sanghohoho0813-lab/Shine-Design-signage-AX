@@ -22,7 +22,7 @@ export default function ProcessPage() {
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:py-16">
           <p className="text-xs font-bold tracking-[0.18em] text-accent">PROJECT PROCESS</p>
           <h1 className="mt-2 text-3xl font-black text-ink sm:text-4xl">프로젝트 프로세스</h1>
-          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-2">
+          <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-ink-2">
             샤인디자인은 &lsquo;간판을 만드는 일&rsquo;이 아니라 <b className="text-ink">프로젝트 전체를 관리</b>합니다.
             문의부터 준공 증빙까지, 발주 담당자가 챙겨야 할 일을 하나의 흐름으로 대신 관리합니다.
           </p>
@@ -40,7 +40,7 @@ export default function ProcessPage() {
               <div className="hover-lift flex-1 rounded-xl border border-line bg-surface p-4 shadow-sm sm:p-5">
                 <div className="flex flex-wrap items-baseline gap-x-3">
                   <h2 className="font-bold text-ink">{s.ko}</h2>
-                  <span className="text-[11px] font-semibold tracking-wider text-accent">{s.en.toUpperCase()}</span>
+                  <span className="text-[0.6875rem] font-semibold tracking-wider text-accent">{s.en.toUpperCase()}</span>
                 </div>
                 <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{s.desc}</p>
               </div>

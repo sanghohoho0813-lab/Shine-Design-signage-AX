@@ -112,7 +112,7 @@ export default function PipelinePage() {
       {view === "list" && (
         <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-sm">
           <table className="w-full text-sm">
-            <thead className="hidden border-b border-line text-left text-[11px] text-muted md:table-header-group">
+            <thead className="hidden border-b border-line text-left text-[0.6875rem] text-muted md:table-header-group">
               <tr>
                 <th className="px-4 py-3 font-medium">프로젝트</th>
                 <th className="px-3 py-3 font-medium">단계</th>
@@ -136,19 +136,19 @@ export default function PipelinePage() {
                       <p className="font-bold leading-snug text-ink">
                         {p.client}
                         {p.fromInquiry && (
-                          <span className="ml-2 rounded bg-[var(--ic-overview)]/12 px-1.5 py-0.5 text-[10px] font-bold text-[var(--ic-overview)]">신규문의</span>
+                          <span className="ml-2 rounded bg-[var(--ic-overview)]/12 px-1.5 py-0.5 text-[0.625rem] font-bold text-[var(--ic-overview)]">신규문의</span>
                         )}
                       </p>
-                      <p className="mt-0.5 text-[13px] text-ink-2">{p.name}</p>
+                      <p className="mt-0.5 text-[0.8125rem] text-ink-2">{p.name}</p>
                       {/* mobile 보조 정보 */}
-                      <p className="mt-1 text-[11px] text-muted md:hidden">
+                      <p className="mt-1 text-[0.6875rem] text-muted md:hidden">
                         {p.stage} · {p.deadline}
                         {d && <b className={`ml-1 ${d.urgent ? "text-[var(--ic-risk)]" : ""}`}>{d.label}</b>}
                       </p>
                     </td>
                     <td className="hidden px-3 py-3.5 md:table-cell">
                       <span
-                        className="whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-bold"
+                        className="whitespace-nowrap rounded-full px-2.5 py-1 text-[0.6875rem] font-bold"
                         style={{ color: STAGE_COLORS[p.stage], background: `color-mix(in srgb, ${STAGE_COLORS[p.stage]} 12%, transparent)` }}
                       >
                         {p.stage}
@@ -157,7 +157,7 @@ export default function PipelinePage() {
                     <td className="hidden whitespace-nowrap px-3 py-3.5 tabular-nums text-ink-2 md:table-cell">
                       {p.deadline}
                       {d && (
-                        <span className={`ml-1.5 text-[11px] font-bold ${d.urgent ? "text-[var(--ic-risk)]" : "text-muted"}`}>{d.label}</span>
+                        <span className={`ml-1.5 text-[0.6875rem] font-bold ${d.urgent ? "text-[var(--ic-risk)]" : "text-muted"}`}>{d.label}</span>
                       )}
                     </td>
                     <td className="hidden px-3 py-3.5 text-ink-2 lg:table-cell">{p.owner}</td>
@@ -176,17 +176,17 @@ export default function PipelinePage() {
 
       {/* ------------------------------ BOARD VIEW ----------------------------- */}
       {view === "board" && (
-        <div className="grid min-w-0 grid-cols-2 gap-2.5 md:grid-cols-4 xl:grid-cols-8">
+        <div className="grid min-w-0 gap-2.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(8.5rem, 1fr))" }}>
           {STAGES.map((s) => {
             const list = filtered.filter((p) => p.stage === s);
             return (
               <div key={s} className="min-w-0 rounded-xl bg-soft/60 p-2">
                 <div className="flex items-center justify-between px-1 py-1">
-                  <p className="flex min-w-0 items-center gap-1.5 text-[11px] font-bold text-ink-2">
+                  <p className="flex min-w-0 items-center gap-1.5 text-[0.6875rem] font-bold text-ink-2">
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: STAGE_COLORS[s] }} aria-hidden />
                     <span className="truncate">{s}</span>
                   </p>
-                  <span className="text-[11px] font-bold tabular-nums text-muted">{list.length}</span>
+                  <span className="text-[0.6875rem] font-bold tabular-nums text-muted">{list.length}</span>
                 </div>
                 <div className="mt-1 space-y-2">
                   {list.map((p) => (
@@ -196,12 +196,12 @@ export default function PipelinePage() {
                       className="tap hover-lift block w-full rounded-lg border border-line bg-surface p-2.5 text-left shadow-sm"
                       style={{ borderLeftWidth: 3, borderLeftColor: p.risk === "높음" ? "var(--ic-risk)" : p.risk === "보통" ? "var(--ic-sales)" : "var(--line)" }}
                     >
-                      <p className="line-clamp-2 text-[12px] font-bold leading-snug text-ink">{p.client}</p>
-                      <p className="mt-0.5 line-clamp-1 text-[11px] text-ink-2">{p.name}</p>
-                      <p className="mt-1 text-[10px] tabular-nums text-muted">{p.deadline.slice(5)}</p>
+                      <p className="line-clamp-2 text-[0.75rem] font-bold leading-snug text-ink">{p.client}</p>
+                      <p className="mt-0.5 line-clamp-1 text-[0.6875rem] text-ink-2">{p.name}</p>
+                      <p className="mt-1 text-[0.625rem] tabular-nums text-muted">{p.deadline.slice(5)}</p>
                     </button>
                   ))}
-                  {list.length === 0 && <p className="py-2 text-center text-[10px] text-muted/60">없음</p>}
+                  {list.length === 0 && <p className="py-2 text-center text-[0.625rem] text-muted/60">없음</p>}
                 </div>
               </div>
             );
@@ -209,7 +209,7 @@ export default function PipelinePage() {
         </div>
       )}
 
-      <p className="text-[11px] text-muted">
+      <p className="text-[0.6875rem] text-muted">
         ※ 공공입찰 트랙(발굴→검토→준비→제출→결과)은 <b>입찰·제안 관리</b>에서 별도로 관리합니다.
       </p>
 
@@ -219,7 +219,7 @@ export default function PipelinePage() {
           <div className="anim-drawer-r flex h-dvh w-[min(94vw,440px)] flex-col overflow-y-auto bg-surface shadow-2xl">
             <div className="flex items-start justify-between border-b border-line p-5">
               <div>
-                <p className="flex items-center gap-1.5 text-[11px] font-bold" style={{ color: STAGE_COLORS[current.stage] }}>
+                <p className="flex items-center gap-1.5 text-[0.6875rem] font-bold" style={{ color: STAGE_COLORS[current.stage] }}>
                   <span className="h-2 w-2 rounded-full" style={{ background: STAGE_COLORS[current.stage] }} aria-hidden />
                   {current.stage}
                 </p>
@@ -265,7 +265,7 @@ export default function PipelinePage() {
               {currentInquiry && (
                 <div className="rounded-xl border border-[var(--ic-overview)]/25 bg-[var(--ic-overview)]/6 p-4">
                   <p className="text-xs font-bold text-[var(--ic-overview)]">Customer Bridge — 고객 문의 원본</p>
-                  <dl className="mt-2 space-y-1.5 text-[13px] text-ink-2">
+                  <dl className="mt-2 space-y-1.5 text-[0.8125rem] text-ink-2">
                     <div className="flex justify-between"><dt className="text-muted">담당자</dt><dd className="font-semibold text-ink">{currentInquiry.name} {currentInquiry.org && `(${currentInquiry.org})`}</dd></div>
                     <div className="flex justify-between"><dt className="text-muted">연락처</dt><dd className="tabular-nums">{currentInquiry.phone}</dd></div>
                     <div className="flex justify-between"><dt className="text-muted">진행 단계</dt><dd>{currentInquiry.status}</dd></div>
@@ -330,7 +330,7 @@ export default function PipelinePage() {
 function Info({ k, v, color }: { k: string; v: string; color?: string }) {
   return (
     <div className="rounded-lg border border-line p-2.5">
-      <dt className="text-[10px] text-muted">{k}</dt>
+      <dt className="text-[0.625rem] text-muted">{k}</dt>
       <dd className="mt-0.5 font-semibold text-ink" style={color ? { color } : undefined}>{v}</dd>
     </div>
   );

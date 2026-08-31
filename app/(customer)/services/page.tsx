@@ -54,7 +54,7 @@ export default function ServicesPage() {
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:py-16">
           <p className="text-xs font-bold tracking-[0.18em] text-accent">BUSINESS AREAS</p>
           <h1 className="mt-2 text-3xl font-black text-ink sm:text-4xl">사업분야</h1>
-          <p className="mt-3 max-w-xl text-[15px] text-ink-2">
+          <p className="mt-3 max-w-xl text-[0.9375rem] text-ink-2">
             공간을 읽고, 정보를 설계하고, 사인으로 완성합니다.
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function ServicesPage() {
               <div className="flex items-center gap-2">
                 <p className="text-xs font-bold tracking-[0.15em] text-accent">{a.en.toUpperCase()}</p>
                 {a.tag && (
-                  <span className="rounded-full bg-shell px-2 py-0.5 text-[10px] font-bold text-accent">{a.tag}</span>
+                  <span className="rounded-full bg-shell px-2 py-0.5 text-[0.625rem] font-bold text-accent">{a.tag}</span>
                 )}
               </div>
               <h2 className="mt-1.5 text-xl font-black text-ink sm:text-2xl">{a.title}</h2>

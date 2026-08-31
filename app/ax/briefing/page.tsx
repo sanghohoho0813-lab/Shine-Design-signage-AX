@@ -92,8 +92,8 @@ export default function BriefingPage() {
             4개의 핵심 엔진이 What → Why → Action 구조로 판단을 돕습니다.
           </p>
         </div>
-        <span className="shrink-0 rounded-lg bg-white/10 px-3 py-2 text-right text-[10px] leading-tight text-nav-label">
-          <b className="block text-[11px] text-accent">AI READY</b>
+        <span className="shrink-0 rounded-lg bg-white/10 px-3 py-2 text-right text-[0.625rem] leading-tight text-nav-label">
+          <b className="block text-[0.6875rem] text-accent">AI READY</b>
           현재: 규칙 기반 Demo
           <br />
           향후: LLM API 연동
@@ -111,10 +111,10 @@ export default function BriefingPage() {
               {e.what}
             </p>
             <div className="mt-3">
-              <p className="text-[11px] font-bold tracking-wide text-muted">WHY</p>
+              <p className="text-[0.6875rem] font-bold tracking-wide text-muted">WHY</p>
               <ul className="mt-1.5 space-y-1.5">
                 {e.why.map((w, i) => (
-                  <li key={i} className="flex gap-2 text-[13px] leading-relaxed text-ink-2">
+                  <li key={i} className="flex gap-2 text-[0.8125rem] leading-relaxed text-ink-2">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted" aria-hidden />
                     {w}
                   </li>
@@ -122,7 +122,7 @@ export default function BriefingPage() {
               </ul>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="self-center text-[11px] font-bold tracking-wide text-muted">ACTION</span>
+              <span className="self-center text-[0.6875rem] font-bold tracking-wide text-muted">ACTION</span>
               {e.actions.map((a) => (
                 <Link key={a.label} href={a.href} className="tap hover-lift rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink-2 hover:bg-soft">
                   {a.label} →

@@ -43,12 +43,17 @@ export default function AxDashboard() {
         </p>
       )}
       {/* KPI row */}
-      <section data-tutorial="kpi-row" className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
+      {/* 열 수를 rem 기준으로 자동 조정 — 글자를 키워도 카드가 눌리지 않는다 */}
+      <section
+        data-tutorial="kpi-row"
+        className="grid gap-3"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(9.5rem, 1fr))" }}
+      >
         {kpis.map((k) => (
           <Link key={k.label} href={k.href} className="tap hover-lift group relative overflow-hidden rounded-xl border border-line bg-surface p-3.5 shadow-sm">
-            <p className="text-[11px] font-medium text-muted">{k.label}</p>
+            <p className="text-[0.6875rem] font-medium text-muted">{k.label}</p>
             <p className="mt-1 text-lg font-black tabular-nums text-ink">{k.value}</p>
-            <p className={`mt-0.5 truncate text-[10px] ${k.delta.startsWith("▼") || k.delta.includes("즉시") ? "text-[var(--ic-risk)]" : "text-secondary"}`}>{k.delta}</p>
+            <p className={`mt-0.5 truncate text-[0.625rem] ${k.delta.startsWith("▼") || k.delta.includes("즉시") ? "text-[var(--ic-risk)]" : "text-secondary"}`}>{k.delta}</p>
             {k.spark && <Sparkline data={k.spark} warn={k.warn} />}
           </Link>
         ))}
@@ -61,13 +66,13 @@ export default function AxDashboard() {
             <h2 className="font-bold text-ink">프로젝트 진행 현황</h2>
             <Link href="/ax/pipeline" className="tap text-xs font-semibold text-muted hover:text-ink">전체 보기 →</Link>
           </div>
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin">
+          <div className="flex flex-wrap items-center gap-y-1.5">
             {STAGES.map((s, i) => {
               const n = projects.filter((p) => p.stage === s).length;
               return (
                 <div key={s} className="flex items-center">
                   <div className={`min-w-[76px] rounded-lg px-2.5 py-2 text-center ${n ? "bg-soft" : "bg-canvas"}`}>
-                    <p className="text-[10px] text-muted">{s}</p>
+                    <p className="text-[0.625rem] text-muted">{s}</p>
                     <p className={`text-base font-black tabular-nums ${n ? "text-ink" : "text-muted/50"}`}>{n}</p>
                   </div>
                   {i < STAGES.length - 1 && <span className="px-0.5 text-line" aria-hidden>›</span>}
@@ -88,9 +93,9 @@ export default function AxDashboard() {
                     <p className="truncate text-sm font-semibold text-ink">
                       {p.client} <span className="font-normal text-muted">· {p.name}</span>
                     </p>
-                    <p className="text-[11px] text-muted">{p.stage} · 납기 {p.deadline}{p.fromInquiry && " · 고객 문의 유입"}</p>
+                    <p className="text-[0.6875rem] text-muted">{p.stage} · 납기 {p.deadline}{p.fromInquiry && " · 고객 문의 유입"}</p>
                   </div>
-                  <span className="text-[11px] font-medium tabular-nums text-ink-2">{p.budget ? fmtKRWshort(p.budget) : "견적 전"}</span>
+                  <span className="text-[0.6875rem] font-medium tabular-nums text-ink-2">{p.budget ? fmtKRWshort(p.budget) : "견적 전"}</span>
                 </Link>
               </li>
             ))}
@@ -104,24 +109,24 @@ export default function AxDashboard() {
         >
           <img src={IMG.axManager} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-[0.14]" />
           <div className="relative">
-            <div className="flex items-center justify-between">
-              <h2 className="flex items-center gap-2 font-bold text-nav-active">
-                <span className="rounded-md bg-[var(--ic-ai)]/30 px-1.5 py-0.5 text-[10px] font-black text-white">AI</span>
+            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+              <h2 className="flex items-center gap-2 whitespace-nowrap font-bold text-nav-active">
+                <span className="rounded-md bg-[var(--ic-ai)]/30 px-1.5 py-0.5 text-[0.625rem] font-black text-white">AI</span>
                 오늘의 AX 브리핑
               </h2>
-              <span className="text-[10px] text-nav-muted">규칙 기반 · AI READY</span>
+              <span className="whitespace-nowrap text-[0.625rem] text-nav-muted">규칙 기반 · AI READY</span>
             </div>
             <p className="mt-3 text-sm font-semibold text-nav-primary">이번 주 가장 주의할 프로젝트 {Math.min(risky.length, 2) || "0"}건</p>
             <div className="mt-3 space-y-2.5">
               {risky.slice(0, 2).map((p, i) => (
                 <div key={p.id} className="rounded-xl bg-white/8 p-3.5 backdrop-blur">
-                  <p className="flex items-start gap-2 text-[13px] font-bold text-nav-active">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[10px] font-black text-shell">{i + 1}</span>
+                  <p className="flex items-start gap-2 text-[0.8125rem] font-bold text-nav-active">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[0.625rem] font-black text-shell">{i + 1}</span>
                     {p.client} {p.name}
                   </p>
-                  <p className="ml-7 mt-1 text-[12px] leading-relaxed text-nav-inactive">{p.riskNote}</p>
+                  <p className="ml-7 mt-1 text-[0.75rem] leading-relaxed text-nav-inactive">{p.riskNote}</p>
                   <div className="ml-7 mt-2">
-                    <Link href="/ax/briefing" className="tap inline-block rounded-md bg-accent px-2.5 py-1 text-[11px] font-bold text-shell hover:brightness-110">
+                    <Link href="/ax/briefing" className="tap inline-block rounded-md bg-accent px-2.5 py-1 text-[0.6875rem] font-bold text-shell hover:brightness-110">
                       Action 보기
                     </Link>
                   </div>
@@ -162,7 +167,7 @@ export default function AxDashboard() {
           <h2 className="font-bold text-ink">제작 파트너 진행 현황</h2>
           <table className="mt-3 w-full text-sm">
             <thead>
-              <tr className="text-left text-[11px] text-muted">
+              <tr className="text-left text-[0.6875rem] text-muted">
                 <th className="pb-2 font-medium">파트너</th>
                 <th className="pb-2 font-medium">진행</th>
                 <th className="pb-2 font-medium">납기준수</th>
@@ -196,7 +201,7 @@ export default function AxDashboard() {
                     <p className="font-semibold text-ink">{b.institution}</p>
                     <span className="font-black tabular-nums text-accent">{b.readiness}%</span>
                   </div>
-                  <p className="mt-0.5 text-[11px] text-muted">{b.project} · 마감 {b.deadline}</p>
+                  <p className="mt-0.5 text-[0.6875rem] text-muted">{b.project} · 마감 {b.deadline}</p>
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-soft">
                     <div className="h-full rounded-full bg-accent" style={{ width: `${b.readiness}%` }} />
                   </div>

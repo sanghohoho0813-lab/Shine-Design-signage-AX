@@ -39,7 +39,7 @@ export default function PortfolioPage() {
               }`}
             >
               {c}
-              <span className={`text-[11px] tabular-nums ${cat === c ? "text-accent" : "text-muted"}`}>{countOf(c)}</span>
+              <span className={`text-[0.6875rem] tabular-nums ${cat === c ? "text-accent" : "text-muted"}`}>{countOf(c)}</span>
             </button>
           ))}
         </div>
@@ -53,7 +53,7 @@ export default function PortfolioPage() {
               >
                 <div className="relative aspect-[3/2] overflow-hidden">
                   <img src={p.image} alt={p.title} className="h-full w-full object-cover" loading="lazy" />
-                  <span className="absolute left-3 top-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
+                  <span className="absolute left-3 top-3 rounded-full bg-black/55 px-2.5 py-1 text-[0.6875rem] font-semibold text-white backdrop-blur">
                     {p.category}
                   </span>
                   {/* hover overlay */}
@@ -68,7 +68,7 @@ export default function PortfolioPage() {
                   <p className="mt-1 text-sm text-muted">
                     {p.client} · {p.year}
                   </p>
-                  <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-ink-2">{p.summary}</p>
+                  <p className="mt-2 line-clamp-2 text-[0.8125rem] leading-relaxed text-ink-2">{p.summary}</p>
                 </div>
               </Link>
             </Reveal>

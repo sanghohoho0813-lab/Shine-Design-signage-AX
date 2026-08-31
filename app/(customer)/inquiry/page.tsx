@@ -97,7 +97,7 @@ export default function InquiryPage() {
         {STEP_TITLES.map((t, i) => (
           <div key={t} className="flex-1">
             <div className={`h-1.5 rounded-full ${i <= step ? "bg-accent" : "bg-line"}`} />
-            <p className={`mt-1.5 hidden text-[11px] sm:block ${i === step ? "font-bold text-ink" : "text-muted"}`}>{t}</p>
+            <p className={`mt-1.5 hidden text-[0.6875rem] sm:block ${i === step ? "font-bold text-ink" : "text-muted"}`}>{t}</p>
           </div>
         ))}
       </div>
@@ -134,7 +134,7 @@ export default function InquiryPage() {
             </Field>
             <Field label="참고 자료">
               <div className="flex cursor-not-allowed items-center gap-3 rounded-lg border border-dashed border-line bg-canvas px-4 py-5 text-sm text-muted">
-                📎 도면·현장사진 첨부 <span className="rounded bg-soft px-1.5 py-0.5 text-[10px] font-semibold">데모에서는 비활성</span>
+                📎 도면·현장사진 첨부 <span className="rounded bg-soft px-1.5 py-0.5 text-[0.625rem] font-semibold">데모에서는 비활성</span>
               </div>
             </Field>
           </div>

@@ -17,7 +17,7 @@ export default function EvidencePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-shell/90 to-shell/40" />
         <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-7">
           <h2 className="text-lg font-black text-white sm:text-xl">증빙 · 리포트</h2>
-          <p className="mt-1 max-w-md text-xs leading-relaxed text-nav-inactive sm:text-[13px]">
+          <p className="mt-1 max-w-md text-xs leading-relaxed text-nav-inactive sm:text-[0.8125rem]">
             완료된 프로젝트는 납품 증빙 → 포트폴리오 자산 → 유사실적 → 입찰 신뢰도로 이어집니다.
           </p>
         </div>
@@ -26,7 +26,7 @@ export default function EvidencePage() {
       {/* Closed loop diagram */}
       <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
         <h3 className="font-bold text-ink">Closed Loop — 완료가 곧 다음 수주의 자산</h3>
-        <div className="mt-4 flex flex-wrap items-center gap-2 text-[12px] font-semibold">
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-[0.75rem] font-semibold">
           {["고객 문의", "프로젝트 Pipeline", "디자인·견적", "제작 파트너", "설치", "증빙", "포트폴리오 자산", "다음 입찰·영업"].map((s, i, arr) => (
             <span key={s} className="flex items-center gap-2">
               <span className={`rounded-full px-3 py-1.5 ${i >= 5 ? "bg-accent/15 text-accent" : "bg-soft text-ink-2"}`}>{s}</span>
@@ -55,9 +55,9 @@ export default function EvidencePage() {
                     <p className="font-bold text-ink">{p.client}</p>
                     <p className="text-sm text-ink-2">{p.name}</p>
                   </div>
-                  <span className="rounded-full bg-[var(--ic-evidence)]/12 px-2 py-0.5 text-[10px] font-bold text-[var(--ic-evidence)]">완료</span>
+                  <span className="rounded-full bg-[var(--ic-evidence)]/12 px-2 py-0.5 text-[0.625rem] font-bold text-[var(--ic-evidence)]">완료</span>
                 </div>
-                <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+                <div className="mt-3 grid grid-cols-2 gap-2 text-[0.6875rem]">
                   {["납품 확인서", "준공 사진", "검수 리포트", "유사실적 카드"].map((d) => (
                     <span key={d} className="flex items-center gap-1.5 rounded-lg bg-canvas px-2.5 py-1.5 text-ink-2">
                       <span className="text-[var(--ic-evidence)]" aria-hidden>✓</span>
@@ -65,7 +65,7 @@ export default function EvidencePage() {
                     </span>
                   ))}
                 </div>
-                <p className="mt-2.5 text-[11px] text-muted">→ 고객 사이트 &lsquo;최근 완료된 프로젝트&rsquo;와 입찰 유사실적에 연결됨</p>
+                <p className="mt-2.5 text-[0.6875rem] text-muted">→ 고객 사이트 &lsquo;최근 완료된 프로젝트&rsquo;와 입찰 유사실적에 연결됨</p>
               </li>
             ))}
           </ul>
@@ -77,17 +77,17 @@ export default function EvidencePage() {
         <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
           <p className="text-xs text-muted">포트폴리오 자산</p>
           <p className="mt-1 text-xl font-black text-ink">{portfolio.length + completed.length}건</p>
-          <p className="text-[11px] text-secondary">공개 {portfolio.length} + 신규 완료 {completed.length}</p>
+          <p className="text-[0.6875rem] text-secondary">공개 {portfolio.length} + 신규 완료 {completed.length}</p>
         </div>
         <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
           <p className="text-xs text-muted">유사실적 분야</p>
           <p className="mt-1 text-xl font-black text-ink">7개</p>
-          <p className="text-[11px] text-secondary">교통·행정·의료·문화·교육·공공·민간</p>
+          <p className="text-[0.6875rem] text-secondary">교통·행정·의료·문화·교육·공공·민간</p>
         </div>
         <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
           <p className="text-xs text-muted">입찰 연결 가능 증빙</p>
           <p className="mt-1 text-xl font-black text-ink">{4 + completed.length}건</p>
-          <p className="text-[11px] text-secondary">준비도 산정에 자동 반영 (데모)</p>
+          <p className="text-[0.6875rem] text-secondary">준비도 산정에 자동 반영 (데모)</p>
         </div>
       </section>
     </div>

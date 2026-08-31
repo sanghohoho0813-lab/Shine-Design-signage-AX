@@ -131,7 +131,7 @@ export function Tutorial() {
             : { top: "50%", transform: "translate(-50%,-50%)" }
         }
       >
-        <p className="text-[11px] font-bold text-accent">
+        <p className="text-[0.6875rem] font-bold text-accent">
           STEP {step + 1} / {STEPS.length}
         </p>
         <h3 className="mt-1 font-bold text-ink">{s.title}</h3>

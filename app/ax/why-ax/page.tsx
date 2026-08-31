@@ -73,7 +73,7 @@ export default function WhyAxPage() {
 
         {/* 02 */}
         <Section n="02" title="고객(발주 담당자)의 여정">
-          <div className="flex flex-wrap items-center gap-2 text-[12px] font-semibold">
+          <div className="flex flex-wrap items-center gap-2 text-[0.75rem] font-semibold">
             {["예산 확보", "업체 탐색", "실적 확인", "견적 비교", "발주", "준공 검사", "증빙 서류"].map((s, i, arr) => (
               <span key={s} className="flex items-center gap-2">
                 <span className="rounded-full bg-soft px-3 py-1.5 text-ink-2">{s}</span>
@@ -90,7 +90,7 @@ export default function WhyAxPage() {
 
         {/* 03 */}
         <Section n="03" title="내부 업무 Flow">
-          <div className="flex flex-wrap items-center gap-2 text-[12px] font-semibold">
+          <div className="flex flex-wrap items-center gap-2 text-[0.75rem] font-semibold">
             {["문의", "현장 실측", "디자인", "사양·견적", "승인", "자체공장/파트너 제작", "설치", "준공·증빙"].map((s, i, arr) => (
               <span key={s} className="flex items-center gap-2">
                 <span className={`rounded-full px-3 py-1.5 ${i === 5 ? "bg-accent/15 text-accent" : "bg-soft text-ink-2"}`}>{s}</span>
@@ -131,7 +131,7 @@ export default function WhyAxPage() {
             ].map(([t, d]) => (
               <div key={t} className="rounded-xl border border-line bg-surface p-4">
                 <p className="text-sm font-bold text-ink">{t}</p>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-ink-2">{d}</p>
+                <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-ink-2">{d}</p>
               </div>
             ))}
           </div>
@@ -156,7 +156,7 @@ export default function WhyAxPage() {
                   <span className="text-[var(--ic-evidence)]" aria-hidden>✓</span>
                   {a.t}
                 </p>
-                <p className="mt-1 text-[13px] leading-relaxed text-ink-2">{a.d}</p>
+                <p className="mt-1 text-[0.8125rem] leading-relaxed text-ink-2">{a.d}</p>
               </div>
             ))}
           </div>
@@ -165,7 +165,7 @@ export default function WhyAxPage() {
         {/* 08 */}
         <Section n="08" title="Data Bridge — 고객 행동이 회사 자산이 되는 구조">
           <div className="rounded-2xl bg-shell p-5 sm:p-6">
-            <div className="flex flex-wrap items-center gap-2 text-[12px] font-semibold">
+            <div className="flex flex-wrap items-center gap-2 text-[0.75rem] font-semibold">
               {["Customer 문의", "Pipeline", "디자인 · 견적", "공장 · 파트너", "설치", "증빙", "Portfolio 자산", "다음 입찰 · 영업"].map((s, i, arr) => (
                 <span key={s} className="flex items-center gap-2">
                   <span className={`rounded-full px-3 py-1.5 ${i === 0 || i === arr.length - 1 ? "bg-accent text-shell" : "bg-white/10 text-nav-primary"}`}>{s}</span>
@@ -173,7 +173,7 @@ export default function WhyAxPage() {
                 </span>
               ))}
             </div>
-            <p className="mt-4 text-[13px] leading-relaxed text-nav-inactive">
+            <p className="mt-4 text-[0.8125rem] leading-relaxed text-nav-inactive">
               고객 사이트의 문의가 파이프라인에 자동으로 들어오고, 완료된 프로젝트는 증빙과 포트폴리오
               자산으로 전환되어 다음 입찰의 신뢰도가 됩니다. 화면 두 개가 아니라{" "}
               <b className="text-nav-active">하나의 데이터 루프</b>입니다.
@@ -216,15 +216,15 @@ export default function WhyAxPage() {
             {GROWTH.map((g, i) => (
               <li key={g.label} className="flex items-center gap-3">
                 <span
-                  className={`flex h-7 w-16 shrink-0 items-center justify-center rounded-full text-[10px] font-black ${
+                  className={`flex h-7 w-16 shrink-0 items-center justify-center rounded-full text-[0.625rem] font-black ${
                     g.now ? "bg-accent text-shell" : g.vision ? "bg-shell text-accent" : "bg-soft text-ink-2"
                   }`}
                 >
                   {g.stage}
                 </span>
                 <span className={`text-sm font-semibold ${g.vision ? "text-ink" : "text-ink-2"}`}>{g.label}</span>
-                {i === 0 && <span className="rounded bg-[var(--ic-evidence)]/12 px-1.5 py-0.5 text-[9px] font-bold text-[var(--ic-evidence)]">운영 중</span>}
-                {i > 0 && <span className="rounded bg-soft px-1.5 py-0.5 text-[9px] font-bold text-muted">향후 확장</span>}
+                {i === 0 && <span className="rounded bg-[var(--ic-evidence)]/12 px-1.5 py-0.5 text-[0.5625rem] font-bold text-[var(--ic-evidence)]">운영 중</span>}
+                {i > 0 && <span className="rounded bg-soft px-1.5 py-0.5 text-[0.5625rem] font-bold text-muted">향후 확장</span>}
               </li>
             ))}
           </ol>

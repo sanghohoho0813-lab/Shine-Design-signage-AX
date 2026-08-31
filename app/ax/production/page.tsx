@@ -25,7 +25,7 @@ export default function ProductionPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-shell/90 to-shell/40" />
         <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-7">
           <h2 className="text-lg font-black text-white sm:text-xl">제작 파트너 관리</h2>
-          <p className="mt-1 max-w-md text-xs leading-relaxed text-nav-inactive sm:text-[13px]">
+          <p className="mt-1 max-w-md text-xs leading-relaxed text-nav-inactive sm:text-[0.8125rem]">
             화성·남양주 자체 가공·조립 라인과 전문 제작·시공 파트너를 함께 운용합니다. 발주–제작–검수–설치
             연결을 한 화면에서 추적합니다.
           </p>
@@ -37,15 +37,15 @@ export default function ProductionPage() {
         {partners.map((pt) => (
           <div key={pt.name} className="hover-lift rounded-xl border border-line bg-surface p-4 shadow-sm">
             <p className="font-bold text-ink">{pt.name}</p>
-            <p className="text-[11px] text-muted">{pt.field}</p>
+            <p className="text-[0.6875rem] text-muted">{pt.field}</p>
             <div className="mt-3 flex items-end justify-between">
               <div>
-                <p className="text-[10px] text-muted">납기 준수율</p>
+                <p className="text-[0.625rem] text-muted">납기 준수율</p>
                 <p className={`text-lg font-black tabular-nums ${pt.onTime >= 90 ? "text-[var(--ic-evidence)]" : pt.onTime >= 80 ? "text-[var(--ic-sales)]" : "text-[var(--ic-risk)]"}`}>
                   {pt.onTime}%
                 </p>
               </div>
-              <span className="rounded-full bg-soft px-2 py-0.5 text-[10px] font-semibold text-ink-2">부하 {pt.load}</span>
+              <span className="rounded-full bg-soft px-2 py-0.5 text-[0.625rem] font-semibold text-ink-2">부하 {pt.load}</span>
             </div>
           </div>
         ))}
@@ -73,7 +73,7 @@ export default function ProductionPage() {
       <div className="overflow-x-auto rounded-2xl border border-line bg-surface shadow-sm">
         <table className="w-full min-w-[760px] text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] text-muted">
+            <tr className="border-b border-line text-left text-[0.6875rem] text-muted">
               <th className="px-4 py-3 font-medium">프로젝트</th>
               <th className="px-4 py-3 font-medium">제작 품목</th>
               <th className="px-4 py-3 font-medium">파트너</th>
@@ -90,14 +90,14 @@ export default function ProductionPage() {
                 <td className="px-4 py-3 font-semibold text-ink">{projectName(o.projectId)}</td>
                 <td className="px-4 py-3 text-ink-2">
                   {o.item}
-                  {o.risk && <span className="ml-2 rounded bg-[var(--ic-risk)]/12 px-1.5 py-0.5 text-[10px] font-bold text-[var(--ic-risk)]">{o.risk}</span>}
+                  {o.risk && <span className="ml-2 rounded bg-[var(--ic-risk)]/12 px-1.5 py-0.5 text-[0.625rem] font-bold text-[var(--ic-risk)]">{o.risk}</span>}
                 </td>
                 <td className="px-4 py-3 text-ink-2">{o.partner}</td>
                 <td className="px-4 py-3 tabular-nums text-ink-2">{o.due}</td>
                 <td className="px-4 py-3 text-right tabular-nums text-ink-2">{o.cost.toLocaleString()}원</td>
                 <td className="px-4 py-3">
                   <span
-                    className="rounded-full px-2 py-0.5 text-[11px] font-bold"
+                    className="rounded-full px-2 py-0.5 text-[0.6875rem] font-bold"
                     style={{ color: STATUS_COLORS[o.status], background: `color-mix(in srgb, ${STATUS_COLORS[o.status]} 12%, transparent)` }}
                   >
                     {o.status}

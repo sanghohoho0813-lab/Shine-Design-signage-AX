@@ -16,7 +16,7 @@ export default function AboutPage() {
           <h1 className="mt-3 text-3xl font-black leading-snug text-white sm:text-4xl">
             &ldquo;{COMPANY.belief}&rdquo;
           </h1>
-          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-nav-inactive">{COMPANY.intro}</p>
+          <p className="mt-5 max-w-2xl text-[0.9375rem] leading-relaxed text-nav-inactive">{COMPANY.intro}</p>
           <p className="mt-4 text-sm text-nav-label">
             {COMPANY.name} · 대표이사 {COMPANY.ceo}
           </p>
@@ -81,10 +81,10 @@ export default function AboutPage() {
               {CREDENTIALS.map((c) => (
                 <li key={c.label} className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3 shadow-sm">
                   <span className="flex items-center gap-3 text-sm font-medium text-ink-2">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[11px] text-accent" aria-hidden>✓</span>
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[0.6875rem] text-accent" aria-hidden>✓</span>
                     {c.label}
                   </span>
-                  <span className="shrink-0 text-[11px] tabular-nums text-muted">{c.date}</span>
+                  <span className="shrink-0 text-[0.6875rem] tabular-nums text-muted">{c.date}</span>
                 </li>
               ))}
             </ul>

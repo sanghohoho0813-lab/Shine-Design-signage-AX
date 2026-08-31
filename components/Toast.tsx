@@ -36,10 +36,10 @@ export function Toaster() {
       {items.map((t) => (
         <div
           key={t.id}
-          className="anim-toast pointer-events-auto flex items-center gap-2 rounded-full bg-shell/95 py-2 pl-3 pr-4 text-[13px] font-medium text-nav-primary shadow-xl backdrop-blur"
+          className="anim-toast pointer-events-auto flex items-center gap-2 rounded-full bg-shell/95 py-2 pl-3 pr-4 text-[0.8125rem] font-medium text-nav-primary shadow-xl backdrop-blur"
         >
           <span
-            className="flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-black"
+            className="flex h-5 w-5 items-center justify-center rounded-full text-[0.6875rem] font-black"
             style={{ background: t.tone === "ok" ? "var(--ic-evidence)" : "var(--accent)", color: "#fff" }}
             aria-hidden
           >

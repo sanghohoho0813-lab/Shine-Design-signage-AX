@@ -39,7 +39,7 @@ export default function Home() {
             <br />
             <span className="text-accent">사인</span>으로 완성합니다.
           </h1>
-          <p className="anim-reveal mt-5 max-w-md text-[15px] leading-relaxed text-ink-2 sm:text-base">
+          <p className="anim-reveal mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink-2 sm:text-base">
             공공기관·의료·업무시설·문화공간의 사인 시스템을
             <br className="hidden sm:block" />
             기획부터 디자인, 제작, 시공까지 통합합니다.
@@ -68,7 +68,7 @@ export default function Home() {
             <div key={t.title} className="flex items-center gap-3 px-2 py-5 lg:px-6">
               <span aria-hidden className="text-xl">{t.icon}</span>
               <div>
-                <p className="text-[13px] font-bold text-ink">{t.title}</p>
+                <p className="text-[0.8125rem] font-bold text-ink">{t.title}</p>
                 <p className="text-xs text-muted">{t.desc}</p>
               </div>
             </div>
@@ -117,11 +117,11 @@ export default function Home() {
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={c.image} alt={c.label} className="h-full w-full object-cover" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                <p className="absolute bottom-2 left-2.5 right-2 text-[13px] font-bold leading-tight text-white">
+                <p className="absolute bottom-2 left-2.5 right-2 text-[0.8125rem] font-bold leading-tight text-white">
                   {c.label}
                 </p>
               </div>
-              <p className="px-2.5 py-2 text-[11px] text-muted">{c.desc}</p>
+              <p className="px-2.5 py-2 text-[0.6875rem] text-muted">{c.desc}</p>
             </Link>
             </Reveal>
           ))}
@@ -200,7 +200,7 @@ export default function Home() {
           <div className="mt-6 flex gap-4 overflow-x-auto pb-2 scrollbar-thin">
             {completed.map((p) => (
               <div key={p.id} className="w-64 shrink-0 rounded-xl border border-line bg-surface p-4 shadow-sm">
-                <p className="text-[11px] font-semibold text-accent">{p.category} · 완료</p>
+                <p className="text-[0.6875rem] font-semibold text-accent">{p.category} · 완료</p>
                 <p className="mt-1 font-bold text-ink">{p.name}</p>
                 <p className="mt-0.5 text-sm text-muted">{p.client}</p>
               </div>

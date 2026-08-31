@@ -44,7 +44,7 @@ export default function CustomerFooter() {
         </div>
         <div>
           <p className="text-xs font-semibold tracking-wider text-muted">
-            향후 확장 <span className="ml-1 rounded bg-accent/15 px-1.5 py-px text-[9px] font-bold text-accent">NEXT</span>
+            향후 확장 <span className="ml-1 rounded bg-accent/15 px-1.5 py-px text-[0.5625rem] font-bold text-accent">NEXT</span>
           </p>
           <ul className="mt-3 space-y-2 text-sm">
             {FUTURE_MENUS.map((m) => (

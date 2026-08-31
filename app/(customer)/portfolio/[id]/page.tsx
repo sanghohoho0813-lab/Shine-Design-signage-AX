@@ -23,7 +23,7 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
           <Link href="/portfolio" className="tap mb-4 text-sm text-nav-inactive hover:text-white">
             ← 포트폴리오
           </Link>
-          <span className="w-fit rounded-full bg-accent px-3 py-1 text-[11px] font-bold text-shell">{p.category}</span>
+          <span className="w-fit rounded-full bg-accent px-3 py-1 text-[0.6875rem] font-bold text-shell">{p.category}</span>
           <h1 className="mt-3 max-w-3xl text-3xl font-black leading-tight text-white sm:text-4xl">{p.title}</h1>
           <p className="mt-2 text-sm text-nav-inactive">
             {p.client} · {p.year} · 실제 수행 프로젝트
@@ -36,13 +36,13 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
           <div className="rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
             <p className="text-xs font-bold tracking-[0.15em] text-accent">PROJECT</p>
             <h2 className="mt-1 text-lg font-bold text-ink">{p.summary}</h2>
-            <p className="mt-3 text-[15px] leading-relaxed text-ink-2">{p.detail}</p>
+            <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink-2">{p.detail}</p>
           </div>
 
           <div className="rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
             <p className="text-xs font-bold tracking-[0.15em] text-accent">GALLERY</p>
             <Gallery images={[p.image, ...(p.gallery ?? [])]} title={p.title} />
-            <p className="mt-3 text-[11px] text-muted">※ 실제 시공 현장 사진 (회사소개서 수록)</p>
+            <p className="mt-3 text-[0.6875rem] text-muted">※ 실제 시공 현장 사진 (회사소개서 수록)</p>
           </div>
         </div>
 

@@ -28,7 +28,7 @@ export default function Gallery({ images, title }: { images: string[]; title: st
             aria-label={`${title} 현장 사진 ${i + 1} 크게 보기`}
           >
             <img src={g} alt={`${title} 현장 사진 ${i + 1}`} className="aspect-[4/3] w-full object-cover" loading="lazy" />
-            <span className="absolute bottom-2 right-2 rounded-md bg-black/55 px-2 py-1 text-[11px] font-semibold text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
+            <span className="absolute bottom-2 right-2 rounded-md bg-black/55 px-2 py-1 text-[0.6875rem] font-semibold text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
               ⤢ 크게 보기
             </span>
           </button>

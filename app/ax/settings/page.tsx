@@ -30,11 +30,11 @@ export default function SettingsPage() {
                   <span key={v} className="h-5 w-5 rounded-md border border-black/8" style={{ background: `var(${v})` }} />
                 ))}
               </span>
-              <span className="mt-1.5 block text-[11px] font-bold text-ink">{t.name}</span>
+              <span className="mt-1.5 block text-[0.6875rem] font-bold text-ink">{t.name}</span>
               {app.theme === t.id ? (
-                <span className="text-[10px] font-semibold text-accent">사용 중 ✓</span>
+                <span className="text-[0.625rem] font-semibold text-accent">사용 중 ✓</span>
               ) : (
-                <span className="text-[10px] text-muted">{t.id === "shine" ? "브랜드 기본" : "라이브러리"}</span>
+                <span className="text-[0.625rem] text-muted">{t.id === "shine" ? "브랜드 기본" : "라이브러리"}</span>
               )}
             </button>
           ))}
@@ -54,6 +54,12 @@ export default function SettingsPage() {
               가 {f === "md" ? "기본" : f === "lg" ? "크게" : "매우 크게"}
             </button>
           ))}
+        </div>
+        {/* 현재 크기 미리보기 — 화면 전체가 이 비율로 함께 커집니다 */}
+        <div className="mt-2 rounded-xl border border-line bg-canvas p-4">
+          <p className="text-xs text-muted">미리보기 · 현재 {app.fontScale === "md" ? "기본" : app.fontScale === "lg" ? "크게" : "매우 크게"}</p>
+          <p className="mt-1 font-bold text-ink">한국도로교통공단 포항운전면허시험장 사인 개선</p>
+          <p className="mt-0.5 text-sm text-ink-2">제작 단계 · 납기 2026-09-18 · 예상 Margin 17.9%</p>
         </div>
 
         <label className="mt-5 flex items-center justify-between rounded-xl border border-line p-3.5">
@@ -83,7 +89,7 @@ export default function SettingsPage() {
               className={`tap rounded-xl border-2 p-3.5 text-center ${app.role === r ? "border-accent bg-accent/5" : "border-line hover:bg-soft"}`}
             >
               <span className="block text-sm font-black text-ink">{ROLE_LABELS[r]}</span>
-              <span className="mt-0.5 block text-[10px] leading-tight text-muted">
+              <span className="mt-0.5 block text-[0.625rem] leading-tight text-muted">
                 {r === "ceo" ? "전체 지표 + 금액" : r === "staff" ? "금액 지표 제한" : "AX 접근 불가"}
               </span>
             </button>
@@ -154,7 +160,7 @@ export default function SettingsPage() {
             </span>
           </li>
         </ul>
-        <p className="mt-3 text-[11px] leading-relaxed text-muted">
+        <p className="mt-3 text-[0.6875rem] leading-relaxed text-muted">
           현재 인사이트는 규칙 기반으로 산출됩니다. 향후 GPT / Claude 등 LLM API를 같은 구조에 연결할 수
           있습니다.
         </p>

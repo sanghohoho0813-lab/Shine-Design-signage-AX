@@ -68,9 +68,9 @@ export default function QuotesPage() {
 
       {/* 범례 — 원가 구성 색상 */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 rounded-xl border border-line bg-surface px-4 py-2.5">
-        <span className="text-[11px] font-bold text-muted">원가 구성</span>
+        <span className="text-[0.6875rem] font-bold text-muted">원가 구성</span>
         {COST_ITEMS.map((c) => (
-          <span key={c.key} className="flex items-center gap-1.5 text-[11px] font-medium text-ink-2">
+          <span key={c.key} className="flex items-center gap-1.5 text-[0.6875rem] font-medium text-ink-2">
             <span className="h-2.5 w-2.5 rounded-[3px]" style={{ background: c.color }} aria-hidden />
             {c.label}
           </span>
@@ -99,7 +99,7 @@ export default function QuotesPage() {
                     <p className="mt-0.5 text-xs text-muted">{p.stage} · 납기 {p.deadline}</p>
                   </div>
                   <div className="hidden text-right sm:block">
-                    <p className="text-[11px] text-muted">견적</p>
+                    <p className="text-[0.6875rem] text-muted">견적</p>
                     <p className="text-sm font-bold tabular-nums text-ink">{p.budget.toLocaleString()}원</p>
                   </div>
                   <span
@@ -150,7 +150,7 @@ export default function QuotesPage() {
                               <div className="h-full rounded-full" style={{ width: `${pct}%`, background: c.color }} />
                             </div>
                             <span className="w-28 shrink-0 text-right tabular-nums text-ink-2">{v.toLocaleString()}원</span>
-                            <span className="w-10 shrink-0 text-right text-[11px] tabular-nums text-muted">{pct.toFixed(0)}%</span>
+                            <span className="w-10 shrink-0 text-right text-[0.6875rem] tabular-nums text-muted">{pct.toFixed(0)}%</span>
                           </li>
                         );
                       })}
@@ -183,7 +183,7 @@ export default function QuotesPage() {
           );
         })}
       </div>
-      <p className="text-[11px] text-muted">※ 금액은 데모 데이터입니다. 점선 구간은 견적 대비 Margin 여유분입니다.</p>
+      <p className="text-[0.6875rem] text-muted">※ 금액은 데모 데이터입니다. 점선 구간은 견적 대비 Margin 여유분입니다.</p>
     </div>
   );
 }
@@ -196,7 +196,7 @@ function Stat({ label, value, sub, bar, accent }: { label: string; value: string
       <p className={`mt-1 text-xl font-black tabular-nums ${accent ? "" : "text-ink"}`} style={accent ? { color: bar } : undefined}>
         {value}
       </p>
-      {sub && <p className="mt-0.5 text-[11px] text-secondary">{sub}</p>}
+      {sub && <p className="mt-0.5 text-[0.6875rem] text-secondary">{sub}</p>}
     </div>
   );
 }

@@ -20,14 +20,14 @@ export default function BidsPage() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-soft px-2 py-0.5 text-[10px] font-bold text-ink-2">{b.status}</span>
-                  <span className="text-[11px] text-muted">마감 {b.deadline}</span>
+                  <span className="rounded-full bg-soft px-2 py-0.5 text-[0.625rem] font-bold text-ink-2">{b.status}</span>
+                  <span className="text-[0.6875rem] text-muted">마감 {b.deadline}</span>
                 </div>
                 <h3 className="mt-1.5 font-bold text-ink">{b.institution}</h3>
                 <p className="text-sm text-ink-2">{b.project}</p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] text-muted">입찰 준비도</p>
+                <p className="text-[0.625rem] text-muted">입찰 준비도</p>
                 <p className={`text-2xl font-black tabular-nums ${b.readiness >= 70 ? "text-[var(--ic-evidence)]" : b.readiness >= 55 ? "text-[var(--ic-sales)]" : "text-[var(--ic-risk)]"}`}>
                   {b.readiness}%
                 </p>
@@ -50,8 +50,8 @@ export default function BidsPage() {
               <span>서류 <b className="tabular-nums text-ink-2">{b.checklist.filter((c) => c.done).length}/{b.checklist.length}</b></span>
             </div>
 
-            <div className="mt-3 rounded-xl bg-canvas p-3.5 text-[13px] leading-relaxed text-ink-2">
-              <b className="mr-1 rounded bg-[var(--ic-ai)]/15 px-1.5 py-0.5 text-[10px] font-black text-[var(--ic-ai)]">AI</b>
+            <div className="mt-3 rounded-xl bg-canvas p-3.5 text-[0.8125rem] leading-relaxed text-ink-2">
+              <b className="mr-1 rounded bg-[var(--ic-ai)]/15 px-1.5 py-0.5 text-[0.625rem] font-black text-[var(--ic-ai)]">AI</b>
               {b.insight}
             </div>
 
@@ -70,7 +70,7 @@ export default function BidsPage() {
           <div className="anim-drawer-r flex h-dvh w-[min(94vw,400px)] flex-col overflow-y-auto bg-surface shadow-2xl">
             <div className="flex items-start justify-between border-b border-line p-5">
               <div>
-                <p className="text-[11px] font-bold text-accent">준비도 {sel.readiness}% · {sel.status}</p>
+                <p className="text-[0.6875rem] font-bold text-accent">준비도 {sel.readiness}% · {sel.status}</p>
                 <h3 id="bid-title" className="mt-1 font-black text-ink">{sel.institution}</h3>
                 <p className="text-sm text-ink-2">{sel.project}</p>
               </div>
@@ -85,7 +85,7 @@ export default function BidsPage() {
                   }`}
                 >
                   <span
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.6875rem] font-bold ${
                       c.done ? "bg-[var(--ic-evidence)]/15 text-[var(--ic-evidence)]" : "bg-[var(--ic-risk)]/15 text-[var(--ic-risk)]"
                     }`}
                     aria-hidden
@@ -93,8 +93,8 @@ export default function BidsPage() {
                     {c.done ? "✓" : "!"}
                   </span>
                   <span className="flex-1 font-medium">{c.label}</span>
-                  {c.demo && <span className="rounded bg-soft px-1.5 py-0.5 text-[9px] font-bold text-muted">DEMO</span>}
-                  {!c.done && <span className="text-[11px] font-semibold text-[var(--ic-risk)]">미확인</span>}
+                  {c.demo && <span className="rounded bg-soft px-1.5 py-0.5 text-[0.5625rem] font-bold text-muted">DEMO</span>}
+                  {!c.done && <span className="text-[0.6875rem] font-semibold text-[var(--ic-risk)]">미확인</span>}
                 </li>
               ))}
             </ul>

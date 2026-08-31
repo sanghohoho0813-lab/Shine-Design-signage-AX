@@ -75,7 +75,7 @@ export function FuturePreviewSheet({ menu, onClose }: { menu: FutureMenu; onClos
     <Overlay onClose={onClose} align="bottom" labelledBy="future-title">
       <div className="anim-sheet w-screen max-w-2xl rounded-t-2xl bg-surface p-6 pb-8 shadow-2xl sm:mx-4 sm:rounded-2xl sm:p-8">
         <div className="mb-1 flex items-center justify-between gap-3">
-          <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-accent">
+          <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[0.6875rem] font-bold tracking-wide text-accent">
             {menu.badge} · 향후 확장
           </span>
           <button onClick={onClose} className="tap -m-2 rounded-lg p-2 text-muted hover:bg-soft hover:text-ink" aria-label="닫기">
@@ -98,7 +98,7 @@ export function FuturePreviewSheet({ menu, onClose }: { menu: FutureMenu; onClos
         </div>
 
         <div className="mt-4 flex items-center gap-3 rounded-xl bg-shell p-4 text-sm">
-          <span className="shrink-0 rounded-md bg-white/10 px-2 py-1 text-[11px] font-semibold text-nav-label">
+          <span className="shrink-0 rounded-md bg-white/10 px-2 py-1 text-[0.6875rem] font-semibold text-nav-label">
             Growth
           </span>
           <p className="text-nav-primary">

@@ -100,7 +100,9 @@
   --ic-partner: #c37b4a;
   --ic-system: #718096;
 
-  --font-scale: 1.1;
+  --font-scale: 1.22;
+  /* 글자가 커져도 데스크톱 사이드바가 과하게 넓어지지 않도록 상·하한을 둔다 */
+  --sidebar-w: clamp(280px, 17.5rem, 360px);
 }
 
 @theme inline {
@@ -256,6 +258,12 @@ a {
   opacity: 1;
   transform: none;
   transition: none;
+}
+
+/* 글자를 키우면 상단 인라인 메뉴는 서랍(더보기)으로 넘긴다 — 줄바꿈 깨짐 방지 */
+[data-font="lg"] .nav-inline,
+[data-font="xl"] .nav-inline {
+  display: none !important;
 }
 
 /* Count-up numbers keep width stable */
