@@ -26,14 +26,14 @@ export default function ProductionPage() {
         <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-7">
           <h2 className="text-lg font-black text-white sm:text-xl">제작 파트너 관리</h2>
           <p className="mt-1 max-w-md text-xs leading-relaxed text-nav-inactive sm:text-[13px]">
-            프로젝트 특성에 맞는 전문 제작·시공 네트워크를 운용합니다. 발주–제작–검수–설치 연결을 한
-            화면에서 추적합니다.
+            화성·남양주 자체 가공·조립 라인과 전문 제작·시공 파트너를 함께 운용합니다. 발주–제작–검수–설치
+            연결을 한 화면에서 추적합니다.
           </p>
         </div>
       </div>
 
       {/* Partner summary */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         {partners.map((pt) => (
           <div key={pt.name} className="hover-lift rounded-xl border border-line bg-surface p-4 shadow-sm">
             <p className="font-bold text-ink">{pt.name}</p>
@@ -112,7 +112,7 @@ export default function ProductionPage() {
       </div>
 
       <div className="rounded-xl border border-[var(--ic-sales)]/30 bg-[var(--ic-sales)]/6 p-4 text-sm text-ink-2">
-        <b className="text-[var(--ic-sales)]">규칙 기반 리스크 체크</b> — 납기 임박 1건(새움특수금속 · 09-08),
+        <b className="text-[var(--ic-sales)]">규칙 기반 리스크 체크</b> — 납기 임박 1건(자체 1공장 · 09-08),
         검수 미완료 1건(빛나라사인). 설치 일정과 충돌하는 발주 건은 없습니다.
       </div>
     </div>

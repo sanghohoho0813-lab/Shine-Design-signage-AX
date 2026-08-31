@@ -16,7 +16,13 @@ export default function CustomerFooter() {
             공공·공간 사인 프로젝트를 기획·디자인하고, 제작·시공까지 통합 관리하는 전문 사인디자인
             기업입니다.
           </p>
-          <p className="mt-4 text-xs text-muted">㈜샤인디자인 · 사인디자인 / 옥외광고 / 환경그래픽</p>
+          <p className="mt-4 text-xs leading-relaxed text-muted">
+            ㈜샤인디자인 · 대표이사 권유진 · 사업자등록번호 519-87-03609
+            <br />
+            경기도 남양주시 순화궁로 282, 221호 (별내동, 에이스하이엔드타워)
+            <br />
+            산업디자인전문회사 · 여성기업 · 옥외광고사업 등록 · 공장등록
+          </p>
         </div>
         <div>
           <p className="text-xs font-semibold tracking-wider text-muted">MENU</p>

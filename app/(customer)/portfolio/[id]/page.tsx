@@ -15,35 +15,44 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
 
   return (
     <>
-      <section className="relative isolate overflow-hidden">
+      <section className="relative isolate overflow-hidden bg-shell">
         <img src={p.image} alt={p.title} className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
-        <div className="relative mx-auto flex min-h-[420px] max-w-7xl flex-col justify-end px-4 pb-10 pt-24 sm:px-6">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/25" />
+        <div className="relative mx-auto flex min-h-[400px] max-w-7xl flex-col justify-end px-4 pb-10 pt-24 sm:px-6">
           <Link href="/portfolio" className="tap mb-4 text-sm text-nav-inactive hover:text-white">
             ← 포트폴리오
           </Link>
           <span className="w-fit rounded-full bg-accent px-3 py-1 text-[11px] font-bold text-shell">{p.category}</span>
           <h1 className="mt-3 max-w-3xl text-3xl font-black leading-tight text-white sm:text-4xl">{p.title}</h1>
           <p className="mt-2 text-sm text-nav-inactive">
-            {p.client} · {p.year}
+            {p.client} · {p.year} · 실제 수행 프로젝트
           </p>
         </div>
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-3">
-        <div className="space-y-8 lg:col-span-2">
-          {[
-            ["Challenge", "프로젝트 배경", p.challenge],
-            ["Design Approach", "디자인 접근", p.approach],
-            ["Production & Installation", "제작·시공", p.production],
-          ].map(([en, ko, body]) => (
-            <div key={en} className="rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
-              <p className="text-xs font-bold tracking-[0.15em] text-accent">{en.toUpperCase()}</p>
-              <h2 className="mt-1 text-lg font-bold text-ink">{ko}</h2>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink-2">{body}</p>
+        <div className="space-y-6 lg:col-span-2">
+          <div className="rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
+            <p className="text-xs font-bold tracking-[0.15em] text-accent">PROJECT</p>
+            <h2 className="mt-1 text-lg font-bold text-ink">{p.summary}</h2>
+            <p className="mt-3 text-[15px] leading-relaxed text-ink-2">{p.detail}</p>
+          </div>
+
+          {p.gallery && p.gallery.length > 0 && (
+            <div className="rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
+              <p className="text-xs font-bold tracking-[0.15em] text-accent">GALLERY</p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {p.gallery.map((g) => (
+                  <div key={g} className="img-zoom overflow-hidden rounded-xl border border-line">
+                    <img src={g} alt={`${p.title} 현장 사진`} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-[11px] text-muted">※ 실제 시공 현장 사진 (회사소개서 수록)</p>
             </div>
-          ))}
+          )}
         </div>
+
         <aside>
           <div className="rounded-2xl border border-line bg-surface p-6 shadow-sm">
             <h2 className="text-sm font-bold text-ink">프로젝트 정보</h2>
@@ -67,7 +76,7 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-muted">연도</dt>
+                <dt className="text-xs text-muted">수행 연도</dt>
                 <dd className="mt-0.5 font-medium text-ink">{p.year}</dd>
               </div>
             </dl>

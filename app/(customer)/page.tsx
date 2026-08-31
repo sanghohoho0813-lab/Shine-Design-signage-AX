@@ -5,10 +5,10 @@ import { IMG, trustCategories, portfolio } from "@/lib/data";
 import { useApp } from "@/lib/store";
 
 const HERO_TRUST = [
-  { icon: "🏛", title: "공공기관 프로젝트 다수", desc: "다양한 공공기관 수행 경험" },
-  { icon: "✏️", title: "사인 디자인·제작·시공", desc: "원스톱 프로젝트 관리" },
-  { icon: "📐", title: "산업디자인 전문 역량", desc: "공간과 정보의 의도적 설계" },
-  { icon: "🗺", title: "전국 프로젝트 대응", desc: "전국 시공 네트워크" },
+  { icon: "🏛", title: "한국도로교통공단 전국 실적", desc: "지부·시험장·교통방송 60여 건" },
+  { icon: "✏️", title: "사인 디자인·제작·시공", desc: "자체 1·2공장 + 파트너 네트워크" },
+  { icon: "📐", title: "산업디자인전문회사", desc: "여성기업 · 옥외광고사업 등록" },
+  { icon: "🗺", title: "전국 프로젝트 대응", desc: "원주·마산·보령·인천까지" },
 ];
 
 const HOME_SERVICES = [
@@ -79,7 +79,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
         <div className="mb-8 flex items-end justify-between">
           <div>
-            <p className="text-xs font-bold tracking-[0.18em] text-accent">PUBLIC TRACK RECORD</p>
+            <p className="text-xs font-bold tracking-[0.18em] text-accent">PUBLIC TRACK RECORD · 2024 실제 수행</p>
             <h2 className="mt-2 text-2xl font-black text-ink sm:text-3xl">공공 프로젝트에서 쌓은 경험</h2>
           </div>
           <Link href="/portfolio" className="tap shrink-0 text-sm font-medium text-muted hover:text-ink">

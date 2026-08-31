@@ -35,6 +35,12 @@ export default function AxDashboard() {
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
+      {role === "ceo" && (
+        <p className="text-sm text-muted">
+          <b className="text-ink">권유진 대표님</b>, 오늘의 샤인디자인입니다 — 확인이 필요한 항목{" "}
+          <b className="text-[var(--ic-risk)]">{risky.length + inquiries.length}건</b>
+        </p>
+      )}
       {/* KPI row */}
       <section data-tutorial="kpi-row" className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
         {kpis.map((k) => (

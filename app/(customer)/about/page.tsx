@@ -1,93 +1,123 @@
 import { IMG } from "@/lib/data";
+import { COMPANY, HISTORY, CREDENTIALS, LOCATIONS, WORK_SCOPE } from "@/lib/company";
 import Link from "next/link";
 
 export const metadata = { title: "회사소개 — 샤인디자인" };
 
-const VALUES = [
-  {
-    title: "공간을 읽는 기획",
-    desc: "사인은 마지막에 붙이는 장식이 아니라, 공간 이용자의 동선과 정보 경험을 설계하는 일에서 시작합니다.",
-  },
-  {
-    title: "공공에서 검증된 신뢰",
-    desc: "다수의 공공기관 프로젝트를 수행하며 행정 절차, 보안 규정, 운영 중 시공까지 공공 현장의 조건을 이해하고 있습니다.",
-  },
-  {
-    title: "통합 프로젝트 관리",
-    desc: "기획·디자인부터 제작·시공·검수까지 하나의 프로젝트로 관리해 발주처의 조율 부담을 줄입니다.",
-  },
-  {
-    title: "유연한 제작 네트워크",
-    desc: "금속·조명·출력·시공 등 프로젝트 특성에 맞는 전문 제작 파트너를 운용하는 유연한 공급구조를 갖추고 있습니다.",
-  },
-];
-
-const CREDENTIALS = [
-  "산업디자인전문회사",
-  "옥외광고사업 등록",
-  "공장등록",
-  "여성기업",
-  "다수 공공기관 프로젝트 수행",
-];
-
 export default function AboutPage() {
   return (
     <>
+      {/* Intro */}
       <section className="relative isolate overflow-hidden">
-        <img
-          src={IMG.brandStory}
-          alt="샤인디자인 스튜디오"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        <img src={IMG.brandStory} alt="샤인디자인 스튜디오" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-shell/85" />
         <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
           <p className="text-xs font-bold tracking-[0.18em] text-accent">ABOUT SHINE DESIGN</p>
           <h1 className="mt-3 text-3xl font-black leading-snug text-white sm:text-4xl">
-            공공·공간 사인 프로젝트를 기획·디자인하고,
-            <br className="hidden sm:block" />
-            제작·시공까지 통합 관리하는 전문 사인디자인 기업
+            &ldquo;{COMPANY.belief}&rdquo;
           </h1>
-          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-nav-inactive">
-            ㈜샤인디자인은 공공기관·의료·업무시설·문화공간의 사인 시스템을 다뤄온 사인디자인 전문
-            회사입니다. 공간과 정보를 읽는 산업디자인 역량 위에, 프로젝트별 최적의 제작·시공 네트워크를
-            결합해 하나의 완성된 결과물을 전달합니다.
+          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-nav-inactive">{COMPANY.intro}</p>
+          <p className="mt-4 text-sm text-nav-label">
+            {COMPANY.name} · 대표이사 {COMPANY.ceo}
           </p>
         </div>
       </section>
 
+      {/* History */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
-        <h2 className="text-2xl font-black text-ink sm:text-3xl">우리가 일하는 방식</h2>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2">
-          {VALUES.map((v, i) => (
-            <div key={v.title} className="hover-lift rounded-2xl border border-line bg-surface p-6 shadow-sm">
-              <span className="text-xs font-black text-accent">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-2 text-lg font-bold text-ink">{v.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-2">{v.desc}</p>
-            </div>
-          ))}
+        <div className="grid gap-10 lg:grid-cols-5">
+          <div className="lg:col-span-2">
+            <p className="text-xs font-bold tracking-[0.18em] text-accent">HISTORY</p>
+            <h2 className="mt-2 text-2xl font-black text-ink sm:text-3xl">
+              2005년의 뿌리,
+              <br />
+              2024년의 재도약
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-ink-2">
+              2005년 ㈜샤이니스로 시작한 환경디자인 업력이 2024년 ㈜샤인디자인으로 이어졌습니다. 법인
+              재출범 첫해에 산업디자인전문회사·여성기업·공장등록을 갖추고, 한국도로교통공단 전국
+              프로젝트를 수행하며 다시 출발선을 넘었습니다.
+            </p>
+          </div>
+          <ol className="relative space-y-3 lg:col-span-3">
+            <span aria-hidden className="absolute bottom-3 left-[7px] top-3 w-px bg-line" />
+            {HISTORY.map((h) => (
+              <li key={h.date + h.event} className="relative flex gap-4">
+                <span className="z-10 mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-accent bg-surface" aria-hidden />
+                <div className="hover-lift flex-1 rounded-xl border border-line bg-surface px-4 py-3 shadow-sm">
+                  <span className="text-xs font-black tabular-nums text-accent">{h.date}</span>
+                  <p className="mt-0.5 text-sm font-medium text-ink">{h.event}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
+      {/* Work scope */}
       <section className="bg-surface py-16">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2">
-          <div className="img-zoom overflow-hidden rounded-2xl shadow-lg">
-            <img src={IMG.customerExperience} alt="완성된 사인 공간을 이용하는 방문객" className="aspect-[3/2] w-full object-cover" loading="lazy" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <p className="text-xs font-bold tracking-[0.18em] text-accent">WORK SCOPE</p>
+          <h2 className="mt-2 text-2xl font-black text-ink">토탈환경디자인 — 우리가 다루는 영역</h2>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {WORK_SCOPE.map((w) => (
+              <div key={w.en} className="hover-lift rounded-2xl border border-line bg-canvas p-6">
+                <p className="text-xs font-black tracking-[0.15em] text-accent">{w.en}</p>
+                <h3 className="mt-1 text-lg font-bold text-ink">{w.ko}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-2">{w.desc}</p>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* Credentials + facility */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>
             <p className="text-xs font-bold tracking-[0.18em] text-accent">CREDENTIALS</p>
-            <h2 className="mt-2 text-2xl font-black text-ink">공공 프로젝트를 수행할 준비가 되어 있습니다</h2>
-            <ul className="mt-6 space-y-3">
+            <h2 className="mt-2 text-2xl font-black text-ink">공공 프로젝트를 수행할 자격을 갖추고 있습니다</h2>
+            <ul className="mt-6 space-y-2.5">
               {CREDENTIALS.map((c) => (
-                <li key={c} className="flex items-center gap-3 rounded-xl border border-line bg-canvas px-4 py-3 text-sm font-medium text-ink-2">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/15 text-[11px] text-accent" aria-hidden>✓</span>
-                  {c}
+                <li key={c.label} className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3 shadow-sm">
+                  <span className="flex items-center gap-3 text-sm font-medium text-ink-2">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[11px] text-accent" aria-hidden>✓</span>
+                    {c.label}
+                  </span>
+                  <span className="shrink-0 text-[11px] tabular-nums text-muted">{c.date}</span>
                 </li>
               ))}
             </ul>
-            <Link href="/inquiry" className="tap hover-lift mt-8 inline-block rounded-lg bg-shell px-6 py-3 text-sm font-semibold text-white hover:bg-shell-2">
-              프로젝트 상담 요청
-            </Link>
           </div>
+          <div>
+            <div className="img-zoom overflow-hidden rounded-2xl shadow-lg">
+              <img src="/images/works/facility-assembly.jpg" alt="자체 공장 조립 라인 — 겐트리 크레인과 용접 설비" className="aspect-[3/2] w-full object-cover" loading="lazy" />
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-ink-2">
+              <b className="text-ink">자체 가공·조립 라인 + 전문 파트너 네트워크.</b> 화성 제1공장과 남양주
+              제2공장의 가공·조립·용접 설비를 기반으로, 프로젝트 특성에 맞는 전문 제작·시공 파트너를
+              결합하는 유연한 공급구조를 운용합니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Locations */}
+      <section className="bg-surface py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <p className="text-xs font-bold tracking-[0.18em] text-accent">LOCATIONS</p>
+          <h2 className="mt-2 text-2xl font-black text-ink">본사 · 서울사무소 · 2개 공장</h2>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {LOCATIONS.map((l) => (
+              <div key={l.name} className="hover-lift rounded-xl border border-line bg-canvas p-4">
+                <p className="text-sm font-bold text-ink">{l.name}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{l.addr}</p>
+              </div>
+            ))}
+          </div>
+          <Link href="/inquiry" className="tap hover-lift mt-8 inline-block rounded-lg bg-shell px-6 py-3 text-sm font-semibold text-white hover:bg-shell-2">
+            프로젝트 상담 요청
+          </Link>
         </div>
       </section>
     </>

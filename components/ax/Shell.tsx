@@ -61,6 +61,22 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
 function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="border-t border-white/10 p-3">
+      <button
+        onClick={() => {
+          onNavigate?.();
+          window.dispatchEvent(new Event("shine-presentation"));
+        }}
+        className="tap flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-[14px] font-medium text-nav-inactive hover:bg-white/7 hover:text-nav-active"
+      >
+        <span
+          className="flex h-8 w-8 items-center justify-center rounded-lg [&>svg]:h-[17px] [&>svg]:w-[17px]"
+          style={{ color: "var(--accent)", background: "color-mix(in srgb, var(--accent) 14%, transparent)" }}
+          aria-hidden
+        >
+          {Icons.play}
+        </span>
+        시연 모드
+      </button>
       <Link
         href="/"
         onClick={onNavigate}

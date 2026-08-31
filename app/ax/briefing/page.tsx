@@ -72,7 +72,7 @@ export default function BriefingPage() {
       color: "var(--ic-ai)",
       what: "오늘 처리하면 좋은 일 3가지",
       why: [
-        inquiries.length ? `신규 고객 문의 ${inquiries.length}건 — 파이프라인 '문의' 단계에서 대기 중` : "성남시청 디자인 승인 요청 — 지연 D+2",
+        inquiries.length ? `신규 고객 문의 ${inquiries.length}건 — 파이프라인 '문의' 단계에서 대기 중` : "한국도로교통공단 CI 개정판 승인 요청 — 지연 D+2",
         qcPending.length ? `검수대기 ${qcPending.length}건(${qcPending.map((o) => o.partner).join(", ")}) — 설치 전 검수 필요` : "검수 대기 없음",
         "완료 프로젝트 1건 — 증빙·포트폴리오 자산 전환 확인",
       ],

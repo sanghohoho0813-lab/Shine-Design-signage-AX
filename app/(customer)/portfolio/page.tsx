@@ -6,7 +6,7 @@ import { CATEGORIES, portfolio, IMG } from "@/lib/data";
 
 export default function PortfolioPage() {
   const [cat, setCat] = useState<string>("전체");
-  const items = portfolio.filter((p) => cat === "전체" || p.category === cat || (cat === "공공기관" && p.category !== "상업·민간"));
+  const items = portfolio.filter((p) => cat === "전체" || p.category === cat);
 
   return (
     <>
@@ -17,8 +17,8 @@ export default function PortfolioPage() {
           <p className="text-xs font-bold tracking-[0.18em] text-accent">PORTFOLIO</p>
           <h1 className="mt-2 text-3xl font-black text-white sm:text-4xl">포트폴리오</h1>
           <p className="mt-3 max-w-xl text-sm text-nav-inactive">
-            공공기관을 중심으로 수행한 대표 프로젝트 유형입니다. 발주처 보안 정책에 따라 일부 명칭은
-            분야로 표기합니다.
+            한국도로교통공단 전국 지부·시험장부터 병원·경찰서·도서관까지, 실제 수행한 프로젝트와 실제
+            시공 현장 사진입니다.
           </p>
         </div>
       </section>

@@ -92,6 +92,13 @@ export default function SettingsPage() {
       <Card title="데모" desc="시연을 위한 초기화 · 튜토리얼 재생 기능입니다.">
         <div className="grid gap-2 sm:grid-cols-2">
           <button
+            onClick={() => window.dispatchEvent(new Event("shine-presentation"))}
+            className="tap hover-lift rounded-xl border border-accent/40 bg-accent/5 p-4 text-left hover:bg-accent/10"
+          >
+            <span className="block text-sm font-bold text-ink">▶ 시연 모드 시작</span>
+            <span className="text-xs text-muted">영업·심사용 10단계 Guided Product Demo</span>
+          </button>
+          <button
             onClick={() => window.dispatchEvent(new Event("shine-tutorial"))}
             className="tap hover-lift rounded-xl border border-line p-4 text-left hover:bg-soft"
           >
