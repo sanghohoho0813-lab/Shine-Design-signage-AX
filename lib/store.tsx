@@ -22,8 +22,9 @@ export type ThemeId = (typeof THEMES)[number]["id"];
 export type Role = "ceo" | "staff" | "customer";
 export const ROLE_LABELS: Record<Role, string> = { ceo: "대표", staff: "직원", customer: "고객" };
 
-export type FontScale = "sm" | "md" | "lg";
-const FONT_SCALES: Record<FontScale, number> = { sm: 0.92, md: 1, lg: 1.1 };
+/* 기본 크기를 종전 대비 1.1배로 상향. 기본 → 크게 → 매우 크게 3단계 */
+export type FontScale = "md" | "lg" | "xl";
+const FONT_SCALES: Record<FontScale, number> = { md: 1.1, lg: 1.22, xl: 1.35 };
 
 export interface Inquiry {
   id: string;
@@ -82,7 +83,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (raw) {
         const s = JSON.parse(raw);
         if (s.theme) setTheme(s.theme);
-        if (s.fontScale) setFontScale(s.fontScale);
+        if (s.fontScale && s.fontScale in FONT_SCALES) setFontScale(s.fontScale);
         if (s.role) setRole(s.role);
         if (typeof s.reducedMotion === "boolean") setReducedMotion(s.reducedMotion);
         if (Array.isArray(s.projects)) setProjects(s.projects);

@@ -113,7 +113,7 @@ export const seedProjects: Project[] = [
     owner: "권유진",
     risk: "보통",
     riskNote: "권역별 현장 실측 데이터 취합 중",
-    costs: { design: 5500000, material: 7800000, oem: 10200000, direct: 1500000, transport: 800000, install: 3100000, etc: 400000 },
+    costs: { design: 5500000, material: 7000000, oem: 6000000, direct: 1500000, transport: 800000, install: 3100000, etc: 400000 },
   },
   {
     id: "p4",
@@ -138,7 +138,7 @@ export const seedProjects: Project[] = [
     budget: 31000000,
     owner: "권유진",
     risk: "낮음",
-    costs: { design: 5000000, material: 6500000, oem: 8700000, direct: 1000000, transport: 700000, install: 2600000, etc: 300000 },
+    costs: { design: 5000000, material: 6500000, oem: 5300000, direct: 1000000, transport: 700000, install: 2600000, etc: 300000 },
   },
   {
     id: "p6",
@@ -150,7 +150,7 @@ export const seedProjects: Project[] = [
     budget: 18000000,
     owner: "이팀장",
     risk: "낮음",
-    costs: { design: 3600000, material: 3400000, oem: 4200000, direct: 900000, transport: 300000, install: 1500000, etc: 200000 },
+    costs: { design: 3600000, material: 3400000, oem: 2400000, direct: 900000, transport: 300000, install: 1500000, etc: 200000 },
   },
   {
     id: "p7",
@@ -174,7 +174,7 @@ export const seedProjects: Project[] = [
     owner: "박실장",
     risk: "보통",
     riskNote: "설치 인력 일정 확정 필요",
-    costs: { design: 3900000, material: 6200000, oem: 7600000, direct: 1100000, transport: 700000, install: 2500000, etc: 300000 },
+    costs: { design: 3900000, material: 5800000, oem: 5500000, direct: 1100000, transport: 700000, install: 2500000, etc: 300000 },
   },
   {
     id: "p9",
@@ -186,7 +186,7 @@ export const seedProjects: Project[] = [
     budget: 19500000,
     owner: "권유진",
     risk: "낮음",
-    costs: { design: 3200000, material: 4100000, oem: 5300000, direct: 800000, transport: 400000, install: 1800000, etc: 200000 },
+    costs: { design: 3200000, material: 3700000, oem: 3800000, direct: 800000, transport: 400000, install: 1500000, etc: 200000 },
   },
 ];
 

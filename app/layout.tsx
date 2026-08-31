@@ -23,7 +23,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-const themeInit = `try{var s=JSON.parse(localStorage.getItem("shine-ax-state-v1")||"{}");if(s.theme)document.documentElement.dataset.theme=s.theme;var f={sm:.92,md:1,lg:1.1}[s.fontScale];if(f)document.documentElement.style.setProperty("--font-scale",String(f));if(s.reducedMotion)document.documentElement.dataset.motion="reduced";}catch(e){}`;
+const themeInit = `try{var s=JSON.parse(localStorage.getItem("shine-ax-state-v1")||"{}");if(s.theme)document.documentElement.dataset.theme=s.theme;var f={md:1.1,lg:1.22,xl:1.35}[s.fontScale];document.documentElement.style.setProperty("--font-scale",String(f||1.1));if(s.reducedMotion)document.documentElement.dataset.motion="reduced";}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

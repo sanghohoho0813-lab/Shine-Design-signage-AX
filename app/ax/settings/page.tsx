@@ -42,16 +42,16 @@ export default function SettingsPage() {
 
         <p className="mt-5 text-xs font-semibold text-ink-2">Font Scale</p>
         <div className="mt-2 flex gap-2">
-          {(["sm", "md", "lg"] as FontScale[]).map((f) => (
+          {(["md", "lg", "xl"] as FontScale[]).map((f) => (
             <button
               key={f}
               onClick={() => app.setFontScale(f)}
               aria-pressed={app.fontScale === f}
               className={`tap flex-1 rounded-lg border py-2.5 font-bold ${
                 app.fontScale === f ? "border-shell bg-shell text-white" : "border-line text-ink-2 hover:bg-soft"
-              } ${f === "sm" ? "text-xs" : f === "md" ? "text-sm" : "text-base"}`}
+              } ${f === "md" ? "text-sm" : f === "lg" ? "text-base" : "text-lg"}`}
             >
-              가 {f === "sm" ? "작게" : f === "md" ? "보통" : "크게"}
+              가 {f === "md" ? "기본" : f === "lg" ? "크게" : "매우 크게"}
             </button>
           ))}
         </div>
