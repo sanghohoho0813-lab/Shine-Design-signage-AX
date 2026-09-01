@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { seedProduction, partners, PRODUCTION_STATUSES, ProductionStatus, seedProjects } from "@/lib/data";
 import { IMG } from "@/lib/data";
+import { PageHeader } from "@/components/ax/PageHeader";
 
 const STATUS_COLORS: Record<ProductionStatus, string> = {
   "발주 전": "var(--ic-system)",
@@ -19,6 +20,11 @@ export default function ProductionPage() {
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="제작·파트너 관리"
+        purpose="자체 공장과 외부 파트너의 발주·납기·검수·설치 연결을 한 화면에서 추적합니다."
+        stat={`발주 ${seedProduction.length}건`}
+      />
       {/* Context banner — restrained AX photo use */}
       <div className="relative overflow-hidden rounded-2xl">
         <img src={IMG.axOperation} alt="제작 파트너 공정 현장" className="h-36 w-full object-cover sm:h-44" style={{ objectPosition: "50% 45%" }} />

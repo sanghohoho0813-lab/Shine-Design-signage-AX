@@ -1,6 +1,7 @@
 import { IMG } from "@/lib/data";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
+import { Section } from "@/components/ui";
 
 export const metadata = { title: "사업분야 — 샤인디자인" };
 
@@ -50,60 +51,57 @@ const AREAS = [
 export default function ServicesPage() {
   return (
     <>
-      <section className="border-b border-line bg-surface">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:py-16">
-          <p className="text-xs font-bold tracking-[0.18em] text-accent">BUSINESS AREAS</p>
-          <h1 className="mt-2 text-3xl font-black text-ink sm:text-4xl">사업분야</h1>
-          <p className="mt-3 max-w-xl text-[0.9375rem] text-ink-2">
-            공간을 읽고, 정보를 설계하고, 사인으로 완성합니다.
-          </p>
+      <Section tone="surface" size="sm" className="border-b border-line">
+        <p className="t-eyebrow">Business Areas</p>
+        <h1 className="t-h1 mt-3 text-ink">사업분야</h1>
+        <p className="measure-wide mt-4 t-lead">
+          공간을 읽고, 정보를 설계하고, 사인으로 완성합니다. 다섯 개 영역이 하나의 프로젝트 안에서
+          이어집니다.
+        </p>
+      </Section>
+
+      <Section tone="canvas">
+        <div className="space-y-6">
+          {AREAS.map((a, i) => (
+            <Reveal key={a.en}>
+              <article className="grid items-stretch overflow-hidden rounded-2xl border border-line bg-surface shadow-sm lg:grid-cols-5">
+                <div className={`img-zoom relative overflow-hidden lg:col-span-2 ${i % 2 ? "lg:order-2" : ""}`}>
+                  <img src={a.img} alt={a.title} className="aspect-[3/2] h-full w-full object-cover lg:aspect-auto" loading="lazy" />
+                </div>
+                <div className="p-6 sm:p-8 lg:col-span-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="t-eyebrow">{a.en}</p>
+                    {a.tag && (
+                      <span className="rounded-full bg-shell px-2.5 py-0.5 text-[0.625rem] font-bold text-accent">{a.tag}</span>
+                    )}
+                  </div>
+                  <h2 className="t-h2 mt-2 text-ink">{a.title}</h2>
+                  <p className="measure-wide mt-3 t-body">{a.desc}</p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {a.items.map((it) => (
+                      <span key={it} className="rounded-full border border-line bg-canvas px-3 py-1 text-xs font-medium text-ink-2">
+                        {it}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+          ))}
         </div>
-      </section>
+      </Section>
 
-      <section className="mx-auto max-w-7xl space-y-6 px-4 py-14 sm:px-6">
-        {AREAS.map((a, i) => (
-          <Reveal key={a.en}>
-          <div
-            className={`grid items-stretch overflow-hidden rounded-2xl border border-line bg-surface shadow-sm lg:grid-cols-5 ${
-              i % 2 ? "lg:[direction:rtl]" : ""
-            }`}
-          >
-            <div className="img-zoom relative overflow-hidden lg:col-span-2 [direction:ltr]">
-              <img src={a.img} alt={a.title} className="aspect-[3/2] h-full w-full object-cover lg:aspect-auto" loading="lazy" />
-            </div>
-            <div className="p-6 sm:p-8 lg:col-span-3 [direction:ltr]">
-              <div className="flex items-center gap-2">
-                <p className="text-xs font-bold tracking-[0.15em] text-accent">{a.en.toUpperCase()}</p>
-                {a.tag && (
-                  <span className="rounded-full bg-shell px-2 py-0.5 text-[0.625rem] font-bold text-accent">{a.tag}</span>
-                )}
-              </div>
-              <h2 className="mt-1.5 text-xl font-black text-ink sm:text-2xl">{a.title}</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-2">{a.desc}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {a.items.map((it) => (
-                  <span key={it} className="rounded-full border border-line bg-canvas px-3 py-1 text-xs font-medium text-ink-2">
-                    {it}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-          </Reveal>
-        ))}
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
-        <div className="flex flex-col items-start justify-between gap-4 rounded-2xl bg-shell p-8 sm:flex-row sm:items-center">
+      <Section tone="surface" size="sm">
+        <div className="flex flex-col items-start justify-between gap-5 rounded-2xl bg-shell p-8 sm:flex-row sm:items-center">
           <div>
-            <h2 className="text-xl font-bold text-white">어떤 분야든, 시작은 현장의 조건 정리입니다</h2>
-            <p className="mt-1 text-sm text-nav-inactive">프로젝트 유형을 선택해 문의를 남겨 주세요.</p>
+            <h2 className="t-h3 text-white">어떤 분야든, 시작은 현장의 조건 정리입니다</h2>
+            <p className="mt-1.5 t-meta text-nav-inactive">프로젝트 유형을 선택해 문의를 남겨 주세요.</p>
           </div>
-          <Link href="/inquiry" className="tap hover-lift shrink-0 rounded-lg bg-accent px-6 py-3 text-sm font-bold text-shell hover:brightness-110">
+          <Link href="/inquiry" className="tap hover-lift btn btn-accent shrink-0">
             프로젝트 문의 →
           </Link>
         </div>
-      </section>
+      </Section>
     </>
   );
 }

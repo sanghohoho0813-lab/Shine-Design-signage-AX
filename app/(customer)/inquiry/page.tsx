@@ -58,50 +58,69 @@ export default function InquiryPage() {
 
   if (done) {
     return (
-      <section className="relative isolate min-h-[70vh] overflow-hidden">
+      <section className="relative isolate flex min-h-[70vh] items-center overflow-hidden bg-shell">
         <img src={IMG.bookingScene} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-shell/85" />
-        <div className="relative mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl" aria-hidden>
-            ✓
-          </span>
-          <h1 className="mt-6 text-2xl font-black text-white sm:text-3xl">문의가 접수되었습니다</h1>
-          <p className="mt-3 text-sm leading-relaxed text-nav-inactive">
-            접수번호 <b className="text-accent">{done.id.toUpperCase()}</b>
-            <br />
-            영업일 기준 1일 이내에 담당자가 연락드립니다.
-            <br />
-            현장조사가 필요한 경우 일정을 함께 조율합니다.
-          </p>
-          <div className="mt-8 w-full rounded-xl bg-white/10 p-4 text-left text-sm text-nav-primary backdrop-blur">
-            <p><span className="text-nav-muted">기관 유형</span> · {done.clientType}</p>
-            <p className="mt-1"><span className="text-nav-muted">프로젝트</span> · {done.projectType}</p>
-            <p className="mt-1"><span className="text-nav-muted">진행 단계</span> · {done.status}</p>
+        <div className="scrim-hero" aria-hidden />
+        <div className="container-page relative py-20">
+          <div className="mx-auto max-w-xl text-center">
+            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-shell" aria-hidden>
+              ✓
+            </span>
+            <h1 className="t-h1 mt-6 text-white">문의가 접수되었습니다</h1>
+            <p className="mt-4 t-body text-nav-inactive">
+              영업일 기준 1일 이내에 담당자가 연락드립니다. 현장조사가 필요한 경우 일정을 함께
+              조율합니다.
+            </p>
+            <p className="mt-4 inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm text-nav-primary">
+              접수번호 <b className="text-accent">{done.id.toUpperCase()}</b>
+            </p>
+            <dl className="mt-8 space-y-2 rounded-xl bg-white/10 p-5 text-left text-sm text-nav-primary backdrop-blur">
+              {[
+                ["기관 유형", done.clientType],
+                ["프로젝트", done.projectType],
+                ["진행 단계", done.status],
+              ].map(([k, v]) => (
+                <div key={k} className="flex justify-between gap-4">
+                  <dt className="text-nav-muted">{k}</dt>
+                  <dd className="font-semibold text-white">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link href="/portfolio" className="tap hover-lift btn btn-on-dark">
+                포트폴리오 더 보기
+              </Link>
+              <Link href="/" className="tap hover-lift btn btn-accent">
+                홈으로 돌아가기
+              </Link>
+            </div>
           </div>
-          <Link href="/" className="tap hover-lift mt-8 rounded-lg bg-accent px-6 py-3 text-sm font-bold text-shell hover:brightness-110">
-            홈으로 돌아가기
-          </Link>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
-      <p className="text-xs font-bold tracking-[0.18em] text-accent">PROJECT INQUIRY</p>
-      <h1 className="mt-2 text-3xl font-black text-ink">프로젝트 문의</h1>
-      <p className="mt-2 text-sm text-ink-2">5단계로 프로젝트 조건을 알려주시면, 조건에 맞는 진행 방식을 제안드립니다.</p>
+    <section className="section-sm bg-canvas">
+      <div className="mx-auto max-w-3xl px-5 sm:px-6">
+      <p className="t-eyebrow">Project Inquiry</p>
+      <h1 className="t-h1 mt-3 text-ink">프로젝트 문의</h1>
+      <p className="measure-wide mt-3 t-lead">
+        5단계로 프로젝트 조건을 알려주시면, 조건에 맞는 진행 방식을 제안드립니다. 3분이면 충분합니다.
+      </p>
 
       {/* Progress */}
-      <div className="mt-8 flex items-center gap-1.5" aria-label={`5단계 중 ${step + 1}단계`}>
+      <div className="mt-8 flex items-start gap-1.5" aria-label={`5단계 중 ${step + 1}단계`}>
         {STEP_TITLES.map((t, i) => (
           <div key={t} className="flex-1">
             <div className={`h-1.5 rounded-full ${i <= step ? "bg-accent" : "bg-line"}`} />
-            <p className={`mt-1.5 hidden text-[0.6875rem] sm:block ${i === step ? "font-bold text-ink" : "text-muted"}`}>{t}</p>
+            <p className={`mt-2 hidden text-[0.6875rem] leading-tight sm:block ${i === step ? "font-bold text-ink" : "text-muted"}`}>
+              {t}
+            </p>
           </div>
         ))}
       </div>
-      <p className="mt-2 text-xs font-semibold text-muted sm:hidden">
+      <p className="mt-2.5 text-xs font-semibold text-muted sm:hidden">
         STEP {step + 1}/5 · {STEP_TITLES[step]}
       </p>
 
@@ -217,6 +236,7 @@ export default function InquiryPage() {
           box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
         }
       `}</style>
+      </div>
     </section>
   );
 }

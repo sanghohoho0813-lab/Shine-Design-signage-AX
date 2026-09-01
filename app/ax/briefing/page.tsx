@@ -85,11 +85,12 @@ export default function BriefingPage() {
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
-      <div className="flex items-start justify-between gap-3 rounded-2xl bg-shell p-5">
-        <div>
-          <h2 className="font-black text-nav-active">AI Project Briefing</h2>
-          <p className="mt-1 text-xs leading-relaxed text-nav-inactive">
-            4개의 핵심 엔진이 What → Why → Action 구조로 판단을 돕습니다.
+      <div className="flex flex-wrap items-start justify-between gap-3 rounded-2xl bg-shell p-5">
+        <div className="min-w-0">
+          <h2 className="font-black text-nav-active">AI 브리핑 — 오늘의 판단</h2>
+          <p className="mt-1 max-w-xl text-xs leading-relaxed text-nav-inactive">
+            4개의 핵심 엔진(Project Risk · Margin Guard · Bid Readiness · Next Action)이 무엇을(What) →
+            왜(Why) → 무엇을 할지(Action) 순서로 알려줍니다.
           </p>
         </div>
         <span className="shrink-0 rounded-lg bg-white/10 px-3 py-2 text-right text-[0.625rem] leading-tight text-nav-label">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useApp } from "@/lib/store";
 import { costTotal, marginOf, Project } from "@/lib/data";
+import { PageHeader } from "@/components/ax/PageHeader";
 
 /* 원가 카테고리 팔레트 — dataviz 검증 통과(고정 순서, 순환 금지) */
 const COST_ITEMS: { key: keyof NonNullable<Project["costs"]>; label: string; color: string }[] = [
@@ -58,6 +59,11 @@ export default function QuotesPage() {
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="견적·원가 관리"
+        purpose="프로젝트별 원가 구성과 예상 Margin을 봅니다. 카드를 클릭하면 항목별 금액과 견적 인사이트가 열립니다."
+        stat={`목표 Margin 30%`}
+      />
       {/* Summary — 컬러 스탯 타일 */}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Stat label="견적 합계" value={totalQuote.toLocaleString() + "원"} bar="var(--ic-overview)" sub={`${quoted.length}개 프로젝트`} />

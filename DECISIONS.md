@@ -1,4 +1,16 @@
+
 # DECISIONS
+
+0-n. **디자인 시스템 정립(v6)** — 페이지마다 제각각이던 타이포·간격·사진 처리를 하나의 규칙으로 통합.
+  - Type ramp: `.t-display/.t-h1/.t-h2/.t-h3/.t-lead/.t-body/.t-meta/.t-eyebrow` + `.measure`(가독 폭)
+  - Layout: `.container-page` / `.section` / `.section-sm` 로 섹션 리듬 고정
+  - Photo: `.scrim-hero/.scrim-band/.scrim-card` — 사진 위 텍스트는 반드시 정의된 스크림 위에만
+  - Button: `.btn` + primary/accent/ghost/on-dark 4역할만 사용
+  - 프리미티브 컴포넌트 `Section` / `SectionHeader` / `PhotoBand` (components/ui.tsx)
+0-o. **한국어 조판(v6)** — `word-break: keep-all`로 어절 중간 줄바꿈 제거("완성합니/다" 같은 깨짐), 제목 `text-wrap: balance`, 본문 `text-wrap: pretty`. 고객 화면이 "불규칙하다"는 인상의 주원인이었다.
+0-p. **cascade layer 이슈(v6)** — Tailwind v4에서 레이어 밖 CSS는 유틸리티보다 항상 우선하므로, 디자인 시스템 클래스를 `@layer components`에 넣어 `text-*` 등 유틸리티로 덮어쓸 수 있게 했다. (어두운 배경에서 본문이 어두운 색으로 고정되던 버그의 원인)
+0-q. **홈 재구성(v6)** — 신뢰 카드가 사진 위 제목 + 사진 밖 설명으로 이중 표기되어 어수선했던 것을 3×2 그리드 + 하단 스크림 단일 제목 구조로 정리. Hero는 밝은 그라디언트 대신 다크 스크림으로 통일해 사진과 텍스트가 한 덩어리로 읽히게 했다. 이모지 아이콘은 선 아이콘으로 교체.
+0-r. **AX 직관성(v6)** — 모듈마다 `PageHeader`(제목 + 이 화면의 목적 한 줄 + 현황 배지)를 두어 처음 들어온 사람도 무엇을 하는 화면인지 즉시 알 수 있게 했다.
 
 0-k. **텍스트 크기 전면 rem화(v5)** — 사이드바 메뉴 등 133곳이 `text-[Npx]` 고정값이라 Font Scale에 반응하지 않던 문제를 rem 기반으로 일괄 전환. 이제 모든 텍스트가 설정에 따라 함께 확대된다.
 0-l. **스케일 재조정(v5)** — 기본 1.22 / 크게 1.45 / 매우 크게 1.70 (종전 1.1/1.22/1.35). 기본을 다시 1.1배 올리고 단계 간 차이를 뚜렷하게 했다. 설정 화면에 실시간 미리보기 추가.

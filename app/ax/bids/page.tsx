@@ -3,16 +3,18 @@
 import { useState } from "react";
 import { seedBids, Bid } from "@/lib/data";
 import { Overlay } from "@/components/Overlay";
+import { PageHeader } from "@/components/ax/PageHeader";
 
 export default function BidsPage() {
   const [sel, setSel] = useState<Bid | null>(null);
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
-      <div>
-        <h2 className="text-lg font-black text-ink">공공입찰 준비도</h2>
-        <p className="mt-0.5 text-xs text-muted">발굴 → 검토 → 준비 → 제출 → 결과 · 완료 프로젝트가 다음 입찰의 증빙이 됩니다.</p>
-      </div>
+      <PageHeader
+        title="입찰·제안 관리"
+        purpose="발굴 → 검토 → 준비 → 제출 → 결과. 보유 자격과 유사실적을 준비도 점수로 관리하며, 완료 프로젝트가 다음 입찰의 증빙이 됩니다."
+        stat={`${seedBids.length}건 추적 중`}
+      />
 
       <div data-tutorial="bid-list" className="grid gap-4 lg:grid-cols-2">
         {seedBids.map((b) => (

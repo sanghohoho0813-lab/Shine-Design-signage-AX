@@ -5,6 +5,7 @@ import { useApp, Inquiry } from "@/lib/store";
 import { STAGES, Stage, Project, fmtKRWshort, costTotal, marginOf } from "@/lib/data";
 import { Overlay } from "@/components/Overlay";
 import { toast } from "@/components/Toast";
+import { PageHeader } from "@/components/ax/PageHeader";
 
 const STAGE_COLORS: Record<Stage, string> = {
   문의: "var(--ic-overview)",
@@ -50,15 +51,12 @@ export default function PipelinePage() {
 
   return (
     <div className="space-y-4 p-4 sm:p-6" data-tutorial="pipeline-board">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-black text-ink">프로젝트 Pipeline</h2>
-          <p className="text-xs text-muted">문의 → 현장·요구사항 → 디자인 → 견적 → 승인 → 제작 → 설치 → 완료</p>
-        </div>
+      <PageHeader
+        title="프로젝트 관리"
+        purpose="문의부터 완료까지 8단계로 모든 프로젝트를 추적합니다. 행을 클릭하면 상세와 다음 단계 이동이 열립니다."
+        stat={`진행 ${projects.filter((p) => p.stage !== "완료").length}건 / 총 ${projects.length}건`}
+      >
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-soft px-3 py-1 text-xs font-semibold text-ink-2">
-            진행 {projects.filter((p) => p.stage !== "완료").length}건 / 총 {projects.length}건
-          </span>
           <div className="flex rounded-lg border border-line p-0.5" role="tablist" aria-label="보기 방식">
             {(["list", "board"] as const).map((v) => (
               <button
@@ -75,7 +73,7 @@ export default function PipelinePage() {
             ))}
           </div>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Stage strip — 클릭하면 해당 단계만 필터 */}
       <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="단계 필터">
