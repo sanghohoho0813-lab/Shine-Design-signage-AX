@@ -8,12 +8,26 @@ export function generateStaticParams() {
   return portfolio.map((p) => ({ id: p.id }));
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const p = portfolio.find((x) => x.id === id);
+  if (!p) return { title: "프로젝트를 찾을 수 없습니다" };
+  return {
+    title: p.title,
+    description: `${p.client} · ${p.year} — ${p.summary}`,
+    openGraph: { title: `${p.title} | 샤인디자인`, description: p.summary, images: [p.image] },
+  };
+}
+
 export default async function PortfolioDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const p = portfolio.find((x) => x.id === id);
   if (!p) notFound();
 
   const others = portfolio.filter((x) => x.id !== p.id && x.category === p.category).slice(0, 3);
+  const idx = portfolio.findIndex((x) => x.id === p.id);
+  const prev = idx > 0 ? portfolio[idx - 1] : portfolio[portfolio.length - 1];
+  const next = idx < portfolio.length - 1 ? portfolio[idx + 1] : portfolio[0];
 
   return (
     <>
@@ -83,8 +97,32 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
         </div>
       </Section>
 
+      {/* 이전 / 다음 프로젝트 */}
+      <Section tone="surface" size="sm">
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[
+            { item: prev, dir: "이전 프로젝트", arrow: "←", align: "" },
+            { item: next, dir: "다음 프로젝트", arrow: "→", align: "sm:text-right sm:flex-row-reverse" },
+          ].map(({ item, dir, arrow, align }) => (
+            <Link
+              key={dir}
+              href={`/portfolio/${item.id}`}
+              className={`tap hover-lift flex items-center gap-4 rounded-xl border border-line bg-canvas p-4 ${align}`}
+            >
+              <img src={item.image} alt="" aria-hidden className="h-14 w-20 shrink-0 rounded-lg object-cover" loading="lazy" />
+              <span className="min-w-0">
+                <span className="block t-meta">
+                  {arrow} {dir}
+                </span>
+                <span className="mt-0.5 block truncate text-sm font-bold text-ink">{item.title}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      </Section>
+
       {others.length > 0 && (
-        <Section tone="surface" size="sm">
+        <Section tone="canvas" size="sm">
           <h2 className="t-h3 mb-4 text-ink">같은 분야의 다른 프로젝트</h2>
           <div className="grid gap-5 sm:grid-cols-3">
             {others.map((o) => (

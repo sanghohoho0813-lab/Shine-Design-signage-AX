@@ -438,6 +438,54 @@ a {
   color: #fff;
 }
 
+/* ---------------------------------------------------------------------------
+   PRINT — 증빙 리포트를 그대로 인쇄/PDF 저장할 수 있게
+--------------------------------------------------------------------------- */
+@media print {
+  .no-print,
+  header,
+  nav,
+  aside,
+  footer {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .print-area {
+    display: block !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  .print-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  a[href]:after {
+    content: "";
+  }
+}
+
+/* 키보드 사용자를 위한 본문 바로가기 */
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 200;
+  transform: translateY(-160%);
+  border-radius: 0.5rem;
+  background: var(--shell);
+  color: #fff;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: transform 160ms ease-out;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 /* Keyboard focus — visible, theme-aware */
 :focus-visible {
   outline: 2px solid var(--accent);

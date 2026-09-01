@@ -38,7 +38,7 @@ export function DevicePreviewButton({ dark = false }: { dark?: boolean }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className={`tap rounded-lg px-2.5 py-1.5 text-xs font-medium ${
+        className={`tap whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium ${
           dark
             ? "text-nav-inactive hover:bg-white/10 hover:text-nav-active"
             : "text-muted hover:bg-soft hover:text-ink"

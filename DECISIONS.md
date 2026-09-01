@@ -1,6 +1,11 @@
 
 # DECISIONS
 
+0-s. **⌘K 전역 검색(v7)** — 21건 포트폴리오·9개 AX 모듈을 클릭으로 찾아다니던 문제. 어디서든 Cmd/Ctrl+K로 메뉴·프로젝트·포트폴리오·실행(시연/테마)을 검색해 이동한다. 역할(role)에 따라 AX 항목은 숨긴다.
+0-t. **문의 초안 자동저장(v7)** — 5단계 위저드에서 새로고침 시 입력이 전부 사라지던 문제. localStorage 초안 저장 + "이어서 작성" 배너 + 단계 칩 클릭으로 되돌아가 수정. 단계 이동 시 폼 상단으로 스크롤.
+0-u. **사이트 기본기(v7)** — metadataBase/OG 이미지(동적 생성)/페이지별 메타·sitemap.xml·robots.txt(AX 색인 제외)·favicon·error.tsx·loading 스켈레톤·본문 바로가기 링크. 링크 공유 시 빈 카드로 보이던 문제 해결.
+0-v. **증빙 인쇄 리포트(v7)** — 완료 실적 + 포트폴리오를 표로 묶은 인쇄 전용 영역(`@media print`)을 두어 브라우저 인쇄/PDF 저장으로 제출자료를 만들 수 있게 했다.
+
 0-n. **디자인 시스템 정립(v6)** — 페이지마다 제각각이던 타이포·간격·사진 처리를 하나의 규칙으로 통합.
   - Type ramp: `.t-display/.t-h1/.t-h2/.t-h3/.t-lead/.t-body/.t-meta/.t-eyebrow` + `.measure`(가독 폭)
   - Layout: `.container-page` / `.section` / `.section-sm` 로 섹션 리듬 고정

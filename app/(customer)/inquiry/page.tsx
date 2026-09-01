@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useApp, Inquiry } from "@/lib/store";
 import { IMG } from "@/lib/data";
@@ -13,22 +13,71 @@ const BUDGETS = ["1천만원 미만", "1천~3천만원", "3천~5천만원", "5�
 
 const STEP_TITLES = ["의뢰 기관 유형", "프로젝트 유형", "진행 단계", "프로젝트 개요", "연락처"];
 
+const EMPTY = {
+  clientType: "",
+  projectType: "",
+  status: "",
+  location: "",
+  schedule: "",
+  budget: "",
+  sites: "1",
+  name: "",
+  org: "",
+  phone: "",
+};
+const DRAFT_KEY = "shine-inquiry-draft";
+
 export default function InquiryPage() {
   const { submitInquiry } = useApp();
   const [step, setStep] = useState(0);
   const [done, setDone] = useState<Inquiry | null>(null);
-  const [form, setForm] = useState({
-    clientType: "",
-    projectType: "",
-    status: "",
-    location: "",
-    schedule: "",
-    budget: "",
-    sites: "1",
-    name: "",
-    org: "",
-    phone: "",
-  });
+  const [form, setForm] = useState(EMPTY);
+  const [restored, setRestored] = useState(false);
+  const loaded = useRef(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const firstStep = useRef(true);
+
+  /* 단계를 옮기면 폼 상단이 보이도록 — 아래쪽에 머무르지 않게 */
+  useEffect(() => {
+    if (firstStep.current) {
+      firstStep.current = false;
+      return;
+    }
+    const el = cardRef.current;
+    if (!el) return;
+    const y = el.getBoundingClientRect().top + window.scrollY - 96;
+    const reduced = document.documentElement.dataset.motion === "reduced";
+    window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+  }, [step]);
+
+  /* 작성 중이던 내용 복원 — 새로고침해도 잃지 않는다 */
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d.form && Object.values(d.form).some((v) => v && v !== "1")) {
+          setForm({ ...EMPTY, ...d.form });
+          setStep(Math.min(d.step ?? 0, 4));
+          setRestored(true);
+        }
+      }
+    } catch {}
+    loaded.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!loaded.current || done) return;
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ form, step }));
+    } catch {}
+  }, [form, step, done]);
+
+  const clearDraft = () => {
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {}
+  };
 
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -53,6 +102,7 @@ export default function InquiryPage() {
       phone: form.phone,
     });
     setDone(q);
+    clearDraft();
     toast("문의가 접수되어 Business AX 파이프라인에 등록되었습니다");
   };
 
@@ -109,22 +159,54 @@ export default function InquiryPage() {
         5단계로 프로젝트 조건을 알려주시면, 조건에 맞는 진행 방식을 제안드립니다. 3분이면 충분합니다.
       </p>
 
-      {/* Progress */}
+      {restored && (
+        <div className="anim-fade mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent/35 bg-accent/8 px-4 py-3">
+          <p className="text-sm font-medium text-ink-2">
+            작성하던 내용을 불러왔습니다. 이어서 작성하시겠어요?
+          </p>
+          <button
+            onClick={() => {
+              setForm(EMPTY);
+              setStep(0);
+              setRestored(false);
+              clearDraft();
+            }}
+            className="tap btn btn-ghost btn-sm"
+          >
+            새로 작성
+          </button>
+        </div>
+      )}
+
+      {/* Progress — 지나온 단계는 눌러서 바로 수정 */}
       <div className="mt-8 flex items-start gap-1.5" aria-label={`5단계 중 ${step + 1}단계`}>
-        {STEP_TITLES.map((t, i) => (
-          <div key={t} className="flex-1">
-            <div className={`h-1.5 rounded-full ${i <= step ? "bg-accent" : "bg-line"}`} />
-            <p className={`mt-2 hidden text-[0.6875rem] leading-tight sm:block ${i === step ? "font-bold text-ink" : "text-muted"}`}>
-              {t}
-            </p>
-          </div>
-        ))}
+        {STEP_TITLES.map((t, i) => {
+          const reachable = i <= step;
+          return (
+            <button
+              key={t}
+              onClick={() => reachable && setStep(i)}
+              disabled={!reachable}
+              aria-current={i === step ? "step" : undefined}
+              className={`flex-1 text-left ${reachable ? "tap cursor-pointer" : "cursor-default"}`}
+            >
+              <span className={`block h-1.5 rounded-full ${i <= step ? "bg-accent" : "bg-line"}`} />
+              <span
+                className={`mt-2 hidden text-[0.6875rem] leading-tight sm:block ${
+                  i === step ? "font-bold text-ink" : reachable ? "text-ink-2" : "text-muted"
+                }`}
+              >
+                {t}
+              </span>
+            </button>
+          );
+        })}
       </div>
       <p className="mt-2.5 text-xs font-semibold text-muted sm:hidden">
         STEP {step + 1}/5 · {STEP_TITLES[step]}
       </p>
 
-      <div className="anim-reveal mt-6 rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8" key={step}>
+      <div ref={cardRef} className="anim-reveal mt-6 rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8" key={step}>
         {step === 0 && <ChipGrid options={CLIENT_TYPES} value={form.clientType} onChange={(v) => set("clientType", v)} label="어떤 기관·회사의 프로젝트인가요?" />}
         {step === 1 && <ChipGrid options={PROJECT_TYPES} value={form.projectType} onChange={(v) => set("projectType", v)} label="어떤 유형의 프로젝트인가요?" />}
         {step === 2 && <ChipGrid options={STATUSES} value={form.status} onChange={(v) => set("status", v)} label="프로젝트는 어느 단계에 있나요?" />}
@@ -162,14 +244,33 @@ export default function InquiryPage() {
           <div className="space-y-4">
             {/* 입력 요약 확인 */}
             <div className="rounded-xl bg-canvas p-4">
-              <p className="text-xs font-bold tracking-wide text-muted">문의 내용 확인</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {[form.clientType, form.projectType, form.status, form.location, form.schedule, form.budget, form.sites && `현장 ${form.sites}곳`]
-                  .filter(Boolean)
-                  .map((v) => (
-                    <span key={v as string} className="rounded-full border border-line bg-surface px-2.5 py-1 text-xs font-medium text-ink-2">
+              <p className="text-xs font-bold tracking-wide text-muted">
+                문의 내용 확인 <span className="font-normal">— 항목을 누르면 해당 단계로 돌아갑니다</span>
+              </p>
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {(
+                  [
+                    [form.clientType, 0],
+                    [form.projectType, 1],
+                    [form.status, 2],
+                    [form.location, 3],
+                    [form.schedule, 3],
+                    [form.budget, 3],
+                    [form.sites && form.sites !== "1" ? `현장 ${form.sites}곳` : "", 3],
+                  ] as [string, number][]
+                )
+                  .filter(([v]) => Boolean(v))
+                  .map(([v, s]) => (
+                    <button
+                      key={v}
+                      onClick={() => setStep(s)}
+                      className="tap rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink-2 hover:border-accent hover:text-ink"
+                    >
                       {v}
-                    </span>
+                      <span className="ml-1.5 text-muted" aria-hidden>
+                        ✎
+                      </span>
+                    </button>
                   ))}
               </div>
             </div>

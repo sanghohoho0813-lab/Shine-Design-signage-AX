@@ -30,15 +30,22 @@ export default function PipelinePage() {
   const [sel, setSel] = useState<Project | null>(null);
   const [view, setView] = useState<"list" | "board">("list");
   const [stageFilter, setStageFilter] = useState<Stage | "전체">("전체");
+  const [sort, setSort] = useState<"deadline" | "budget" | "risk">("deadline");
 
+  const RISK_ORDER = { 높음: 0, 보통: 1, 낮음: 2 } as const;
   const sorted = useMemo(
     () =>
       [...projects].sort((a, b) => {
         if (a.stage === "완료" && b.stage !== "완료") return 1;
         if (b.stage === "완료" && a.stage !== "완료") return -1;
+        if (sort === "budget") return b.budget - a.budget;
+        if (sort === "risk") {
+          const d = RISK_ORDER[a.risk] - RISK_ORDER[b.risk];
+          if (d !== 0) return d;
+        }
         return a.deadline.localeCompare(b.deadline);
       }),
-    [projects],
+    [projects, sort],
   );
 
   if (!hydrated) return <div className="p-6 text-sm text-muted">불러오는 중…</div>;
@@ -56,7 +63,20 @@ export default function PipelinePage() {
         purpose="문의부터 완료까지 8단계로 모든 프로젝트를 추적합니다. 행을 클릭하면 상세와 다음 단계 이동이 열립니다."
         stat={`진행 ${projects.filter((p) => p.stage !== "완료").length}건 / 총 ${projects.length}건`}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-1.5 text-xs text-muted">
+            정렬
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as typeof sort)}
+              className="rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs font-semibold text-ink-2 outline-none focus-visible:border-accent"
+              aria-label="정렬 기준"
+            >
+              <option value="deadline">납기 임박순</option>
+              <option value="budget">금액 높은순</option>
+              <option value="risk">리스크 높은순</option>
+            </select>
+          </label>
           <div className="flex rounded-lg border border-line p-0.5" role="tablist" aria-label="보기 방식">
             {(["list", "board"] as const).map((v) => (
               <button
@@ -168,7 +188,17 @@ export default function PipelinePage() {
               })}
             </tbody>
           </table>
-          {filtered.length === 0 && <p className="px-4 py-10 text-center text-sm text-muted">해당 단계의 프로젝트가 없습니다.</p>}
+          {filtered.length === 0 && (
+            <div className="px-4 py-14 text-center">
+              <p className="t-h3 text-ink">
+                &lsquo;{stageFilter}&rsquo; 단계에 프로젝트가 없습니다
+              </p>
+              <p className="mt-2 t-body">다른 단계를 선택하거나 전체 목록에서 확인하세요.</p>
+              <button onClick={() => setStageFilter("전체")} className="tap btn btn-ghost btn-sm mt-5">
+                전체 보기
+              </button>
+            </div>
+          )}
         </div>
       )}
 

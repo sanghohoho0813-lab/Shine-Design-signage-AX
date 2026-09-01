@@ -8,7 +8,13 @@ import { PhotoBand } from "@/components/ui";
 
 export default function PortfolioPage() {
   const [cat, setCat] = useState<string>("전체");
-  const items = portfolio.filter((p) => cat === "전체" || p.category === cat);
+  const [q, setQ] = useState("");
+  const norm = (s: string) => s.toLowerCase().replace(/\s/g, "");
+  const items = portfolio.filter(
+    (p) =>
+      (cat === "전체" || p.category === cat) &&
+      (!q || norm(p.title + p.client + p.summary + p.scope.join("")).includes(norm(q))),
+  );
   const countOf = (c: string) => (c === "전체" ? portfolio.length : portfolio.filter((p) => p.category === c).length);
 
   return (
@@ -26,6 +32,26 @@ export default function PortfolioPage() {
 
       <section className="section-sm bg-canvas">
         <div className="container-page">
+          {/* 검색 */}
+          <div className="mb-4 flex items-center gap-2 rounded-xl border border-line bg-surface px-4 shadow-sm focus-within:border-accent">
+            <svg viewBox="0 0 24 24" className="h-[1.05rem] w-[1.05rem] shrink-0 text-muted" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+            </svg>
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="기관명·프로젝트명으로 검색 (예: 도로교통공단, 병원, 보령)"
+              aria-label="포트폴리오 검색"
+              className="w-full bg-transparent py-3 text-sm text-ink outline-none placeholder:text-muted"
+            />
+            {q && (
+              <button onClick={() => setQ("")} className="tap shrink-0 rounded-full p-1 text-muted hover:bg-soft hover:text-ink" aria-label="검색어 지우기">
+                ✕
+              </button>
+            )}
+          </div>
+
           {/* 분야 필터 */}
           <div className="flex flex-wrap gap-2" role="tablist" aria-label="포트폴리오 분야 필터">
             {CATEGORIES.map((c) => (
@@ -45,7 +71,7 @@ export default function PortfolioPage() {
           </div>
 
           <p className="mt-4 t-meta">
-            {cat === "전체" ? "전체" : cat} <b className="text-ink-2">{items.length}건</b>
+            {q ? `'${q}' 검색 결과` : cat === "전체" ? "전체" : cat} <b className="text-ink-2">{items.length}건</b>
           </p>
 
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -85,7 +111,27 @@ export default function PortfolioPage() {
             ))}
           </div>
           {items.length === 0 && (
-            <p className="py-16 text-center t-body">해당 분야의 공개 가능한 프로젝트를 준비 중입니다.</p>
+            <div className="rounded-2xl border border-dashed border-line bg-surface py-16 text-center">
+              <p className="t-h3 text-ink">검색 결과가 없습니다</p>
+              <p className="mx-auto mt-2 max-w-sm t-body">
+                {q && (
+                  <>
+                    &lsquo;{q}&rsquo;와 일치하는 프로젝트를 찾지 못했습니다.
+                    <br />
+                  </>
+                )}
+                다른 검색어를 입력하시거나 분야를 &lsquo;전체&rsquo;로 바꿔보세요.
+              </p>
+              <button
+                onClick={() => {
+                  setQ("");
+                  setCat("전체");
+                }}
+                className="tap btn btn-ghost btn-sm mt-5"
+              >
+                필터 초기화
+              </button>
+            </div>
           )}
         </div>
       </section>

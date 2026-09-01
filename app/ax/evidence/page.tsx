@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useApp } from "@/lib/store";
 import { IMG, portfolio } from "@/lib/data";
+import { PageHeader } from "@/components/ax/PageHeader";
 
 export default function EvidencePage() {
   const { projects, hydrated } = useApp();
@@ -10,9 +11,65 @@ export default function EvidencePage() {
 
   const completed = projects.filter((p) => p.stage === "완료");
 
+  const today = new Date().toLocaleDateString("ko-KR");
+
   return (
     <div className="space-y-5 p-4 sm:p-6">
-      <div className="relative overflow-hidden rounded-2xl">
+      <PageHeader
+        title="증빙 · 리포트"
+        purpose="완료된 프로젝트의 증빙을 모아 봅니다. 실적 요약은 그대로 인쇄하거나 PDF로 저장해 제출자료로 쓸 수 있습니다."
+        stat={`완료 ${completed.length}건`}
+      >
+        <button onClick={() => window.print()} className="tap hover-lift btn btn-primary btn-sm no-print">
+          🖨 실적 요약 인쇄 / PDF
+        </button>
+      </PageHeader>
+
+      {/* 인쇄 전용 실적 요약 — 화면에서는 숨김 */}
+      <div className="hidden print-area">
+        <div className="print-block mb-6 border-b-2 border-black pb-4">
+          <p className="text-sm">㈜샤인디자인 · 대표이사 권유진 · 사업자등록번호 519-87-03609</p>
+          <h1 className="mt-2 text-2xl font-black">수행 실적 요약</h1>
+          <p className="mt-1 text-sm">발행일 {today} · 본 자료는 내부 관리 시스템에서 생성되었습니다.</p>
+        </div>
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-b-2 border-black text-left">
+              <th className="py-2 pr-3">발주처</th>
+              <th className="py-2 pr-3">프로젝트</th>
+              <th className="py-2 pr-3">분야</th>
+              <th className="py-2 pr-3">완료(예정)일</th>
+              <th className="py-2">수행 범위</th>
+            </tr>
+          </thead>
+          <tbody>
+            {completed.map((p) => (
+              <tr key={p.id} className="print-block border-b border-gray-400">
+                <td className="py-2 pr-3 font-bold">{p.client}</td>
+                <td className="py-2 pr-3">{p.name}</td>
+                <td className="py-2 pr-3">{p.category}</td>
+                <td className="py-2 pr-3">{p.deadline}</td>
+                <td className="py-2">디자인 · 제작 · 시공</td>
+              </tr>
+            ))}
+            {portfolio.map((w) => (
+              <tr key={w.id} className="print-block border-b border-gray-400">
+                <td className="py-2 pr-3 font-bold">{w.client}</td>
+                <td className="py-2 pr-3">{w.title}</td>
+                <td className="py-2 pr-3">{w.category}</td>
+                <td className="py-2 pr-3">{w.year}</td>
+                <td className="py-2">{w.scope.join(" · ")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="print-block mt-5 text-xs">
+          총 {completed.length + portfolio.length}건 · 보유 자격: 산업디자인전문회사 · 여성기업 ·
+          옥외광고사업 등록 · 공장등록 · 창업기업
+        </p>
+      </div>
+
+      <div className="no-print relative overflow-hidden rounded-2xl">
         <img src={IMG.axEvidence} alt="프로젝트 증빙 리포트" className="h-36 w-full object-cover sm:h-44" style={{ objectPosition: "50% 40%" }} />
         <div className="absolute inset-0 bg-gradient-to-r from-shell/90 to-shell/40" />
         <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-7">

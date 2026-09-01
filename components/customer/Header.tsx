@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Overlay } from "../Overlay";
 import { FUTURE_MENUS, FuturePreviewSheet, FutureMenu } from "./FuturePreview";
 import { DevicePreviewButton } from "../DevicePreview";
+import { PaletteButton } from "../CommandPalette";
 import { useApp } from "@/lib/store";
 
 const NAV = [
@@ -24,7 +25,7 @@ export function Logo({ dark = false }: { dark?: boolean }) {
         S
       </span>
       <span className="leading-tight">
-        <span className={`block text-[0.9375rem] font-black tracking-wide ${dark ? "text-nav-active" : "text-ink"}`}>
+        <span className={`block whitespace-nowrap text-[0.9375rem] font-black tracking-wide ${dark ? "text-nav-active" : "text-ink"}`}>
           SHINE DESIGN
         </span>
         <span className={`block text-[0.625rem] font-medium tracking-[0.2em] ${dark ? "text-nav-muted" : "text-muted"}`}>
@@ -84,6 +85,7 @@ export default function CustomerHeader() {
         </nav>
 
         <div className="flex items-center gap-1.5">
+          <PaletteButton compact />
           <span className="nav-inline hidden md:block">
             <DevicePreviewButton />
           </span>
