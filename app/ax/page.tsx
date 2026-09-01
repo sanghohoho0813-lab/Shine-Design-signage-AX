@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useApp } from "@/lib/store";
 import { seedProduction, seedBids, partners, STAGES, fmtKRWshort, costTotal, IMG } from "@/lib/data";
+import { AxSkeleton } from "@/components/ax/Skeleton";
 
 export default function AxDashboard() {
-  const { projects, inquiries, role, hydrated } = useApp();
-  if (!hydrated) return <div className="p-6 text-sm text-muted">불러오는 중…</div>;
+  const { projects, inquiries, role, hydrated, doneActions, toggleAction } = useApp();
+  if (!hydrated) return <AxSkeleton variant="dashboard" />;
 
   const active = projects.filter((p) => p.stage !== "완료");
   const making = projects.filter((p) => p.stage === "제작");
@@ -34,6 +35,60 @@ export default function AxDashboard() {
     { label: "리스크 프로젝트", value: `${risky.length}건`, delta: risky.length ? "즉시 확인 필요" : "안정", href: "/ax/briefing", spark: [0, 1, 1, 0, 1, 2, 1, risky.length], warn: risky.length > 0 },
   ] as { label: string; value: string; delta: string; href: string; spark?: number[]; warn?: boolean }[];
 
+  /* 오늘 할 일 — 데이터에서 자동으로 뽑아낸 실행 목록 */
+  const todo: { id: string; label: string; why: string; href: string; tone: string }[] = [];
+  risky.forEach((p) =>
+    todo.push({
+      id: "risk-" + p.id,
+      label: `${p.client} 일정 확인`,
+      why: p.riskNote ?? "리스크 높음",
+      href: "/ax/pipeline",
+      tone: "var(--ic-risk)",
+    }),
+  );
+  seedProduction
+    .filter((m) => m.status === "검수대기")
+    .forEach((m) =>
+      todo.push({
+        id: "qc-" + m.id,
+        label: `${m.partner} 검수 처리`,
+        why: `${m.item} · 납기 ${m.due}`,
+        href: "/ax/production",
+        tone: "var(--ic-sales)",
+      }),
+    );
+  inquiries
+    .filter((q) => q.axStatus === "접수")
+    .forEach((q) =>
+      todo.push({
+        id: "inq-" + q.id,
+        label: "신규 문의 응대",
+        why: `${q.clientType} · ${q.projectType} · ${q.name}`,
+        href: "/ax/pipeline",
+        tone: "var(--ic-overview)",
+      }),
+    );
+  projects
+    .filter((p) => p.costs && p.stage !== "완료" && (p.budget - costTotal(p.costs)) / p.budget < 0.25)
+    .forEach((p) =>
+      todo.push({
+        id: "mg-" + p.id,
+        label: `${p.client} 견적 재검토`,
+        why: `예상 Margin ${(((p.budget - costTotal(p.costs)) / p.budget) * 100).toFixed(1)}% — 목표 미달`,
+        href: "/ax/quotes",
+        tone: "var(--ic-sales)",
+      }),
+    );
+  const topBid = [...seedBids].sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
+  todo.push({
+    id: "bid-" + topBid.id,
+    label: `${topBid.institution} 입찰 서류 점검`,
+    why: `마감 ${topBid.deadline} · 준비도 ${topBid.readiness}%`,
+    href: "/ax/bids",
+    tone: "var(--ic-crm)",
+  });
+  const doneCount = todo.filter((t) => doneActions.includes(t.id)).length;
+
   return (
     <div className="space-y-5 p-4 sm:p-6">
       {role === "ceo" && (
@@ -57,6 +112,54 @@ export default function AxDashboard() {
             {k.spark && <Sparkline data={k.spark} warn={k.warn} />}
           </Link>
         ))}
+      </section>
+
+      {/* 오늘 할 일 */}
+      <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="font-bold text-ink">
+            오늘 할 일
+            <span className="ml-2 text-xs font-semibold text-muted">
+              {doneCount}/{todo.length} 완료
+            </span>
+          </h2>
+          <div className="h-1.5 w-32 overflow-hidden rounded-full bg-soft" aria-hidden>
+            <div
+              className="h-full rounded-full bg-accent transition-[width] duration-300"
+              style={{ width: `${todo.length ? (doneCount / todo.length) * 100 : 0}%` }}
+            />
+          </div>
+        </div>
+        <ul className="mt-3 divide-y divide-line">
+          {todo.map((t) => {
+            const done = doneActions.includes(t.id);
+            return (
+              <li key={t.id} className="flex items-center gap-3 py-2.5">
+                <button
+                  onClick={() => toggleAction(t.id)}
+                  role="checkbox"
+                  aria-checked={done}
+                  aria-label={`${t.label} 완료 표시`}
+                  className={`tap flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 text-[0.6875rem] font-black ${
+                    done ? "border-[var(--ic-evidence)] bg-[var(--ic-evidence)] text-white" : "border-line hover:border-secondary"
+                  }`}
+                >
+                  {done && "✓"}
+                </button>
+                <Link href={t.href} className="tap min-w-0 flex-1">
+                  <p className={`truncate text-sm font-semibold ${done ? "text-muted line-through" : "text-ink"}`}>{t.label}</p>
+                  <p className="truncate text-[0.6875rem] text-muted">{t.why}</p>
+                </Link>
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: done ? "var(--line)" : t.tone }} aria-hidden />
+              </li>
+            );
+          })}
+        </ul>
+        {doneCount === todo.length && todo.length > 0 && (
+          <p className="mt-3 rounded-lg bg-[var(--ic-evidence)]/10 py-2.5 text-center text-sm font-semibold text-[var(--ic-evidence)]">
+            ✓ 오늘 확인할 항목을 모두 처리했습니다
+          </p>
+        )}
       </section>
 
       <div className="grid gap-5 xl:grid-cols-3">

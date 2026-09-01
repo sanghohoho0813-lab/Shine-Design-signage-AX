@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useApp, Inquiry } from "@/lib/store";
 import { IMG } from "@/lib/data";
 import { toast } from "@/components/Toast";
+import Faq from "@/components/customer/Faq";
 
 const CLIENT_TYPES = ["공공기관", "공기업", "병원", "학교", "일반기업", "상업시설", "기타"];
 const PROJECT_TYPES = ["외부 간판", "실내사인", "안내·유도사인", "종합 사인시스템", "환경그래픽", "제작·시공", "디자인만", "기타"];
@@ -337,6 +338,16 @@ export default function InquiryPage() {
           box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
         }
       `}</style>
+      </div>
+
+      {/* 문의 전에 자주 묻는 질문 */}
+      <div className="mx-auto mt-14 max-w-3xl px-5 sm:px-6">
+        <p className="t-eyebrow">FAQ</p>
+        <h2 className="t-h2 mt-2 text-ink">문의 전에 자주 묻는 질문</h2>
+        <p className="mt-3 t-body">아래에서 답을 찾지 못하셨다면 위 양식으로 남겨 주세요.</p>
+        <div className="mt-6">
+          <Faq />
+        </div>
       </div>
     </section>
   );

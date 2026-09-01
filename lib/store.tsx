@@ -56,6 +56,8 @@ interface AppState {
   inquiries: Inquiry[];
   submitInquiry: (i: Omit<Inquiry, "id" | "createdAt" | "axStatus">) => Inquiry;
   markInquiry: (id: string, s: Inquiry["axStatus"]) => void;
+  doneActions: string[];
+  toggleAction: (id: string) => void;
   resetDemo: () => void;
   hydrated: boolean;
   isEmbedded: boolean; // rendered inside a device-preview iframe
@@ -74,6 +76,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [projects, setProjects] = useState<Project[]>(seedProjects);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [doneActions, setDoneActions] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [isEmbedded, setIsEmbedded] = useState(false);
 
@@ -88,6 +91,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (typeof s.reducedMotion === "boolean") setReducedMotion(s.reducedMotion);
         if (Array.isArray(s.projects)) setProjects(s.projects);
         if (Array.isArray(s.inquiries)) setInquiries(s.inquiries);
+        if (Array.isArray(s.doneActions)) setDoneActions(s.doneActions);
       }
     } catch {}
     try {
@@ -103,10 +107,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.setItem(
         LS_KEY,
-        JSON.stringify({ theme, fontScale, role, reducedMotion, projects, inquiries }),
+        JSON.stringify({ theme, fontScale, role, reducedMotion, projects, inquiries, doneActions }),
       );
     } catch {}
-  }, [theme, fontScale, role, reducedMotion, projects, inquiries, hydrated]);
+  }, [theme, fontScale, role, reducedMotion, projects, inquiries, doneActions, hydrated]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -161,9 +165,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return inquiry;
       },
       markInquiry: (id, s) => setInquiries((qs) => qs.map((q) => (q.id === id ? { ...q, axStatus: s } : q))),
+      doneActions,
+      toggleAction: (id) => setDoneActions((d) => (d.includes(id) ? d.filter((x) => x !== id) : [...d, id])),
       resetDemo: () => {
         setProjects(seedProjects);
         setInquiries([]);
+        setDoneActions([]);
         setTheme("shine");
         setFontScale("md");
         setRole("ceo");
@@ -175,7 +182,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       hydrated,
       isEmbedded,
     }),
-    [theme, fontScale, role, reducedMotion, projects, inquiries, hydrated, isEmbedded],
+    [theme, fontScale, role, reducedMotion, projects, inquiries, doneActions, hydrated, isEmbedded],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

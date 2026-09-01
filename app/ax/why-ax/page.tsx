@@ -1,7 +1,86 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { IMG } from "@/lib/data";
+
+const SECTIONS = [
+  ["01", "현재"],
+  ["02", "고객 여정"],
+  ["03", "업무 Flow"],
+  ["04", "BEFORE"],
+  ["05", "왜 지금"],
+  ["06", "Customer"],
+  ["07", "AFTER"],
+  ["08", "Data Bridge"],
+  ["09", "AI"],
+  ["10", "Growth"],
+  ["11", "Data 자산"],
+  ["12", "Roadmap"],
+] as const;
+
+/** 섹션 바로가기 + 읽기 진행률 — 12개 섹션 긴 글을 헤매지 않게 */
+function WhyAxNav() {
+  const [active, setActive] = useState("01");
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const els = SECTIONS.map(([n]) => document.getElementById(`why-${n}`)).filter(Boolean) as HTMLElement[];
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id.replace("why-", ""));
+      },
+      { rootMargin: "-140px 0px -60% 0px", threshold: 0 },
+    );
+    els.forEach((el) => io.observe(el));
+
+    const onScroll = () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(h > 0 ? Math.min(100, Math.max(0, (window.scrollY / h) * 100)) : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  const go = (n: string) => {
+    const el = document.getElementById(`why-${n}`);
+    if (!el) return;
+    const reduced = document.documentElement.dataset.motion === "reduced";
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: reduced ? "auto" : "smooth" });
+  };
+
+  return (
+    <div
+      className="sticky z-20 border-b border-line bg-surface/95 backdrop-blur"
+      style={{ top: "var(--ax-topbar-h, 3.5rem)" }}
+    >
+      <div className="h-0.5 bg-soft">
+        <div className="h-full bg-accent transition-[width] duration-150" style={{ width: `${progress}%` }} aria-hidden />
+      </div>
+      <div className="flex gap-1.5 overflow-x-auto px-4 py-2.5 scrollbar-thin sm:px-6" role="tablist" aria-label="Why AX 섹션 바로가기">
+        {SECTIONS.map(([n, label]) => (
+          <button
+            key={n}
+            role="tab"
+            aria-selected={active === n}
+            onClick={() => go(n)}
+            className={`tap flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
+              active === n ? "bg-shell text-white" : "text-muted hover:bg-soft hover:text-ink"
+            }`}
+          >
+            <span className={active === n ? "text-accent" : ""}>{n}</span>
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 /* Why AX — 회사 맞춤 12 Section Story (Unified v1.1 §14 구조 준수)
    사실관계는 회사소개서(2024)·사업자등록증 기준, 성장 시나리오는 로드맵 표기 */
@@ -46,6 +125,8 @@ export default function WhyAxPage() {
           </h2>
         </div>
       </section>
+
+      <WhyAxNav />
 
       <div className="mx-auto max-w-5xl space-y-10 px-4 pt-10 sm:px-6">
         {/* 01 */}
@@ -259,7 +340,7 @@ export default function WhyAxPage() {
 
 function Section({ n, title, img, imgAlt, children }: { n: string; title: string; img?: string; imgAlt?: string; children: React.ReactNode }) {
   return (
-    <section className="anim-reveal">
+    <section id={`why-${n}`} className="anim-reveal scroll-mt-32">
       <div className="mb-4 flex items-baseline gap-3">
         <span className="text-xl font-black text-accent">{n}</span>
         <h3 className="text-lg font-black text-ink sm:text-xl">{title}</h3>

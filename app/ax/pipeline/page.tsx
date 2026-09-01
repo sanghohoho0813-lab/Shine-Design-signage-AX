@@ -6,6 +6,7 @@ import { STAGES, Stage, Project, fmtKRWshort, costTotal, marginOf } from "@/lib/
 import { Overlay } from "@/components/Overlay";
 import { toast } from "@/components/Toast";
 import { PageHeader } from "@/components/ax/PageHeader";
+import { AxSkeleton } from "@/components/ax/Skeleton";
 
 const STAGE_COLORS: Record<Stage, string> = {
   문의: "var(--ic-overview)",
@@ -48,7 +49,7 @@ export default function PipelinePage() {
     [projects, sort],
   );
 
-  if (!hydrated) return <div className="p-6 text-sm text-muted">불러오는 중…</div>;
+  if (!hydrated) return <AxSkeleton variant="list" />;
 
   const current = sel ? projects.find((p) => p.id === sel.id) ?? null : null;
   const currentInquiry: Inquiry | undefined = current?.fromInquiry

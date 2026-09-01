@@ -106,20 +106,58 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* Locations */}
-      <Section tone="surface">
-        <SectionHeader eyebrow="Locations" title="본사 · 서울사무소 · 2개 공장" />
+      {/* Locations + 회사 정보 */}
+      <Section tone="surface" id="contact">
+        <SectionHeader
+          eyebrow="Locations & Contact"
+          title="본사 · 서울사무소 · 2개 공장"
+          desc="설계는 본사와 서울사무소에서, 제작은 화성·남양주 자체 공장에서 이뤄집니다."
+        />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {LOCATIONS.map((l) => (
-            <div key={l.name} className="hover-lift rounded-xl border border-line bg-canvas p-4">
+            <a
+              key={l.name}
+              href={`https://map.naver.com/p/search/${encodeURIComponent(l.addr)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap hover-lift group flex h-full flex-col rounded-xl border border-line bg-canvas p-4"
+            >
               <p className="text-sm font-bold text-ink">{l.name}</p>
-              <p className="mt-1 t-meta">{l.addr}</p>
-            </div>
+              <p className="mt-1 flex-1 t-meta">{l.addr}</p>
+              <span className="mt-3 text-[0.6875rem] font-semibold text-accent">지도에서 보기 →</span>
+            </a>
           ))}
         </div>
-        <Link href="/inquiry" className="tap hover-lift btn btn-primary mt-8">
-          프로젝트 상담 요청
-        </Link>
+
+        <div className="mt-8 grid gap-6 rounded-2xl border border-line bg-canvas p-6 sm:p-8 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <h3 className="t-h3 text-ink">회사 정보</h3>
+            <dl className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+              {[
+                ["상호", COMPANY.name],
+                ["대표이사", COMPANY.ceo],
+                ["사업자등록번호", COMPANY.bizNo],
+                ["본사 소재지", COMPANY.address],
+                ["업태 / 종목", "제조업 · 전문서비스업 / 간판 및 광고물 제조, 시각·제품 디자인"],
+                ["보유 등록", "산업디자인전문회사 · 옥외광고사업 · 공장등록 · 여성기업"],
+              ].map(([k, v]) => (
+                <div key={k}>
+                  <dt className="t-meta">{k}</dt>
+                  <dd className="mt-0.5 text-sm font-medium leading-relaxed text-ink">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="flex flex-col justify-center rounded-xl bg-shell p-5">
+            <p className="t-h3 text-white">프로젝트를 검토 중이신가요?</p>
+            <p className="mt-2 t-meta text-nav-inactive">
+              초기 기획 단계여도 좋습니다. 5단계 양식으로 3분이면 접수됩니다.
+            </p>
+            <Link href="/inquiry" className="tap hover-lift btn btn-accent mt-5">
+              프로젝트 문의하기
+            </Link>
+          </div>
+        </div>
       </Section>
     </>
   );

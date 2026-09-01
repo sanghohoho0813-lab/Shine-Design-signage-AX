@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useApp } from "@/lib/store";
 import { marginOf, seedBids, seedProduction } from "@/lib/data";
+import { AxSkeleton } from "@/components/ax/Skeleton";
 
 interface Engine {
   id: string;
@@ -15,7 +16,7 @@ interface Engine {
 
 export default function BriefingPage() {
   const { projects, hydrated, inquiries } = useApp();
-  if (!hydrated) return <div className="p-6 text-sm text-muted">불러오는 중…</div>;
+  if (!hydrated) return <AxSkeleton variant="cards" />;
 
   const risky = projects.filter((p) => p.risk === "높음");
   const lowMargin = projects.filter((p) => {

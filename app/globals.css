@@ -522,6 +522,52 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------------------------------------------------------------------------
+   PAGE TRANSITION — 메뉴를 누르면 아주 짧게 뜸을 들인 뒤 스르륵 나타난다
+--------------------------------------------------------------------------- */
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.page-enter {
+  animation: page-in 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: 130ms; /* 약간의 텀 — 즉시 튀어나오지 않게 */
+  will-change: opacity, transform;
+}
+[data-motion="reduced"] .page-enter {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+}
+
+/* 상단 이동 진행 바 */
+.nav-progress {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 190;
+  height: 3px;
+  background: transparent;
+  pointer-events: none;
+}
+.nav-progress > span {
+  display: block;
+  height: 100%;
+  width: var(--p, 0%);
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #fff));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 60%, transparent);
+  transition: width 200ms ease-out, opacity 260ms ease-out 120ms;
+}
+
 /* Toast */
 @keyframes toast-in {
   from {

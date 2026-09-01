@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useApp } from "@/lib/store";
 import { IMG, portfolio } from "@/lib/data";
 import { PageHeader } from "@/components/ax/PageHeader";
+import { AxSkeleton } from "@/components/ax/Skeleton";
 
 export default function EvidencePage() {
   const { projects, hydrated } = useApp();
-  if (!hydrated) return <div className="p-6 text-sm text-muted">불러오는 중…</div>;
+  if (!hydrated) return <AxSkeleton variant="cards" />;
 
   const completed = projects.filter((p) => p.stage === "완료");
 

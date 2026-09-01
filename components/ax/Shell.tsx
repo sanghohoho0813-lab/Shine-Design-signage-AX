@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Overlay } from "../Overlay";
@@ -9,6 +9,7 @@ import { MenuIcon, Icons, IconName } from "./icons";
 import { useApp, useClock, ROLE_LABELS } from "@/lib/store";
 import { Tutorial } from "./Tutorial";
 import { PaletteButton } from "../CommandPalette";
+import { PageTransition } from "../PageTransition";
 
 interface MenuItem {
   href: string;
@@ -102,6 +103,19 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const [readKeys, setReadKeys] = useState<string[]>([]);
+  const topbarRef = useRef<HTMLElement>(null);
+
+  /* 상단바 실제 높이를 CSS 변수로 — 하위의 sticky 요소가 가려지지 않게 */
+  useEffect(() => {
+    const el = topbarRef.current;
+    if (!el) return;
+    const apply = () =>
+      document.documentElement.style.setProperty("--ax-topbar-h", `${Math.round(el.getBoundingClientRect().height)}px`);
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const alerts = useMemo(() => {
     const a: { key: string; title: string; desc: string; href: string }[] = [];
@@ -152,7 +166,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col lg:pl-[var(--sidebar-w)]">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
+        <header ref={topbarRef} className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
           {/* 글자 확대 시 잘리지 않도록 가변 높이 + 줄바꿈 허용 */}
           <div className="flex min-h-14 flex-wrap items-center justify-between gap-x-2 gap-y-1 px-3 py-1.5 sm:px-5">
             <div className="flex min-w-[8rem] flex-1 items-center gap-1.5">
@@ -201,7 +215,9 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 pb-20 lg:pb-8">{children}</main>
+        <main className="flex-1 pb-20 lg:pb-8">
+          <PageTransition>{children}</PageTransition>
+        </main>
       </div>
 
       {/* Mobile bottom nav */}

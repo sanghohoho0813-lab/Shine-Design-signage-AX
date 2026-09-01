@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useApp, THEMES, ROLE_LABELS, Role, FontScale } from "@/lib/store";
 import { toast } from "@/components/Toast";
+import { AxSkeleton } from "@/components/ax/Skeleton";
 
 export default function SettingsPage() {
   const app = useApp();
   const [resetDone, setResetDone] = useState(false);
-  if (!app.hydrated) return <div className="p-6 text-sm text-muted">불러오는 중…</div>;
+  if (!app.hydrated) return <AxSkeleton variant="cards" />;
 
   return (
     <div className="mx-auto max-w-3xl space-y-5 p-4 sm:p-6">

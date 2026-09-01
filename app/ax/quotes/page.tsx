@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useApp } from "@/lib/store";
 import { costTotal, marginOf, Project } from "@/lib/data";
 import { PageHeader } from "@/components/ax/PageHeader";
+import { AxSkeleton } from "@/components/ax/Skeleton";
 
 /* 원가 카테고리 팔레트 — dataviz 검증 통과(고정 순서, 순환 금지) */
 const COST_ITEMS: { key: keyof NonNullable<Project["costs"]>; label: string; color: string }[] = [
@@ -37,7 +38,7 @@ export default function QuotesPage() {
   const { projects, hydrated, role } = useApp();
   const [openId, setOpenId] = useState<string | null>(null);
 
-  if (!hydrated) return <div className="p-6 text-sm text-muted">불러오는 중…</div>;
+  if (!hydrated) return <AxSkeleton variant="list" />;
 
   if (role === "staff") {
     return (

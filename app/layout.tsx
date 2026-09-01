@@ -5,6 +5,7 @@ import { AppProvider } from "@/lib/store";
 import { Presentation } from "@/components/Presentation";
 import { Toaster } from "@/components/Toast";
 import { CommandPalette } from "@/components/CommandPalette";
+import { NavProgress } from "@/components/PageTransition";
 
 const noto = Noto_Sans_KR({
   subsets: ["latin"],
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${noto.variable} antialiased`}>
         <AppProvider>
+          <NavProgress />
           {children}
           <Presentation />
           <Toaster />
