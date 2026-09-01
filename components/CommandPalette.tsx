@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useApp, THEMES } from "@/lib/store";
 import { portfolio } from "@/lib/data";
+import { AX_MENU_GROUPS } from "./ax/menu";
 
 /* ---------------------------------------------------------------------------
    ⌘K 전역 검색 — 어느 화면에서든 메뉴·프로젝트·포트폴리오·기능을 바로 찾는다.
@@ -21,25 +22,14 @@ type Item = {
 };
 
 const CUSTOMER_NAV = [
-  ["/", "홈"],
-  ["/about", "회사소개"],
-  ["/services", "사업분야"],
-  ["/portfolio", "포트폴리오"],
-  ["/process", "프로젝트 프로세스"],
-  ["/inquiry", "프로젝트 문의"],
+  ["/", "홈", "회사 첫 화면"],
+  ["/about", "회사소개", "연혁 · 자격 · 사업장"],
+  ["/services", "사업분야", "사인·환경디자인·웨이파인딩 5개 영역"],
+  ["/portfolio", "포트폴리오", "실제 수행 프로젝트 21건"],
+  ["/process", "프로젝트 프로세스", "문의부터 준공 증빙까지 9단계"],
+  ["/inquiry", "프로젝트 문의", "5단계 문의 양식 · FAQ"],
 ] as const;
 
-const AX_NAV = [
-  ["/ax", "대시보드"],
-  ["/ax/pipeline", "프로젝트 관리"],
-  ["/ax/quotes", "견적·원가 관리"],
-  ["/ax/production", "제작·파트너 관리"],
-  ["/ax/bids", "입찰·제안 관리"],
-  ["/ax/briefing", "AI 브리핑"],
-  ["/ax/evidence", "증빙·리포트"],
-  ["/ax/why-ax", "Why AX"],
-  ["/ax/settings", "설정"],
-] as const;
 
 /** 한글 초성 포함 느슨한 매칭 */
 function match(text: string, q: string) {
@@ -93,12 +83,17 @@ export function CommandPalette() {
     };
     const out: Item[] = [];
 
-    CUSTOMER_NAV.forEach(([href, label]) =>
-      out.push({ id: "c" + href, group: "고객 사이트", title: label, sub: href, run: go(href) }),
+    CUSTOMER_NAV.forEach(([href, label, desc]) =>
+      out.push({ id: "c" + href, group: "고객 사이트", title: label, sub: desc, run: go(href) }),
     );
     if (canSeeAx) {
-      AX_NAV.forEach(([href, label]) =>
-        out.push({ id: "a" + href, group: "Business AX", title: label, sub: href, run: go(href) }),
+      // 사이드바와 같은 분류를 그대로 사용한다
+      AX_MENU_GROUPS.forEach((g) =>
+        g.items
+          .filter((m) => !m.ceoOnly || role !== "staff")
+          .forEach((m) =>
+            out.push({ id: "a" + m.href, group: `AX · ${g.label}`, title: m.label, sub: m.desc, run: go(m.href) }),
+          ),
       );
       projects.forEach((p) =>
         out.push({

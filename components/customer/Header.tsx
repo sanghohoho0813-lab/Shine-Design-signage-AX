@@ -18,6 +18,13 @@ const NAV = [
   { href: "/inquiry", label: "프로젝트 문의" },
 ];
 
+/* Drawer에서는 목적별로 묶어 보여준다 */
+const NAV_GROUPS = [
+  { label: "회사", hint: "누구인가", hrefs: ["/", "/about", "/services"] },
+  { label: "실적·과정", hint: "무엇을 해왔나", hrefs: ["/portfolio", "/process"] },
+  { label: "문의", hint: "시작하기", hrefs: ["/inquiry"] },
+];
+
 export function Logo({ dark = false }: { dark?: boolean }) {
   return (
     <Link href="/" className="tap flex items-center gap-2.5" aria-label="샤인디자인 홈">
@@ -118,20 +125,30 @@ export default function CustomerHeader() {
               </button>
             </div>
             <nav className="flex-1 p-3" aria-label="전체 메뉴">
-              <p className="px-3 pb-1 pt-2 text-[0.6875rem] font-semibold tracking-wider text-muted">MENU</p>
-              {NAV.map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  onClick={close}
-                  className={`tap block rounded-lg px-3 py-2.5 text-[0.9375rem] font-medium ${
-                    pathname === n.href ? "bg-soft text-ink" : "text-ink-2 hover:bg-soft"
-                  }`}
-                >
-                  {n.label}
-                </Link>
+              {NAV_GROUPS.map((g) => (
+                <div key={g.label}>
+                  <p className="flex items-baseline gap-2 px-3 pb-1 pt-3 text-[0.6875rem] font-bold tracking-wide text-muted first:pt-1">
+                    {g.label}
+                    <span className="text-[0.625rem] font-normal">{g.hint}</span>
+                  </p>
+                  {g.hrefs.map((href) => {
+                    const n = NAV.find((x) => x.href === href)!;
+                    return (
+                      <Link
+                        key={n.href}
+                        href={n.href}
+                        onClick={close}
+                        className={`tap block rounded-lg px-3 py-2.5 text-[0.9375rem] font-medium ${
+                          pathname === n.href ? "bg-soft text-ink" : "text-ink-2 hover:bg-soft"
+                        }`}
+                      >
+                        {n.label}
+                      </Link>
+                    );
+                  })}
+                </div>
               ))}
-              <p className="px-3 pb-1 pt-5 text-[0.6875rem] font-semibold tracking-wider text-muted">
+              <p className="px-3 pb-1 pt-4 text-[0.6875rem] font-bold tracking-wide text-muted">
                 향후 확장 <span className="ml-1 rounded bg-accent/15 px-1.5 py-px text-[0.5625rem] font-bold text-accent">NEXT</span>
               </p>
               {FUTURE_MENUS.map((m) => (

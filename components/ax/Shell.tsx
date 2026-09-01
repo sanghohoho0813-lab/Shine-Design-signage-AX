@@ -5,55 +5,51 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Overlay } from "../Overlay";
 import { DevicePreviewButton } from "../DevicePreview";
-import { MenuIcon, Icons, IconName } from "./icons";
+import { MenuIcon, Icons } from "./icons";
+import { AX_MENU_GROUPS, AX_MENU_FLAT } from "./menu";
 import { useApp, useClock, ROLE_LABELS } from "@/lib/store";
 import { Tutorial } from "./Tutorial";
 import { PaletteButton } from "../CommandPalette";
 import { PageTransition } from "../PageTransition";
 
-interface MenuItem {
-  href: string;
-  label: string;
-  icon: IconName;
-  color: string;
-  ceoOnly?: boolean;
-}
-
-export const AX_MENU: MenuItem[] = [
-  { href: "/ax", label: "대시보드", icon: "dashboard", color: "var(--ic-overview)" },
-  { href: "/ax/pipeline", label: "프로젝트 관리", icon: "pipeline", color: "var(--ic-ops)" },
-  { href: "/ax/quotes", label: "견적·원가 관리", icon: "quote", color: "var(--ic-sales)", ceoOnly: true },
-  { href: "/ax/production", label: "제작·파트너 관리", icon: "factory", color: "var(--ic-partner)" },
-  { href: "/ax/bids", label: "입찰·제안 관리", icon: "bid", color: "var(--ic-crm)" },
-  { href: "/ax/briefing", label: "AI 브리핑", icon: "ai", color: "var(--ic-ai)" },
-  { href: "/ax/evidence", label: "증빙·리포트", icon: "evidence", color: "var(--ic-evidence)" },
-  { href: "/ax/why-ax", label: "Why AX", icon: "story", color: "var(--ic-risk)" },
-  { href: "/ax/settings", label: "설정", icon: "settings", color: "var(--ic-system)" },
-];
-
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { role } = useApp();
   return (
-    <nav className="flex-1 space-y-0.5 px-3 py-3" aria-label="AX 메뉴">
-      {AX_MENU.filter((m) => !m.ceoOnly || role !== "staff").map((m) => {
-        const active = pathname === m.href;
+    <nav className="flex-1 px-3 py-2" aria-label="AX 메뉴">
+      {AX_MENU_GROUPS.map((group) => {
+        const items = group.items.filter((m) => !m.ceoOnly || role !== "staff");
+        if (items.length === 0) return null;
         return (
-          <Link
-            key={m.href}
-            href={m.href}
-            onClick={onNavigate}
-            data-tutorial={`menu-${m.href.replace(/\//g, "-")}`}
-            className={`tap flex items-center gap-3 rounded-xl px-2.5 py-2 text-[0.875rem] ${
-              active
-                ? "bg-white/12 font-semibold text-nav-active shadow-[inset_2px_0_0_0_var(--accent)]"
-                : "font-medium text-nav-inactive hover:bg-white/7 hover:text-nav-active"
-            }`}
-            aria-current={active ? "page" : undefined}
-          >
-            <MenuIcon name={m.icon} color={m.color} active={active} />
-            {m.label}
-          </Link>
+          <div key={group.label} className="mb-1 last:mb-0">
+            {/* 그룹 머리 — 목차를 업무 흐름대로 나눈다 */}
+            <p className="flex items-baseline gap-2 px-2.5 pb-1 pt-3 text-[0.6875rem] font-bold tracking-wide text-nav-label">
+              {group.label}
+              <span className="text-[0.625rem] font-normal text-nav-muted">{group.hint}</span>
+            </p>
+            <div className="space-y-0.5">
+              {items.map((m) => {
+                const active = pathname === m.href;
+                return (
+                  <Link
+                    key={m.href}
+                    href={m.href}
+                    onClick={onNavigate}
+                    data-tutorial={`menu-${m.href.replace(/\//g, "-")}`}
+                    className={`tap flex items-center gap-3 rounded-xl px-2.5 py-2 text-[0.875rem] ${
+                      active
+                        ? "bg-white/12 font-semibold text-nav-active shadow-[inset_2px_0_0_0_var(--accent)]"
+                        : "font-medium text-nav-inactive hover:bg-white/7 hover:text-nav-active"
+                    }`}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    <MenuIcon name={m.icon} color={m.color} active={active} />
+                    {m.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
         );
       })}
     </nav>
@@ -147,7 +143,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  const current = AX_MENU.find((m) => m.href === pathname);
+  const current = AX_MENU_FLAT.find((m) => m.href === pathname);
 
   return (
     <div className="flex min-h-dvh bg-canvas">
@@ -223,7 +219,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-shell pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="AX 하단 메뉴">
         <div className="grid grid-cols-4">
-          {[AX_MENU[0], AX_MENU[1], AX_MENU[5]].map((m) => (
+          {["/ax", "/ax/pipeline", "/ax/briefing"].map((href) => AX_MENU_FLAT.find((m) => m.href === href)!).map((m) => (
             <Link
               key={m.href}
               href={m.href}
