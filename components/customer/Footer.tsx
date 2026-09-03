@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { FUTURE_MENUS, FuturePreviewSheet, FutureMenu } from "./FuturePreview";
+import { FUTURE_MENUS, FuturePreviewSheet, FutureBadge, type FutureMenu } from "./FuturePreview";
 import { Logo } from "./Header";
 import { COMPANY } from "@/lib/company";
 
@@ -69,13 +69,17 @@ export default function CustomerFooter() {
         </div>
         <div>
           <p className="text-xs font-semibold tracking-wider text-muted">
-            향후 확장 <span className="ml-1 rounded bg-accent/15 px-1.5 py-px text-[0.5625rem] font-bold text-accent">NEXT</span>
+            향후 확장 <span className="ml-1 text-[0.625rem] font-normal">{FUTURE_MENUS.length}개</span>
           </p>
-          <ul className="mt-3 space-y-2 text-sm">
+          <ul className="mt-3 space-y-1.5 text-sm">
             {FUTURE_MENUS.map((m) => (
               <li key={m.id}>
-                <button onClick={() => setFuture(m)} className="tap text-ink-2 hover:text-ink">
-                  {m.label}
+                <button
+                  onClick={() => setFuture(m)}
+                  className="tap flex w-full items-center gap-1.5 text-left text-ink-2 hover:text-ink"
+                >
+                  <span className="min-w-0 truncate">{m.label}</span>
+                  <FutureBadge tier={m.tier} />
                 </button>
               </li>
             ))}

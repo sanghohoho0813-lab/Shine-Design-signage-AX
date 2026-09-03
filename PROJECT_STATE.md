@@ -21,6 +21,18 @@
 - AX 증빙 인쇄물에 전체 실적 337건 표 추가, 입찰 체크리스트에 직접생산확인·중소기업 확인 추가 ✅
 - FAQ에 BF 사인 문항 추가 ✅ · JSON-LD에 telephone/email/contactPoint 추가 ✅
 
+## v11 향후 확장 메뉴
+- 고객 향후 확장 **4 → 10개** (`components/customer/FuturePreview.tsx`) — 각 항목에 지명원 근거(`basis`) 필수 ✅
+  - NEXT: 공공입찰·기관문의 / BF 인증 사인 컨설팅 / CI 교체 전국 대응 / 사인 유지관리 / 주물 현판·조형물
+  - Preview: 전시·홍보관 사인 / 디지털 사이니지 운영 / 기업·브랜드 프로젝트 / 협력사 등록
+  - Long-term: 도면 연동 물량 산출
+- AX 향후 확장 **9개 신설** (`components/ax/future.ts`) — 지금 시스템 밖에서 처리되는 업무 구간 ✅
+  - NEXT: 현장 실측·사진 / 설치 일정·배차 / 자재·재고 관리 / 정산·세금계산서
+  - Preview: 도면·시안 버전 관리 / 하자·A/S 접수 / 나라장터 공고 수집 / 협력사 단가·정산
+  - Long-term: 경영 리포트
+- 공용 컴포넌트 `components/FutureSheet.tsx` — 시트·행·티어 배지를 고객/AX가 공유 ✅
+- 노출 위치: 고객 Drawer · 푸터 · 사업분야 하단 섹션 / AX 사이드바(기본 접힘) · 모바일 Drawer / ⌘K 검색 ✅
+
 ## BUSINESS AX
 - 대시보드 / 파이프라인 / 견적·원가 / 제작·파트너 / 입찰 / AI 브리핑 / 증빙 / Why AX / 설정 — ✅
 - 메뉴 4그룹 분류(오늘 / 프로젝트 운영 / 성장·자산 / 시스템) ✅ — `components/ax/menu.ts` 단일 정의
@@ -40,7 +52,7 @@
 - 상태: localStorage 유지, Demo Reset으로 복원
 
 ## QA
-- 헤드리스 인수 테스트 **120/120 PASS** (`scratchpad/qa.mjs`)
+- 헤드리스 인수 테스트 **138/138 PASS** (`scratchpad/qa.mjs`)
 
 ## USER ACTION QUEUE
 - (선택) Vercel 재배포

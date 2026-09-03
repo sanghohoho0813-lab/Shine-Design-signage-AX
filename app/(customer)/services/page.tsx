@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { Section, SectionHeader } from "@/components/ui";
 import { SIGN_CATALOG } from "@/lib/company";
+import FutureSection from "@/components/customer/FutureSection";
 
 export const metadata = { title: "사업분야 — 샤인디자인" };
 
@@ -137,7 +138,17 @@ export default function ServicesPage() {
         </div>
       </Section>
 
-      <Section tone="canvas" size="sm">
+      {/* 앞으로 확장될 서비스 */}
+      <Section tone="canvas">
+        <SectionHeader
+          eyebrow="Next Services"
+          title="앞으로 확장될 서비스"
+          desc="지금 하고 있는 일에서 한 걸음씩 이어지는 영역입니다. 이미 해봤거나 설비·자격이 있는 것만 올렸습니다."
+        />
+        <FutureSection />
+      </Section>
+
+      <Section tone="surface" size="sm">
         <div className="flex flex-col items-start justify-between gap-5 rounded-2xl bg-shell p-8 sm:flex-row sm:items-center">
           <div>
             <h2 className="t-h3 text-white">어떤 분야든, 시작은 현장의 조건 정리입니다</h2>

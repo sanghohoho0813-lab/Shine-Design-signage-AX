@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { useApp, THEMES } from "@/lib/store";
 import { portfolio } from "@/lib/data";
 import { AX_MENU_GROUPS } from "./ax/menu";
+import { AX_FUTURE } from "./ax/future";
+import { FUTURE_MENUS } from "./customer/FuturePreview";
+import { FutureSheet, type FutureMenu } from "./FutureSheet";
 
 /* ---------------------------------------------------------------------------
    ⌘K 전역 검색 — 어느 화면에서든 메뉴·프로젝트·포트폴리오·기능을 바로 찾는다.
@@ -43,6 +46,8 @@ export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [active, setActive] = useState(0);
+  /* 검색 결과에서 향후 확장을 고르면 팔레트가 닫힌 뒤 이 시트가 열린다 */
+  const [future, setFuture] = useState<FutureMenu | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -63,11 +68,14 @@ export function CommandPalette() {
       }
     };
     const onEvt = () => setOpen(true);
+    const onFuture = (e: Event) => setFuture((e as CustomEvent<FutureMenu>).detail);
     window.addEventListener("keydown", onKey);
     window.addEventListener("shine-palette", onEvt);
+    window.addEventListener("shine-future", onFuture);
     return () => {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("shine-palette", onEvt);
+      window.removeEventListener("shine-future", onFuture);
     };
   }, []);
 
@@ -116,6 +124,32 @@ export function CommandPalette() {
         run: go(`/portfolio/${w.id}`),
       }),
     );
+
+    // 향후 확장 — 클릭하면 미리보기 시트가 열린다 (404로 보내지 않는다)
+    const openFuture = (m: FutureMenu) => () =>
+      window.dispatchEvent(new CustomEvent("shine-future", { detail: m }));
+    FUTURE_MENUS.forEach((m) =>
+      out.push({
+        id: "f" + m.id,
+        group: "향후 확장 · 고객",
+        title: m.label,
+        sub: `${m.tier} · ${m.desc}`,
+        keywords: "future 확장 " + m.features.join(""),
+        run: openFuture(m),
+      }),
+    );
+    if (canSeeAx) {
+      AX_FUTURE.forEach((m) =>
+        out.push({
+          id: "af" + m.id,
+          group: "향후 확장 · AX",
+          title: m.label,
+          sub: `${m.tier} · ${m.desc}`,
+          keywords: "future 확장 " + m.features.join(""),
+          run: openFuture(m),
+        }),
+      );
+    }
 
     // 실행 액션
     out.push({
@@ -197,7 +231,8 @@ export function CommandPalette() {
     listRef.current?.querySelector<HTMLElement>(`[data-idx="${active}"]`)?.scrollIntoView({ block: "nearest" });
   }, [active]);
 
-  if (!open) return null;
+  // 팔레트가 닫혀 있어도 향후 확장 시트는 떠 있어야 한다
+  if (!open) return future ? <FutureSheet menu={future} onClose={() => setFuture(null)} /> : null;
 
   let lastGroup = "";
 

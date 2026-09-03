@@ -7,16 +7,23 @@ import { Overlay } from "../Overlay";
 import { DevicePreviewButton } from "../DevicePreview";
 import { MenuIcon, Icons } from "./icons";
 import { AX_MENU_GROUPS, AX_MENU_FLAT } from "./menu";
+import { AX_FUTURE } from "./future";
+import { FutureRow, FutureSheet, type FutureMenu } from "../FutureSheet";
 import { useApp, useClock, ROLE_LABELS } from "@/lib/store";
 import { Tutorial } from "./Tutorial";
 import { PaletteButton } from "../CommandPalette";
 import { PageTransition } from "../PageTransition";
 
-function NavList({ onNavigate }: { onNavigate?: () => void }) {
+function NavList({ onNavigate, onFuture }: { onNavigate?: () => void; onFuture: (m: FutureMenu) => void }) {
   const pathname = usePathname();
   const { role } = useApp();
+  /* 향후 확장은 기본으로 접어 둔다 — 실제 모듈 9개가 스크롤 밖으로 밀리지 않게 */
+  const [openFuture, setOpenFuture] = useState(false);
+  const nextCount = AX_FUTURE.filter((m) => m.tier === "NEXT").length;
+
   return (
-    <nav className="flex-1 px-3 py-2" aria-label="AX 메뉴">
+    /* min-h-0 + overflow: 메뉴가 길어져도 하단의 시연 모드·고객 사이트 링크가 밀려나지 않는다 */
+    <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-2 scrollbar-thin" aria-label="AX 메뉴">
       {AX_MENU_GROUPS.map((group) => {
         const items = group.items.filter((m) => !m.ceoOnly || role !== "staff");
         if (items.length === 0) return null;
@@ -52,6 +59,46 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
           </div>
         );
       })}
+
+      {/* 향후 확장 — 지금 없는 모듈. 접힌 상태가 기본이다 */}
+      <div className="mt-3 border-t border-white/10 pt-2">
+        <button
+          onClick={() => setOpenFuture((v) => !v)}
+          aria-expanded={openFuture}
+          className="tap flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[0.6875rem] font-bold tracking-wide text-nav-label hover:bg-white/7"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className={`h-3 w-3 shrink-0 transition-transform duration-200 ${openFuture ? "rotate-90" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            aria-hidden
+          >
+            <path d="m9 6 6 6-6 6" />
+          </svg>
+          향후 확장
+          <span className="text-[0.625rem] font-normal text-nav-muted">
+            {openFuture ? "아직 없는 기능" : `${AX_FUTURE.length}개 · NEXT ${nextCount}`}
+          </span>
+        </button>
+        {openFuture && (
+          <div className="mt-0.5 space-y-0.5">
+            {AX_FUTURE.map((m) => (
+              <FutureRow
+                key={m.id}
+                menu={m}
+                dark
+                onOpen={(x) => {
+                  onNavigate?.();
+                  onFuture(x);
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </nav>
   );
 }
@@ -95,6 +142,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
   const clock = useClock();
   const [drawer, setDrawer] = useState(false);
   const [notif, setNotif] = useState(false);
+  const [future, setFuture] = useState<FutureMenu | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -156,7 +204,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
             <p className="text-[0.625rem] font-medium tracking-[0.2em] text-nav-muted">사인디자인 AX</p>
           </div>
         </div>
-        <NavList />
+        <NavList onFuture={setFuture} />
         <SidebarFooter />
       </aside>
 
@@ -252,7 +300,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
               </div>
               <button onClick={() => setDrawer(false)} className="tap rounded-lg p-2 text-nav-inactive hover:bg-white/10" aria-label="메뉴 닫기">✕</button>
             </div>
-            <NavList onNavigate={() => setDrawer(false)} />
+            <NavList onNavigate={() => setDrawer(false)} onFuture={setFuture} />
             <div className="px-5 py-2"><DevicePreviewButton dark /></div>
             <SidebarFooter onNavigate={() => setDrawer(false)} />
           </div>
@@ -312,6 +360,8 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
           </div>
         </Overlay>
       )}
+
+      {future && <FutureSheet menu={future} onClose={() => setFuture(null)} />}
 
       <Tutorial />
     </div>

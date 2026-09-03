@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Overlay } from "../Overlay";
-import { FUTURE_MENUS, FuturePreviewSheet, FutureMenu } from "./FuturePreview";
+import { FUTURE_MENUS, FuturePreviewSheet, FutureRow, type FutureMenu } from "./FuturePreview";
 import { DevicePreviewButton } from "../DevicePreview";
 import { PaletteButton } from "../CommandPalette";
 import { useApp } from "@/lib/store";
@@ -87,7 +87,7 @@ export default function CustomerHeader() {
             className="tap flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-ink-2 hover:bg-soft hover:text-ink"
           >
             {featuredFuture.label}
-            <sup className="rounded bg-accent/15 px-1 py-px text-[0.5625rem] font-bold text-accent">NEXT</sup>
+            <sup className="rounded bg-accent/15 px-1 py-px text-[0.5625rem] font-bold text-accent">{featuredFuture.tier}</sup>
           </button>
         </nav>
 
@@ -148,22 +148,22 @@ export default function CustomerHeader() {
                   })}
                 </div>
               ))}
-              <p className="px-3 pb-1 pt-4 text-[0.6875rem] font-bold tracking-wide text-muted">
-                향후 확장 <span className="ml-1 rounded bg-accent/15 px-1.5 py-px text-[0.5625rem] font-bold text-accent">NEXT</span>
+              <p className="flex items-baseline gap-2 px-3 pb-1 pt-4 text-[0.6875rem] font-bold tracking-wide text-muted">
+                향후 확장
+                <span className="text-[0.625rem] font-normal">아직 없는 서비스 · {FUTURE_MENUS.length}개</span>
               </p>
-              {FUTURE_MENUS.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => {
-                    close();
-                    setFuture(m);
-                  }}
-                  className="tap flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-[0.9375rem] font-medium text-ink-2 hover:bg-soft"
-                >
-                  {m.label}
-                  <span className="rounded bg-accent/15 px-1.5 py-px text-[0.5625rem] font-bold text-accent">{m.badge}</span>
-                </button>
-              ))}
+              <div className="space-y-0.5">
+                {FUTURE_MENUS.map((m) => (
+                  <FutureRow
+                    key={m.id}
+                    menu={m}
+                    onOpen={(x) => {
+                      close();
+                      setFuture(x);
+                    }}
+                  />
+                ))}
+              </div>
               <div className="mt-4 border-t border-line pt-4">
                 <div className="px-3">
                   <DevicePreviewButton />
