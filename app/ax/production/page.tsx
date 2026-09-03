@@ -32,7 +32,7 @@ export default function ProductionPage() {
         <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-7">
           <h2 className="text-lg font-black text-white sm:text-xl">제작 파트너 관리</h2>
           <p className="mt-1 max-w-md text-xs leading-relaxed text-nav-inactive sm:text-[0.8125rem]">
-            화성·남양주 자체 가공·조립 라인과 전문 제작·시공 파트너를 함께 운용합니다. 발주–제작–검수–설치
+            화성 공장의 자체 가공·조립 라인과 전문 제작·시공 파트너를 함께 운용합니다. 발주–제작–검수–설치
             연결을 한 화면에서 추적합니다.
           </p>
         </div>

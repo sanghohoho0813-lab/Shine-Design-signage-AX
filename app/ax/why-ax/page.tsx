@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IMG } from "@/lib/data";
+import { RECORD_TOTAL, KOROAD_COUNT } from "@/lib/records";
+import { CREDENTIALS } from "@/lib/company";
 
 const SECTIONS = [
   ["01", "현재"],
@@ -95,7 +97,7 @@ const BEFORE = [
 
 const AFTER = [
   { t: "통합 파이프라인", d: "문의 → 견적 → 디자인 → 제작 → 설치를 하나의 흐름으로" },
-  { t: "제작 라인 통합 관리", d: "자체 1·2공장 물량과 파트너 발주를 한 화면에서" },
+  { t: "제작 라인 통합 관리", d: "화성 자체 공장 물량과 파트너 발주를 한 화면에서" },
   { t: "원가·Margin 가시화", d: "프로젝트별 원가 구성과 예상 Margin 즉시 파악" },
   { t: "입찰 준비 연결", d: "서류·실적·포트폴리오 준비 상태를 점수로 관리" },
   { t: "실적의 자산화", d: "완료 실적 → Portfolio → Next Bid Evidence 자동 연결" },
@@ -132,17 +134,18 @@ export default function WhyAxPage() {
         {/* 01 */}
         <Section n="01" title="샤인디자인의 현재">
           <p className="text-sm leading-relaxed text-ink-2">
-            2005년 ㈜샤이니스로 시작한 환경디자인 업력이 2024년 <b className="text-ink">㈜샤인디자인(대표
-            권유진)</b>으로 이어졌습니다. 재출범 첫해에 한국도로교통공단 전국 지부·운전면허시험장·교통방송
-            60여 건을 비롯해 국립소방병원, 부천성모병원, 여주경찰서, 보령시 원도심 재생 시리즈까지
-            수행했습니다. 소수 정예 팀과 화성·남양주 2개 자체 공장, 전문 파트너 네트워크가 이 실적을
-            만들었습니다.
+            2005년 ㈜샤이니스로 시작한 환경디자인 업력이 2023년 디자인 부문 분리를 거쳐 2024년{" "}
+            <b className="text-ink">㈜샤인디자인(대표 권유진)</b>으로 이어졌습니다. 지명원에 기록된 누적
+            실적은 2013년부터 <b className="text-ink">{RECORD_TOTAL}건</b>. 한국도로교통공단 전국
+            지부·운전면허시험장·교통방송 {KOROAD_COUNT}건을 비롯해 국립소방병원·서울성모병원·국립암센터,
+            서울북부지방법원, 대검찰청, 국립항공박물관까지 수행했습니다. 소수 정예 팀과 화성 자체 공장,
+            전문 파트너 네트워크가 이 실적을 만들었습니다.
           </p>
           <div className="mt-4 grid grid-cols-3 gap-3 text-center">
             {[
-              ["60+", "도로교통공단 실적"],
-              ["2개", "자체 공장 (화성·남양주)"],
-              ["6종", "공공 자격 (여성기업 외)"],
+              [`${RECORD_TOTAL}건`, "누적 수행 실적"],
+              [`${KOROAD_COUNT}건`, "도로교통공단"],
+              [`${CREDENTIALS.length}종`, "보유 자격·등록"],
             ].map(([v, l]) => (
               <div key={l} className="rounded-xl border border-line bg-surface p-4">
                 <p className="text-2xl font-black text-accent">{v}</p>

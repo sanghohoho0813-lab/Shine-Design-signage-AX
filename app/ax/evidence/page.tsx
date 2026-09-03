@@ -5,6 +5,8 @@ import { useApp } from "@/lib/store";
 import { IMG, portfolio } from "@/lib/data";
 import { PageHeader } from "@/components/ax/PageHeader";
 import { AxSkeleton } from "@/components/ax/Skeleton";
+import { COMPANY, CREDENTIALS } from "@/lib/company";
+import { BUSINESS_RECORDS, RECORD_TOTAL } from "@/lib/records";
 
 export default function EvidencePage() {
   const { projects, hydrated } = useApp();
@@ -29,7 +31,12 @@ export default function EvidencePage() {
       {/* 인쇄 전용 실적 요약 — 화면에서는 숨김 */}
       <div className="hidden print-area">
         <div className="print-block mb-6 border-b-2 border-black pb-4">
-          <p className="text-sm">㈜샤인디자인 · 대표이사 권유진 · 사업자등록번호 519-87-03609</p>
+          <p className="text-sm">
+            {COMPANY.name} · 대표이사 {COMPANY.ceo} · 사업자등록번호 {COMPANY.bizNo}
+          </p>
+          <p className="text-sm">
+            {COMPANY.address} · TEL {COMPANY.tel} · E {COMPANY.email}
+          </p>
           <h1 className="mt-2 text-2xl font-black">수행 실적 요약</h1>
           <p className="mt-1 text-sm">발행일 {today} · 본 자료는 내부 관리 시스템에서 생성되었습니다.</p>
         </div>
@@ -65,9 +72,29 @@ export default function EvidencePage() {
           </tbody>
         </table>
         <p className="print-block mt-5 text-xs">
-          총 {completed.length + portfolio.length}건 · 보유 자격: 산업디자인전문회사 · 여성기업 ·
-          옥외광고사업 등록 · 공장등록 · 창업기업
+          사진 증빙 보유 {completed.length + portfolio.length}건 · 보유 자격:{" "}
+          {CREDENTIALS.map((c) => c.label).join(" · ")}
         </p>
+
+        {/* 지명원 기업실적 전체 */}
+        <div className="print-block mt-8 border-t-2 border-black pt-4">
+          <h2 className="text-lg font-black">전체 수행 실적 ({RECORD_TOTAL}건)</h2>
+          <p className="mt-1 text-xs">출처: ㈜샤인디자인 지명원 기업실적 · 계약금액 미기재</p>
+        </div>
+        {BUSINESS_RECORDS.map((g) => (
+          <div key={g.period} className="mt-4">
+            <p className="print-block border-b border-black pb-1 text-sm font-black">
+              {g.period} ({g.items.length}건)
+            </p>
+            <ul className="mt-1.5 grid grid-cols-2 gap-x-6">
+              {g.items.map((it) => (
+                <li key={it} className="print-block border-b border-gray-300 py-1 text-[0.6875rem] leading-snug">
+                  {it}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
       <div className="no-print relative overflow-hidden rounded-2xl">
@@ -131,16 +158,21 @@ export default function EvidencePage() {
       </section>
 
       {/* Portfolio asset count */}
-      <section className="grid gap-3 sm:grid-cols-3">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
-          <p className="text-xs text-muted">포트폴리오 자산</p>
+          <p className="text-xs text-muted">지명원 누적 실적</p>
+          <p className="mt-1 text-xl font-black text-ink">{RECORD_TOTAL}건</p>
+          <p className="text-[0.6875rem] text-secondary">2013 ~ 2025 · 유사실적 근거</p>
+        </div>
+        <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
+          <p className="text-xs text-muted">사진 증빙 보유</p>
           <p className="mt-1 text-xl font-black text-ink">{portfolio.length + completed.length}건</p>
           <p className="text-[0.6875rem] text-secondary">공개 {portfolio.length} + 신규 완료 {completed.length}</p>
         </div>
         <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
-          <p className="text-xs text-muted">유사실적 분야</p>
-          <p className="mt-1 text-xl font-black text-ink">7개</p>
-          <p className="text-[0.6875rem] text-secondary">교통·행정·의료·문화·교육·공공·민간</p>
+          <p className="text-xs text-muted">보유 자격·등록</p>
+          <p className="mt-1 text-xl font-black text-ink">{CREDENTIALS.length}종</p>
+          <p className="text-[0.6875rem] text-secondary">직접생산확인 7개 품목 포함</p>
         </div>
         <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
           <p className="text-xs text-muted">입찰 연결 가능 증빙</p>

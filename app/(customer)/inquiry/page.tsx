@@ -6,6 +6,7 @@ import { useApp, Inquiry } from "@/lib/store";
 import { IMG } from "@/lib/data";
 import { toast } from "@/components/Toast";
 import Faq from "@/components/customer/Faq";
+import { COMPANY } from "@/lib/company";
 
 const CLIENT_TYPES = ["공공기관", "공기업", "병원", "학교", "일반기업", "상업시설", "기타"];
 const PROJECT_TYPES = ["외부 간판", "실내사인", "안내·유도사인", "종합 사인시스템", "환경그래픽", "제작·시공", "디자인만", "기타"];
@@ -347,6 +348,36 @@ export default function InquiryPage() {
         <p className="mt-3 t-body">아래에서 답을 찾지 못하셨다면 위 양식으로 남겨 주세요.</p>
         <div className="mt-6">
           <Faq />
+        </div>
+
+        {/* 바로 연락 */}
+        <div className="mt-10 rounded-2xl border border-line bg-canvas p-6 sm:p-7">
+          <h2 className="t-h3 text-ink">바로 연락이 필요하시면</h2>
+          <p className="mt-2 t-body">
+            양식이 번거로우시거나 급한 건이라면 전화·이메일로 바로 연락 주셔도 됩니다.
+          </p>
+          <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
+            <a href={`tel:${COMPANY.tel.replace(/-/g, "")}`} className="tap hover-lift flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3.5">
+              <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                <path d="M6.5 3h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5L16 12l4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3.5 5.2 2 2 0 0 1 5.5 3Z" strokeLinejoin="round" />
+              </svg>
+              <span className="min-w-0">
+                <span className="block text-[0.6875rem] font-semibold tracking-wider text-muted">전화</span>
+                <span className="block text-sm font-bold tabular-nums text-ink">{COMPANY.tel}</span>
+              </span>
+            </a>
+            <a href={`mailto:${COMPANY.email}`} className="tap hover-lift flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3.5">
+              <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3.5 6.5 8.5 6 8.5-6" strokeLinecap="round" />
+              </svg>
+              <span className="min-w-0">
+                <span className="block text-[0.6875rem] font-semibold tracking-wider text-muted">이메일</span>
+                <span className="block truncate text-sm font-bold text-ink">{COMPANY.email}</span>
+              </span>
+            </a>
+          </div>
+          <p className="mt-3 t-meta">팩스 {COMPANY.fax} · 본사 {COMPANY.address}</p>
         </div>
       </div>
     </section>

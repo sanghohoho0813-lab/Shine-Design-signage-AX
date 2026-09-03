@@ -58,7 +58,7 @@ const STEPS: { route: string; tag: string; title: string; body: string }[] = [
     route: "/ax/production",
     tag: "AX",
     title: "자체 공장 + 파트너 한 화면",
-    body: "화성·남양주 자체 라인과 외부 파트너 발주를 납기·검수·설치 연결까지 함께 추적합니다.",
+    body: "화성 공장의 자체 라인과 외부 파트너 발주를 납기·검수·설치 연결까지 함께 추적합니다.",
   },
   {
     route: "/ax/bids",

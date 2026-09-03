@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------------------
    SHINE DESIGN — Demo Data
-   실적·거래처는 회사소개서(2024) 기준 실제 자료.
+   실적·거래처는 「(주)샤인디자인 지명원_2026」 기준 실제 자료.
    AX 내부의 금액·일정·진행상태는 시연용 DEMO 값.
 --------------------------------------------------------------------------- */
 
@@ -214,18 +214,18 @@ export interface ProductionOrder {
   risk?: string;
 }
 
-/* 파트너·발주 데이터는 시연용 DEMO (자체 1·2공장 + 외부 파트너 혼합 구조) */
+/* 파트너·발주 데이터는 시연용 DEMO (화성 자체 공장 + 외부 파트너 혼합 구조) */
 export const seedProduction: ProductionOrder[] = [
-  { id: "m1", projectId: "p1", item: "옥외 파일론 사인 (내후성 도장)", partner: "자체 1공장", orderDate: "2026-08-18", due: "2026-09-08", cost: 8200000, status: "제작중", qc: "대기", installLink: "설치 1차(09-12)", risk: "납기 임박" },
+  { id: "m1", projectId: "p1", item: "옥외 파일론 사인 (내후성 도장)", partner: "화성 공장 (가공 라인)", orderDate: "2026-08-18", due: "2026-09-08", cost: 8200000, status: "제작중", qc: "대기", installLink: "설치 1차(09-12)", risk: "납기 임박" },
   { id: "m2", projectId: "p1", item: "층별 유도사인 32EA", partner: "디자인하우스", orderDate: "2026-08-20", due: "2026-09-10", cost: 4300000, status: "제작중", qc: "대기", installLink: "설치 1차(09-12)" },
   { id: "m3", projectId: "p2", item: "병동 유도사인 48EA", partner: "빛나라사인", orderDate: "2026-08-12", due: "2026-09-04", cost: 5600000, status: "검수대기", qc: "대기", installLink: "설치(09-08)", risk: "검수 미완료" },
   { id: "m4", projectId: "p2", item: "픽토그램 패널 세트", partner: "코리아광고", orderDate: "2026-08-15", due: "2026-09-05", cost: 2700000, status: "제작중", qc: "-", installLink: "설치(09-08)" },
   { id: "m5", projectId: "p8", item: "청사 외부 게이트 사인 (LED)", partner: "새움특수금속", orderDate: "2026-08-01", due: "2026-08-28", cost: 6900000, status: "설치대기", qc: "완료", installLink: "설치(09-03)" },
-  { id: "m6", projectId: "p3", item: "종합안내판 시안 목업", partner: "자체 2공장", orderDate: "-", due: "2026-09-25", cost: 5100000, status: "발주 전", qc: "-", installLink: "미정" },
+  { id: "m6", projectId: "p3", item: "종합안내판 시안 목업", partner: "화성 공장 (조립 라인)", orderDate: "-", due: "2026-09-25", cost: 5100000, status: "발주 전", qc: "-", installLink: "미정" },
 ];
 
 export const partners = [
-  { name: "자체 1·2공장", field: "가공·조립·용접", activeOrders: 2, onTime: 98, load: "보통" },
+  { name: "화성 자체 공장", field: "가공·조립·용접", activeOrders: 2, onTime: 98, load: "보통" },
   { name: "새움특수금속", field: "금속가공·조형", activeOrders: 1, onTime: 96, load: "높음" },
   { name: "디자인하우스", field: "패널·아크릴", activeOrders: 1, onTime: 89, load: "보통" },
   { name: "빛나라사인", field: "조명·채널", activeOrders: 1, onTime: 82, load: "보통" },
@@ -253,10 +253,12 @@ export interface Bid {
   insight: string;
 }
 
-/* 서류 항목은 실제 보유 자격 기준(회사소개서) · 입찰 건 자체는 시연용 DEMO */
+/* 서류 항목은 실제 보유 자격 기준(지명원 2026) · 입찰 건 자체는 시연용 DEMO */
 const baseChecklist = (overrides: Record<string, boolean>): BidChecklistItem[] =>
   [
     { label: "사업자 기본서류 (2024.04 법인)", done: true },
+    { label: "직접생산확인증명서 (7개 품목)", done: true },
+    { label: "중소기업 확인서 (소기업)", done: true },
     { label: "여성기업 확인서 (~2027.06)", done: true },
     { label: "산업디자인전문회사 신고 (2024.07)", done: true },
     { label: "공장등록증 (2024.08)", done: true },
@@ -323,7 +325,7 @@ export const seedBids: Bid[] = [
 ];
 
 /* ------------------------------- Portfolio ------------------------------- */
-/* 실제 수행 프로젝트 · 실제 현장 사진 (회사소개서 2024) */
+/* 실제 수행 프로젝트 · 실제 현장 사진 (지명원 2026 PORTFOLIO IMAGE) */
 
 export interface PortfolioItem {
   id: string;
@@ -611,12 +613,12 @@ export const portfolio: PortfolioItem[] = [
 /* 실제 발주처 기준 */
 
 export const trustCategories = [
-  { label: "한국도로교통공단", desc: "전국 지부·시험장·교통방송 60여 건", image: `${W}/koroad-gangseo.jpg` },
-  { label: "경찰서 / 법원", desc: "여주경찰서 · 서부지방법원", image: `${W}/yeoju-police.jpg` },
-  { label: "병원 / 보건시설", desc: "국립소방병원 · 부천성모병원 · 종로구보건소", image: `${W}/fire-hospital.jpg` },
-  { label: "지자체 / 청사", desc: "하남시의회 · 영등포동 공공복합시설", image: `${W}/yeongdeungpo.jpg` },
-  { label: "문화 / 관광", desc: "인천관광공사 · 보령시 원도심 재생", image: `${W}/incheon-tourism.jpg` },
-  { label: "교육 / 연구", desc: "서울대의대 · 국방기술진흥연구소", image: `${W}/snu-medlib.jpg` },
+  { label: "한국도로교통공단", desc: "전국 지부·시험장·교통방송 57건", image: `${W}/koroad-gangseo.jpg` },
+  { label: "경찰 / 법원 / 검찰", desc: "여주·수원팔달경찰서 · 서울북부지방법원 · 대검찰청", image: `${W}/yeoju-police.jpg` },
+  { label: "병원 / 보건시설", desc: "국립소방병원 · 서울성모병원 · 국립암센터", image: `${W}/fire-hospital.jpg` },
+  { label: "지자체 / 청사", desc: "하남시청·시의회 · 영등포동 공공복합시설", image: `${W}/yeongdeungpo.jpg` },
+  { label: "문화 / 관광", desc: "인천관광공사 · 국립항공박물관 · 국립세종도서관", image: `${W}/incheon-tourism.jpg` },
+  { label: "교육 / 연구", desc: "서울대의대 · 고려대의료원 · 국방기술품질원", image: `${W}/snu-medlib.jpg` },
 ];
 
 /* ---------------------------- Formatting utils --------------------------- */

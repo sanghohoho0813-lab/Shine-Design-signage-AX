@@ -5,6 +5,8 @@ import Link from "next/link";
 import { CATEGORIES, portfolio, IMG } from "@/lib/data";
 import { Reveal } from "@/components/Reveal";
 import { PhotoBand } from "@/components/ui";
+import RecordsList from "@/components/customer/Records";
+import { RECORD_TOTAL, sectorCounts } from "@/lib/records";
 
 export default function PortfolioPage() {
   const [cat, setCat] = useState<string>("전체");
@@ -133,6 +135,39 @@ export default function PortfolioPage() {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* 전체 수행 실적 — 지명원 기업실적 */}
+      <section id="records" className="section bg-surface">
+        <div className="container-page">
+          <div className="mb-8">
+            <p className="t-eyebrow">Business Records</p>
+            <h2 className="t-h2 mt-2 text-ink">
+              2013년부터 <span className="tabular-nums text-accent">{RECORD_TOTAL}건</span>, 전체 수행 실적
+            </h2>
+            <p className="measure-wide mt-3 t-body">
+              위 {portfolio.length}건은 현장 사진이 있는 대표 사례입니다. 아래는 지명원에 수록된 전체
+              실적으로, 담당하시는 기관과 같은 유형을 저희가 해봤는지 바로 확인하실 수 있습니다.
+            </p>
+          </div>
+
+          {/* 발주처 성격별 집계 */}
+          <ul className="mb-8 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+            {sectorCounts().map((s) => (
+              <li key={s.label} className="rounded-xl border border-line bg-canvas px-4 py-3">
+                <p className="text-lg font-black tabular-nums leading-none text-accent">{s.count}</p>
+                <p className="mt-1.5 text-[0.75rem] font-medium leading-snug text-ink-2">{s.label}</p>
+              </li>
+            ))}
+          </ul>
+
+          <RecordsList />
+
+          <p className="mt-6 t-meta">
+            출처: ㈜샤인디자인 지명원(2026) 기업실적. 계약금액은 지명원에 기재되어 있지 않아 표기하지
+            않습니다. 연도는 지명원 실적 페이지 단위로 묶어 표기했습니다.
+          </p>
         </div>
       </section>
     </>

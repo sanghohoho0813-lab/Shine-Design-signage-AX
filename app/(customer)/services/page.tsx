@@ -1,7 +1,8 @@
 import { IMG } from "@/lib/data";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
-import { Section } from "@/components/ui";
+import { Section, SectionHeader } from "@/components/ui";
+import { SIGN_CATALOG } from "@/lib/company";
 
 export const metadata = { title: "사업분야 — 샤인디자인" };
 
@@ -91,7 +92,52 @@ export default function ServicesPage() {
         </div>
       </Section>
 
-      <Section tone="surface" size="sm">
+      {/* 사인 품목 카탈로그 — 지명원 WORK SCOPE */}
+      <Section tone="surface">
+        <SectionHeader
+          eyebrow="Sign Catalog"
+          title="한 건물에 들어가는 사인, 빠짐없이 만듭니다"
+          desc="현판 하나만 맡기든 건물 전체를 맡기든, 품목이 빠져 다른 업체를 다시 찾을 일이 없습니다. 장애인 편의시설(BF) 사인까지 자체 품목으로 보유하고 있습니다."
+        />
+        <div className="grid gap-5 lg:grid-cols-2">
+          {SIGN_CATALOG.map((c) => {
+            const isBf = c.key.startsWith("bf-");
+            return (
+              <Reveal key={c.key}>
+                <section
+                  className={`flex h-full flex-col rounded-2xl border p-6 ${
+                    isBf ? "border-accent/40 bg-accent/[0.06]" : "border-line bg-canvas"
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-[0.6875rem] font-black tracking-[0.14em] text-accent">{c.en}</p>
+                    {isBf && (
+                      <span className="rounded-full bg-accent px-2.5 py-0.5 text-[0.625rem] font-bold text-shell">
+                        BF 인증 대응
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="mt-1.5 t-h3 text-ink">{c.ko}</h3>
+                  <p className="mt-2 t-body">{c.desc}</p>
+                  <ul className="mt-4 flex flex-wrap gap-1.5 border-t border-line pt-4">
+                    {c.items.map((it) => (
+                      <li
+                        key={it}
+                        className="rounded-full border border-line bg-surface px-2.5 py-1 text-[0.75rem] font-medium text-ink-2"
+                      >
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-4 t-meta">{c.items.length}개 품목</p>
+                </section>
+              </Reveal>
+            );
+          })}
+        </div>
+      </Section>
+
+      <Section tone="canvas" size="sm">
         <div className="flex flex-col items-start justify-between gap-5 rounded-2xl bg-shell p-8 sm:flex-row sm:items-center">
           <div>
             <h2 className="t-h3 text-white">어떤 분야든, 시작은 현장의 조건 정리입니다</h2>

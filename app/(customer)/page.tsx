@@ -5,19 +5,21 @@ import { IMG, trustCategories } from "@/lib/data";
 import { useApp } from "@/lib/store";
 import { Reveal, CountUp } from "@/components/Reveal";
 import { Section, SectionHeader, PhotoBand, LineIcons } from "@/components/ui";
+import { RECORD_TOTAL, KOROAD_COUNT, MEDICAL_COUNT } from "@/lib/records";
+import { CREDENTIALS } from "@/lib/company";
 
 const TRUST_BAR = [
-  { icon: LineIcons.building, title: "한국도로교통공단 전국 실적", desc: "지부·시험장·교통방송 60여 건" },
-  { icon: LineIcons.pen, title: "디자인부터 시공까지", desc: "자체 1·2공장 + 파트너 네트워크" },
-  { icon: LineIcons.ruler, title: "산업디자인전문회사", desc: "여성기업 · 옥외광고사업 등록" },
-  { icon: LineIcons.map, title: "전국 프로젝트 대응", desc: "원주·마산·보령·인천까지" },
+  { icon: LineIcons.building, title: "한국도로교통공단 전국 실적", desc: `지부·시험장·교통방송 ${KOROAD_COUNT}건` },
+  { icon: LineIcons.pen, title: "상담부터 관리까지 One-Stop", desc: "화성 자체 공장 + 파트너 네트워크" },
+  { icon: LineIcons.ruler, title: "산업디자인전문회사", desc: "직접생산확인 · 여성기업 · 옥외광고사업" },
+  { icon: LineIcons.map, title: "전국 프로젝트 대응", desc: "원주·울산·마산·보령·제주까지" },
 ];
 
 const STATS = [
-  { v: 60, suffix: "+", label: "한국도로교통공단 실적", sub: "전국 지부·시험장·교통방송" },
-  { v: 21, suffix: "건", label: "게재 포트폴리오", sub: "2024년 실제 수행 프로젝트" },
-  { v: 2, suffix: "개", label: "자체 공장", sub: "화성 제1 · 남양주 제2" },
-  { v: 6, suffix: "종", label: "공공 자격", sub: "여성기업 · 산업디자인전문회사 외" },
+  { v: RECORD_TOTAL, suffix: "건", label: "누적 수행 실적", sub: "2013년 ~ 2025년" },
+  { v: KOROAD_COUNT, suffix: "건", label: "한국도로교통공단", sub: "전국 지부·시험장·교통방송" },
+  { v: MEDICAL_COUNT, suffix: "건", label: "병원 · 보건 시설", sub: "국립소방병원 · 성모병원 외" },
+  { v: CREDENTIALS.length, suffix: "종", label: "보유 자격·등록", sub: "직접생산확인 · 산업디자인전문회사 외" },
 ];
 
 const HOME_SERVICES = [

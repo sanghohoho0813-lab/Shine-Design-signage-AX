@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { FUTURE_MENUS, FuturePreviewSheet, FutureMenu } from "./FuturePreview";
 import { Logo } from "./Header";
+import { COMPANY } from "@/lib/company";
 
 export default function CustomerFooter() {
   const [future, setFuture] = useState<FutureMenu | null>(null);
@@ -16,12 +17,36 @@ export default function CustomerFooter() {
             공공·공간 사인 프로젝트를 기획·디자인하고, 제작·시공까지 통합 관리하는 전문 사인디자인
             기업입니다.
           </p>
+          <dl className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+            <div>
+              <dt className="text-[0.625rem] font-semibold tracking-wider text-muted">TEL</dt>
+              <dd>
+                <a href={`tel:${COMPANY.tel.replace(/-/g, "")}`} className="tap text-sm font-bold tabular-nums text-ink hover:text-primary">
+                  {COMPANY.tel}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[0.625rem] font-semibold tracking-wider text-muted">FAX</dt>
+              <dd className="text-sm font-medium tabular-nums text-ink-2">{COMPANY.fax}</dd>
+            </div>
+            <div className="min-w-0">
+              <dt className="text-[0.625rem] font-semibold tracking-wider text-muted">E-MAIL</dt>
+              <dd>
+                <a href={`mailto:${COMPANY.email}`} className="tap block truncate text-sm font-bold text-ink hover:text-primary">
+                  {COMPANY.email}
+                </a>
+              </dd>
+            </div>
+          </dl>
           <p className="mt-4 text-xs leading-relaxed text-muted">
-            ㈜샤인디자인 · 대표이사 권유진 · 사업자등록번호 519-87-03609
+            {COMPANY.name} · 대표이사 {COMPANY.ceo} · 사업자등록번호 {COMPANY.bizNo}
             <br />
-            경기도 남양주시 순화궁로 282, 221호 (별내동, 에이스하이엔드타워)
+            본사 {COMPANY.address}
             <br />
-            산업디자인전문회사 · 여성기업 · 옥외광고사업 등록 · 공장등록
+            공장 경기도 화성시 마도면 송정로 239-21
+            <br />
+            산업디자인전문회사 · 여성기업 · 옥외광고사업 등록 · 공장등록 · 직접생산확인
           </p>
         </div>
         <div>
