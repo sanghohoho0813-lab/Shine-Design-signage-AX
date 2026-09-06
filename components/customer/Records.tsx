@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { BUSINESS_RECORDS, RECORD_TOTAL } from "@/lib/records";
+import { track } from "@/lib/events";
 
 /* ---------------------------------------------------------------------------
    수행 실적 전체 — 지명원 기업실적 페이지를 그대로 검색 가능하게 옮긴 것.
@@ -84,7 +85,10 @@ export default function RecordsList() {
         {QUICK.map((k) => (
           <button
             key={k}
-            onClick={() => setQ(q === k ? "" : k)}
+            onClick={() => {
+              setQ(q === k ? "" : k);
+              if (q !== k) track("search_records", { q: k });
+            }}
             className={`tap rounded-full px-3 py-1 text-xs font-medium ${
               q === k ? "bg-shell text-white" : "border border-line bg-surface text-ink-2 hover:bg-soft"
             }`}

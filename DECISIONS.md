@@ -1,6 +1,18 @@
 
 # DECISIONS
 
+0-ae. **Unified v3.0 전략 잠금 + Dual Score(v12)** — v3.0 기준 채점 결과 Strategy 49 / Product 85 였다. 전략 문서가 없어서 낮은 것이지 제품이 틀린 것은 아니었으므로, 코드로 고정할 수 있는 전략 요소(KPI·SSOT·AI Matrix·Action Lifecycle·Evidence)를 먼저 코드에 넣고 문서는 그 코드를 가리키게 했다. 결과 94 / 98, P0 0.
+  - DECISION: Baseline 없이 개선율을 쓰지 않는다. 화면에는 "현재값(Demo)"만. WHY: Demo 시드로 개선률을 꾸미면 v3.0 P0. WHY NOT ALTERNATIVE: "예상 30% 단축" 같은 표기는 심사자에게 강해 보이지만 실증 후 뒤집힐 위험이 더 크다. REVISIT WHEN: PILOT 4주 Baseline 확정 후.
+  - DECISION: Canonical 9 Theme로 확장하되 브랜드 기본값(Shine Graphite Gold)은 Onyx Gold 시드를 미세조정한 1번으로 둔다. WHY: Q-1이 9종을 Full QA 기준으로 못박았고, 브랜드 시드 허용 조항이 있다. WHY NOT: 7종 유지는 U-9 SUPERSEDED. REVISIT WHEN: 실제 브랜드 가이드가 오면 Hue 미세조정.
+  - DECISION: 구버전 테마 id는 삭제하지 않고 가장 가까운 Canonical로 매핑한다(store + 초기 스크립트 양쪽). WHY: 사용자 저장값을 잃지 않는다 — "기능이 갑자기 안 되거나 데이터가 날아가는 일" 방지. `doneActions`도 같은 원칙으로 `actionStates`로 변환하고 파생값을 계속 저장.
+  - DECISION: Burgundy/Plum 테마는 accent 위 글자를 흰색(`--on-accent`)으로. WHY: 어두운 accent에 shell 색 글자는 대비 2.7 미만. 다른 7종은 shell 글자가 더 잘 읽힌다.
+  - DECISION: 고객 '내 문의 현황'은 같은 브라우저 조회로만. WHY: U-4 Closed Loop의 마지막 단계("고객에게 상태가 돌아온다")가 빠져 있었고 이것이 전략 P0 "고객행동↔Workflow 단절"에 걸렸다. WHY NOT: 로그인/SMS는 실결제·인증과 함께 NOT BUILDING — Demo에서 가짜 인증을 만들면 Q-6 위반. REVISIT WHEN: Supabase 연결 시 접수번호 + 연락처 뒷자리 인증.
+  - DECISION: 4개 엔진을 전부 RULE · L2로 표기하고 LLM 연결 0으로 둔다. WHY: 규칙이면 충분한 곳에 AI 이름을 붙이는 것이 v3.0 AI DEVIL 1번. WHY NOT: LLM을 지금 붙이면 "있어 보이지만" 오류비용 HIGH(견적)에 사람 승인 없는 경로가 생긴다. REVISIT WHEN: Next Action 문장화(L1)부터, RECOMMENDATIONS 순서대로.
+  - DECISION: Platform Readiness LOW로 판정하고 Industry SaaS를 권고하지 않는다. WHY: 5 TEST 2/5 — 사인 업계에서 샤인디자인이 플랫폼 사업자가 될 중립성·네트워크 효과가 없다. WHY NOT: "플랫폼"이라는 단어가 자금 심사에 유리해 보여도 GROWTH DEVIL 2번. REVISIT WHEN: 협력사 등록이 실제 20개사를 넘을 때.
+  - DECISION: 특허·벤처·연구조직은 "해당없음"으로 그대로 쓴다. WHY: §71 "실제 존재하는 자산만 실제 상태로". REVISIT WHEN: 운영 12개월 후 유사실적 매칭·원가 추정 구조로 출원 검토.
+  - NOT BUILDING (이번 단계, 사유·재검토): 실결제(계약 구조상 불필요) · SMS/카카오 알림(외부 비용, Supabase 후) · 로그인(Demo에 가짜 인증 금지) · 나라장터 실API(공고 수집은 NEXT) · 자동발주 L4(오류비용) · 자체 ML(데이터 12개월 전) · Native App(모바일 웹으로 충분) · Industry SaaS(Readiness LOW).
+0-af. **반응형 스윕에서 나온 P0/P1(v12)** — 8폭×9라우트 + 360/XL 스윕을 처음 자동화했더니 파이프라인 모바일 406px overflow(P0), 1024px 헤더 423px(P1), 360/XL 5곳(P1)이 나왔다. 원인은 새로 붙인 Provenance 칩이 `shrink-0` 그룹 안에서 wrap을 막은 것과, 인라인 메뉴 노출 시점(lg)이 실제 폭에 못 미친 것. PageHeader 우측 그룹 wrap 허용, 인라인 메뉴는 xl부터, 로고 축소 CSS, 상단바 wrap, 표 래퍼 min-w-0, 버튼 줄바꿈으로 수정. 교훈: 칩 하나를 추가할 때도 스윕을 돌린다.
+
 0-ad. **향후 확장 메뉴 확대(v11)** — 고객 4개 → **10개**, AX에는 **9개**를 새로 만들었다.
   - **근거 없는 확장은 넣지 않는다.** 각 항목에 `basis`(확장 근거)를 필수로 달고, 지명원 실적·품목·자격에서 확인되는 것만 올렸다. BF 인증 컨설팅은 BF 7품목 자체 보유, CI 교체 전국 대응은 도로교통공단 CI 변경 현황조사 용역 실수행 + 전국 57건, 주물 현판·조형물은 주물현판 20여 건, 전시·홍보관은 국립항공박물관·서울시립과학관 실적, 기업·브랜드는 삼성전자·넥센타이어·쿠팡 실적이 근거다. 시트를 열면 이 근거가 먼저 보인다.
   - **AX 확장은 "지금 시스템 밖에서 처리되는 구간"을 골랐다.** 현장 실측·사진(카톡), 설치 일정·배차(수첩), 자재·재고(공장 전화), 정산·세금계산서(견적 이후가 비어 있음), 도면 버전, 하자·A/S, 나라장터 공고, 협력사 단가, 경영 리포트. 있으면 좋은 기능이 아니라 이미 존재하는 업무의 빈칸이다.

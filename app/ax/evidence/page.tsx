@@ -7,10 +7,33 @@ import { PageHeader } from "@/components/ax/PageHeader";
 import { AxSkeleton } from "@/components/ax/Skeleton";
 import { COMPANY, CREDENTIALS } from "@/lib/company";
 import { BUSINESS_RECORDS, RECORD_TOTAL } from "@/lib/records";
+import { MONEY_KPIS, KPI_KIND_LABELS, kpiNow } from "@/lib/kpi";
+import { marginOf } from "@/lib/data";
+import { ACTION_LABELS, fmtTime } from "@/lib/store";
 
 export default function EvidencePage() {
-  const { projects, hydrated } = useApp();
+  const { projects, hydrated, inquiries, actionStates } = useApp();
   if (!hydrated) return <AxSkeleton variant="cards" />;
+  const now = kpiNow(projects, inquiries, marginOf as never);
+
+  /* Evidence Log — 사람이 무엇을 했는지가 남는다 (v3.0 §9 Evidence Type) */
+  type Ev = { type: string; at: string; note: string };
+  const evidence: Ev[] = [];
+  Object.entries(actionStates).forEach(([id, r]) => {
+    if (r.state === "todo") return;
+    evidence.push({
+      type: r.state === "done" ? "RESULT" : r.state === "skip" || r.state === "hold" ? "RISK" : "ACTION",
+      at: r.at,
+      note: `${id.replace(/^engine-/, "엔진 ").replace(/^risk-/, "리스크 ").replace(/^mg-/, "Margin ").replace(/^qc-/, "검수 ").replace(/^inq-/, "문의 ").replace(/^bid-/, "입찰 ")} → ${ACTION_LABELS[r.state]}${r.reason ? ` (${r.reason})` : ""}`,
+    });
+  });
+  inquiries.forEach((q) =>
+    (q.statusLog ?? [{ status: q.axStatus, at: q.createdAt }]).forEach((l) =>
+      evidence.push({ type: "CUSTOMER", at: l.at, note: `문의 ${q.id.toUpperCase()} · ${q.clientType} · ${l.status}` }),
+    ),
+  );
+  evidence.sort((a, b) => (a.at < b.at ? 1 : -1));
+  const EV_TONE: Record<string, string> = { RESULT: "var(--ic-evidence)", ACTION: "var(--ic-overview)", RISK: "var(--ic-risk)", CUSTOMER: "var(--ic-crm)", BASELINE: "var(--ic-system)" };
 
   const completed = projects.filter((p) => p.stage === "완료");
 
@@ -119,6 +142,67 @@ export default function EvidencePage() {
             </span>
           ))}
         </div>
+      </section>
+
+      {/* Money KPI 계약 — Baseline 없이는 개선율을 말하지 않는다 */}
+      <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="font-bold text-ink">
+            Money KPI 계약 <span className="text-xs font-normal text-muted">— Cost · Revenue · Scale</span>
+          </h3>
+          <span className="rounded-full bg-[var(--ic-system)]/12 px-2.5 py-0.5 text-[0.6875rem] font-bold text-[var(--ic-system)]">BASELINE: UNKNOWN</span>
+        </div>
+        <p className="mt-1 text-xs text-muted">
+          실제 Baseline은 실운영 12주 뒤에 확정합니다. 아래 &lsquo;현재값&rsquo;은 Demo 데이터 계산이며 개선율이 아닙니다.
+        </p>
+        <ul className="mt-3 grid gap-2 md:grid-cols-2">
+          {MONEY_KPIS.map((k) => (
+            <li key={k.id} className="rounded-xl border border-line p-3.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="rounded-md bg-soft px-1.5 py-0.5 text-[0.625rem] font-bold text-ink-2">{KPI_KIND_LABELS[k.kind]}</span>
+                <span className="text-[0.6875rem] tabular-nums text-muted">현재값(Demo) <b className="text-ink">{now[k.id] ?? "—"}</b></span>
+              </div>
+              <p className="mt-1.5 text-sm font-bold text-ink">{k.name}</p>
+              <p className="mt-0.5 text-[0.75rem] text-ink-2">{k.definition}</p>
+              <p className="mt-1.5 text-[0.6875rem] text-muted">측정: {k.measurement}</p>
+              <p className="text-[0.6875rem] text-muted">Constraint: {k.constraint}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Evidence Log */}
+      <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="font-bold text-ink">
+            Evidence Log <span className="text-xs font-normal text-muted">({evidence.length}건)</span>
+          </h3>
+          <div className="flex flex-wrap gap-1">
+            {["BASELINE", "ACTION", "RESULT", "CUSTOMER", "RISK"].map((t) => (
+              <span key={t} className="rounded-md px-1.5 py-0.5 text-[0.5625rem] font-bold" style={{ color: EV_TONE[t], background: `color-mix(in srgb, ${EV_TONE[t]} 12%, transparent)` }}>
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+        <p className="mt-1 text-xs text-muted">추천 → 사람의 결정 → 결과가 시간순으로 남습니다. 12주 실증 종료 시 Evidence Pack의 재료가 됩니다.</p>
+        {evidence.length === 0 ? (
+          <p className="mt-3 rounded-xl bg-canvas p-4 text-sm text-muted">
+            아직 기록이 없습니다. 대시보드 &lsquo;오늘 할 일&rsquo;에서 Action을 확인·완료하거나, 고객 문의를 접수하면 여기에 쌓입니다.
+          </p>
+        ) : (
+          <ul className="mt-3 max-h-72 divide-y divide-line overflow-y-auto scrollbar-thin">
+            {evidence.slice(0, 50).map((e, i) => (
+              <li key={i} className="flex items-center gap-3 py-2 text-xs">
+                <span className="w-16 shrink-0 rounded-md px-1.5 py-0.5 text-center text-[0.5625rem] font-bold" style={{ color: EV_TONE[e.type], background: `color-mix(in srgb, ${EV_TONE[e.type]} 12%, transparent)` }}>
+                  {e.type}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-ink-2">{e.note}</span>
+                <span className="shrink-0 tabular-nums text-muted">{fmtTime(e.at) ?? e.at}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       {/* Completed → evidence records */}

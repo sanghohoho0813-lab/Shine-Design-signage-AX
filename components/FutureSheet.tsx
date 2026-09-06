@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Overlay } from "./Overlay";
+import { track } from "@/lib/events";
 import { MenuIcon, type IconName } from "./ax/icons";
 
 /* ---------------------------------------------------------------------------
@@ -59,6 +60,9 @@ const TIER_WHEN: Record<FutureTier, string> = {
 };
 
 export function FutureSheet({ menu, onClose }: { menu: FutureMenu; onClose: () => void }) {
+  useEffect(() => {
+    track("open_future_preview", { id: menu.id, tier: menu.tier });
+  }, [menu.id, menu.tier]);
   return (
     <Overlay onClose={onClose} align="bottom" labelledBy="future-title">
       <div className="anim-sheet max-h-[88dvh] w-screen max-w-2xl overflow-y-auto rounded-t-2xl bg-surface p-6 pb-8 shadow-2xl sm:mx-4 sm:rounded-2xl sm:p-8">

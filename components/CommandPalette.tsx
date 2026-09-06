@@ -31,6 +31,7 @@ const CUSTOMER_NAV = [
   ["/portfolio", "포트폴리오", "실제 수행 프로젝트 21건"],
   ["/process", "프로젝트 프로세스", "문의부터 준공 증빙까지 9단계"],
   ["/inquiry", "프로젝트 문의", "5단계 문의 양식 · FAQ"],
+  ["/inquiry/status", "내 문의 현황", "접수번호로 응대 상태 확인"],
 ] as const;
 
 

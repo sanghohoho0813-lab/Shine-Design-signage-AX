@@ -151,7 +151,7 @@ export function Tutorial() {
                 다음 →
               </button>
             ) : (
-              <button onClick={finish} className="tap hover-lift rounded-lg bg-accent px-4 py-2 text-xs font-bold text-shell hover:brightness-110">
+              <button onClick={finish} className="tap hover-lift rounded-lg bg-accent px-4 py-2 text-xs font-bold text-on-accent hover:brightness-110">
                 시작하기 ✓
               </button>
             )}

@@ -113,7 +113,7 @@ export default function ServicesPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-[0.6875rem] font-black tracking-[0.14em] text-accent">{c.en}</p>
                     {isBf && (
-                      <span className="rounded-full bg-accent px-2.5 py-0.5 text-[0.625rem] font-bold text-shell">
+                      <span className="rounded-full bg-accent px-2.5 py-0.5 text-[0.625rem] font-bold text-on-accent">
                         BF 인증 대응
                       </span>
                     )}

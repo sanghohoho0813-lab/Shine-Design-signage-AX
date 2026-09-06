@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { IMG } from "@/lib/data";
 import { RECORD_TOTAL, KOROAD_COUNT } from "@/lib/records";
 import { CREDENTIALS } from "@/lib/company";
+import { MONEY_KPIS, KPI_KIND_LABELS } from "@/lib/kpi";
+import { AI_ENGINES, METHOD_LABELS, LEVEL_LABELS } from "@/lib/ai";
 
 const SECTIONS = [
   ["01", "현재"],
@@ -19,9 +21,12 @@ const SECTIONS = [
   ["10", "Growth"],
   ["11", "Data 자산"],
   ["12", "Roadmap"],
+  ["13", "정책환경"],
+  ["14", "기술자산"],
+  ["15", "KPI 계약"],
 ] as const;
 
-/** 섹션 바로가기 + 읽기 진행률 — 12개 섹션 긴 글을 헤매지 않게 */
+/** 섹션 바로가기 + 읽기 진행률 — 15개 섹션 긴 글을 헤매지 않게 */
 function WhyAxNav() {
   const [active, setActive] = useState("01");
   const [progress, setProgress] = useState(0);
@@ -252,7 +257,7 @@ export default function WhyAxPage() {
             <div className="flex flex-wrap items-center gap-2 text-[0.75rem] font-semibold">
               {["Customer 문의", "Pipeline", "디자인 · 견적", "공장 · 파트너", "설치", "증빙", "Portfolio 자산", "다음 입찰 · 영업"].map((s, i, arr) => (
                 <span key={s} className="flex items-center gap-2">
-                  <span className={`rounded-full px-3 py-1.5 ${i === 0 || i === arr.length - 1 ? "bg-accent text-shell" : "bg-white/10 text-nav-primary"}`}>{s}</span>
+                  <span className={`rounded-full px-3 py-1.5 ${i === 0 || i === arr.length - 1 ? "bg-accent text-on-accent" : "bg-white/10 text-nav-primary"}`}>{s}</span>
                   {i < arr.length - 1 && <span className="text-nav-muted" aria-hidden>→</span>}
                 </span>
               ))}
@@ -301,7 +306,7 @@ export default function WhyAxPage() {
               <li key={g.label} className="flex items-center gap-3">
                 <span
                   className={`flex h-7 w-16 shrink-0 items-center justify-center rounded-full text-[0.625rem] font-black ${
-                    g.now ? "bg-accent text-shell" : g.vision ? "bg-shell text-accent" : "bg-soft text-ink-2"
+                    g.now ? "bg-accent text-on-accent" : g.vision ? "bg-shell text-accent" : "bg-soft text-ink-2"
                   }`}
                 >
                   {g.stage}
@@ -318,13 +323,86 @@ export default function WhyAxPage() {
           </p>
         </Section>
 
+        {/* 13 */}
+        <Section n="13" title="2026 정책환경 — 회사에 해당하는 것만">
+          <p className="text-sm leading-relaxed text-ink-2">
+            AX는 정책자금을 받기 위한 화면이 아닙니다. 실제 업무 → 실제 데이터 → 실제 기능이 먼저이고, 자금
+            논리는 그 위에 얹힙니다. 다만 샤인디자인이 <b className="text-ink">이미 보유한</b> 확인서는 아래 접점과
+            직접 연결됩니다. 어떤 경우에도 보증·지원을 &lsquo;보장&rsquo;하지 않습니다.
+          </p>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+            {[
+              ["여성기업 확인 (~2027.06)", "공공조달 여성기업 제품 우선구매 대상 — 입찰 가점 접점"],
+              ["창업기업 확인 (~2027.08)", "창업 7년 이내 기업 대상 지원사업 접점"],
+              ["중소기업 확인 · 직접생산확인", "중소기업자간 경쟁입찰·직접생산 요건 충족"],
+              ["산업디자인전문회사", "디자인 용역 발주 자격 · 디자인 관련 지원사업 접점"],
+            ].map(([k, v]) => (
+              <li key={k} className="rounded-xl border border-line bg-surface p-3.5">
+                <p className="text-sm font-bold text-ink">{k}</p>
+                <p className="mt-0.5 text-xs text-ink-2">{v}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs leading-relaxed text-muted">
+            자금 적합도(참고): 중진공형(AX 도입·생산성) · 신보형(공공 수주 실적·실행력). 기보형(기술·특허)은 특허·연구조직이
+            없어 현재 해당하지 않습니다. 세부 요건은 각 기관 공고가 기준이며 여기서 단정하지 않습니다.
+          </p>
+        </Section>
+
+        {/* 14 */}
+        <Section n="14" title="기술자산 · 데이터 자산 — 정직한 현재 상태">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border border-line bg-surface p-4">
+              <p className="text-xs font-bold tracking-wide text-muted">지금 있는 것</p>
+              <ul className="mt-2 space-y-1.5 text-sm text-ink-2">
+                <li>· 인증·등록 {CREDENTIALS.length}종 (직접생산확인 7품목 포함)</li>
+                <li>· 수행 실적 {RECORD_TOTAL}건 — 발주처 유형별 검색 가능한 구조</li>
+                <li>· 원가 7항목 · 8단계 파이프라인 · 서류 체크리스트 데이터 모델</li>
+                <li>· 추천 → 결정 → 결과가 남는 Action Lifecycle과 Evidence Log</li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-line bg-surface p-4">
+              <p className="text-xs font-bold tracking-wide text-muted">아직 없는 것</p>
+              <ul className="mt-2 space-y-1.5 text-sm text-ink-2">
+                <li>· 특허 — 출원 없음. 운영 12개월 뒤 &lsquo;유사실적 매칭·원가 추정 구조&rsquo; 출원 여부 검토</li>
+                <li>· 벤처기업 확인 · 연구개발전담부서 — 없음</li>
+                <li>· LLM 연결 — 엔진 {AI_ENGINES.length}개 모두 규칙 기반 ({AI_ENGINES.map((e) => `${e.name} ${METHOD_LABELS[e.method].split(" ")[0]}·${LEVEL_LABELS[e.level].split(" ")[0]}`).join(", ")})</li>
+              </ul>
+            </div>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-ink-2">
+            <b className="text-ink">12개월 데이터 질문</b> — 문의·견적·원가·납기·결과가 1년 쌓이면, 지금은 못 하는
+            &lsquo;발주처 유형별 표준 원가와 소요일 예측&rsquo;이 가능해집니다. 그때 통계 엔진을 붙이고, 그 구조가 회사
+            고유의 기술자산이 됩니다. 그전까지는 자산이라고 부르지 않습니다.
+          </p>
+        </Section>
+
+        {/* 15 */}
+        <Section n="15" title="Money KPI 계약 — 무엇으로 증명할 것인가">
+          <p className="text-sm leading-relaxed text-ink-2">
+            Cost · Revenue · Scale 각 1개 이상. 실제 Baseline은 실운영 12주 뒤에 확정하며, 그전에는{" "}
+            <b className="text-ink">개선율을 지어내지 않습니다</b>.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {MONEY_KPIS.map((k) => (
+              <li key={k.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-xl border border-line bg-surface px-4 py-3">
+                <span className="rounded-md bg-soft px-1.5 py-0.5 text-[0.625rem] font-bold text-ink-2">{KPI_KIND_LABELS[k.kind]}</span>
+                <span className="text-sm font-bold text-ink">{k.name}</span>
+                <span className="text-xs text-muted">측정: {k.screen}</span>
+                <span className="ml-auto rounded-md bg-[var(--ic-system)]/12 px-1.5 py-0.5 text-[0.625rem] font-bold text-[var(--ic-system)]">BASELINE UNKNOWN</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-muted">증빙·리포트 화면에서 현재값(Demo)과 함께 볼 수 있습니다.</p>
+        </Section>
+
         {/* Return CTA */}
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface p-8 text-center shadow-sm">
           <p className="font-bold text-ink">이 구조가 실제로 동작하는 모습을 보세요</p>
           <div className="flex flex-wrap justify-center gap-3">
             <button
               onClick={() => window.dispatchEvent(new Event("shine-presentation"))}
-              className="tap hover-lift rounded-lg bg-accent px-6 py-3 text-sm font-bold text-shell hover:brightness-110"
+              className="tap hover-lift rounded-lg bg-accent px-6 py-3 text-sm font-bold text-on-accent hover:brightness-110"
             >
               ▶ 시연 모드 시작
             </button>

@@ -198,7 +198,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-w)] flex-col bg-shell lg:flex" data-tutorial="sidebar">
         <div className="flex items-center gap-2.5 border-b border-white/10 px-5 py-4">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-lg font-black text-shell">S</span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-lg font-black text-on-accent">S</span>
           <div className="leading-tight">
             <p className="text-[0.9375rem] font-black tracking-wide text-nav-active">SHINE DESIGN</p>
             <p className="text-[0.625rem] font-medium tracking-[0.2em] text-nav-muted">사인디자인 AX</p>
@@ -221,7 +221,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
               <span className="ml-1 hidden rounded bg-accent/15 px-1.5 py-0.5 text-[0.625rem] font-bold text-accent sm:block">DEMO</span>
             </div>
 
-            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <div className="flex min-w-0 flex-wrap items-center justify-end gap-1 sm:gap-2">
               <div className="whitespace-nowrap text-right leading-tight" data-tutorial="clock" aria-label="현재 날짜와 시각">
                 <span className="hidden text-[0.8125rem] font-medium tabular-nums text-ink-2 md:block">{clock.full}</span>
                 <span className="block text-[0.6875rem] font-medium text-muted md:hidden">
@@ -292,7 +292,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
           <div className="anim-drawer-l flex h-dvh w-[min(88vw,var(--sidebar-w))] flex-col overflow-y-auto bg-shell">
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-lg font-black text-shell">S</span>
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-lg font-black text-on-accent">S</span>
                 <div className="leading-tight">
                   <p className="text-[0.9375rem] font-black tracking-wide text-nav-active">SHINE DESIGN</p>
                   <p className="text-[0.625rem] font-medium tracking-[0.2em] text-nav-muted">사인디자인 AX</p>

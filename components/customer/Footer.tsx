@@ -58,6 +58,7 @@ export default function CustomerFooter() {
               ["/portfolio", "포트폴리오"],
               ["/process", "프로젝트 프로세스"],
               ["/inquiry", "프로젝트 문의"],
+              ["/inquiry/status", "내 문의 현황"],
             ].map(([href, label]) => (
               <li key={href}>
                 <Link href={href} className="tap text-ink-2 hover:text-ink">

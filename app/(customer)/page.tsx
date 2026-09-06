@@ -7,6 +7,8 @@ import { Reveal, CountUp } from "@/components/Reveal";
 import { Section, SectionHeader, PhotoBand, LineIcons } from "@/components/ui";
 import { RECORD_TOTAL, KOROAD_COUNT, MEDICAL_COUNT } from "@/lib/records";
 import { CREDENTIALS } from "@/lib/company";
+import { track } from "@/lib/events";
+import { useEffect } from "react";
 
 const TRUST_BAR = [
   { icon: LineIcons.building, title: "한국도로교통공단 전국 실적", desc: `지부·시험장·교통방송 ${KOROAD_COUNT}건` },
@@ -31,6 +33,9 @@ const HOME_SERVICES = [
 export default function Home() {
   const { projects, hydrated } = useApp();
   const completed = hydrated ? projects.filter((p) => p.stage === "완료") : [];
+  useEffect(() => {
+    track("view_home");
+  }, []);
 
   return (
     <>

@@ -2,6 +2,7 @@ import { portfolio } from "@/lib/data";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Gallery from "@/components/customer/Gallery";
+import { RecentTracker } from "@/components/customer/RecentWorks";
 import { Section } from "@/components/ui";
 
 export function generateStaticParams() {
@@ -31,6 +32,7 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
 
   return (
     <>
+      <RecentTracker id={p.id} />
       <section className="relative isolate flex min-h-[24rem] items-end overflow-hidden bg-shell lg:min-h-[28rem]">
         <img src={p.image} alt={p.title} className="absolute inset-0 h-full w-full object-cover" />
         <div className="scrim-card" aria-hidden />
@@ -38,7 +40,7 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
           <Link href="/portfolio" className="tap mb-4 inline-block text-sm text-nav-inactive hover:text-white">
             ← 포트폴리오
           </Link>
-          <span className="block w-fit rounded-full bg-accent px-3 py-1 text-[0.6875rem] font-bold text-shell">{p.category}</span>
+          <span className="block w-fit rounded-full bg-accent px-3 py-1 text-[0.6875rem] font-bold text-on-accent">{p.category}</span>
           <h1 className="t-h1 mt-3 max-w-3xl text-white">{p.title}</h1>
           <p className="mt-3 t-meta text-nav-inactive">
             {p.client} · {p.year} · 실제 수행 프로젝트

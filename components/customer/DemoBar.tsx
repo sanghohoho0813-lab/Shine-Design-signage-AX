@@ -16,7 +16,7 @@ export default function DemoBar() {
       </span>
       <Link
         href="/ax"
-        className="tap hover-lift rounded-full bg-accent px-3.5 py-2 font-semibold text-shell hover:brightness-110"
+        className="tap hover-lift rounded-full bg-accent px-3.5 py-2 font-semibold text-on-accent hover:brightness-110"
         data-tutorial="ax-entry"
       >
         Business AX 보기 →

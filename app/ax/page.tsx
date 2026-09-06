@@ -4,9 +4,12 @@ import Link from "next/link";
 import { useApp } from "@/lib/store";
 import { seedProduction, seedBids, partners, STAGES, fmtKRWshort, costTotal, IMG } from "@/lib/data";
 import { AxSkeleton } from "@/components/ax/Skeleton";
+import { ActionStateControl } from "@/components/ax/ActionState";
+import { AiReadyBadge } from "@/components/ax/AiReady";
+import { Provenance } from "@/components/ax/Provenance";
 
 export default function AxDashboard() {
-  const { projects, inquiries, role, hydrated, doneActions, toggleAction } = useApp();
+  const { projects, inquiries, role, hydrated, actionStates, axOwner } = useApp();
   if (!hydrated) return <AxSkeleton variant="dashboard" />;
 
   const active = projects.filter((p) => p.stage !== "완료");
@@ -87,16 +90,23 @@ export default function AxDashboard() {
     href: "/ax/bids",
     tone: "var(--ic-crm)",
   });
-  const doneCount = todo.filter((t) => doneActions.includes(t.id)).length;
+  const stateOf = (id: string) => actionStates[id]?.state ?? "todo";
+  const doneCount = todo.filter((t) => stateOf(t.id) === "done").length;
+  const handledCount = todo.filter((t) => ["done", "hold", "skip"].includes(stateOf(t.id))).length;
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
-      {role === "ceo" && (
-        <p className="text-sm text-muted">
-          <b className="text-ink">권유진 대표님</b>, 오늘의 샤인디자인입니다 — 확인이 필요한 항목{" "}
-          <b className="text-[var(--ic-risk)]">{risky.length + inquiries.length}건</b>
-        </p>
-      )}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        {role === "ceo" ? (
+          <p className="text-sm text-muted">
+            <b className="text-ink">{axOwner} 대표님</b>, 오늘의 샤인디자인입니다 — 확인이 필요한 항목{" "}
+            <b className="text-[var(--ic-risk)]">{risky.length + inquiries.length}건</b>
+          </p>
+        ) : (
+          <p className="text-sm text-muted">오늘의 샤인디자인 — 확인이 필요한 항목 <b className="text-[var(--ic-risk)]">{risky.length + inquiries.length}건</b></p>
+        )}
+        <Provenance />
+      </div>
       {/* KPI row */}
       {/* 열 수를 rem 기준으로 자동 조정 — 글자를 키워도 카드가 눌리지 않는다 */}
       <section
@@ -120,7 +130,7 @@ export default function AxDashboard() {
           <h2 className="font-bold text-ink">
             오늘 할 일
             <span className="ml-2 text-xs font-semibold text-muted">
-              {doneCount}/{todo.length} 완료
+              {doneCount}/{todo.length} 완료{handledCount > doneCount && ` · 보류/무시 ${handledCount - doneCount}`}
             </span>
           </h2>
           <div className="h-1.5 w-32 overflow-hidden rounded-full bg-soft" aria-hidden>
@@ -132,25 +142,17 @@ export default function AxDashboard() {
         </div>
         <ul className="mt-3 divide-y divide-line">
           {todo.map((t) => {
-            const done = doneActions.includes(t.id);
+            const st = stateOf(t.id);
+            const closed = st === "done" || st === "skip";
             return (
-              <li key={t.id} className="flex items-center gap-3 py-2.5">
-                <button
-                  onClick={() => toggleAction(t.id)}
-                  role="checkbox"
-                  aria-checked={done}
-                  aria-label={`${t.label} 완료 표시`}
-                  className={`tap flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 text-[0.6875rem] font-black ${
-                    done ? "border-[var(--ic-evidence)] bg-[var(--ic-evidence)] text-white" : "border-line hover:border-secondary"
-                  }`}
-                >
-                  {done && "✓"}
-                </button>
+              <li key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-2.5">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: closed ? "var(--line)" : t.tone }} aria-hidden />
                 <Link href={t.href} className="tap min-w-0 flex-1">
-                  <p className={`truncate text-sm font-semibold ${done ? "text-muted line-through" : "text-ink"}`}>{t.label}</p>
+                  <p className={`truncate text-sm font-semibold ${closed ? "text-muted line-through" : "text-ink"}`}>{t.label}</p>
                   <p className="truncate text-[0.6875rem] text-muted">{t.why}</p>
                 </Link>
-                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: done ? "var(--line)" : t.tone }} aria-hidden />
+                {/* 추천됨 → 확인 → 실행중 → 완료 / 보류 / 무시 — 무엇을 했는지가 남는다 */}
+                <ActionStateControl id={t.id} compact />
               </li>
             );
           })}
@@ -217,19 +219,19 @@ export default function AxDashboard() {
                 <span className="rounded-md bg-[var(--ic-ai)]/30 px-1.5 py-0.5 text-[0.625rem] font-black text-white">AI</span>
                 오늘의 AX 브리핑
               </h2>
-              <span className="whitespace-nowrap text-[0.625rem] text-nav-muted">규칙 기반 · AI READY</span>
+              <AiReadyBadge engineId="risk" dark compact />
             </div>
             <p className="mt-3 text-sm font-semibold text-nav-primary">이번 주 가장 주의할 프로젝트 {Math.min(risky.length, 2) || "0"}건</p>
             <div className="mt-3 space-y-2.5">
               {risky.slice(0, 2).map((p, i) => (
                 <div key={p.id} className="rounded-xl bg-white/8 p-3.5 backdrop-blur">
                   <p className="flex items-start gap-2 text-[0.8125rem] font-bold text-nav-active">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[0.625rem] font-black text-shell">{i + 1}</span>
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[0.625rem] font-black text-on-accent">{i + 1}</span>
                     {p.client} {p.name}
                   </p>
                   <p className="ml-7 mt-1 text-[0.75rem] leading-relaxed text-nav-inactive">{p.riskNote}</p>
                   <div className="ml-7 mt-2">
-                    <Link href="/ax/briefing" className="tap inline-block rounded-md bg-accent px-2.5 py-1 text-[0.6875rem] font-bold text-shell hover:brightness-110">
+                    <Link href="/ax/briefing" className="tap inline-block rounded-md bg-accent px-2.5 py-1 text-[0.6875rem] font-bold text-on-accent hover:brightness-110">
                       Action 보기
                     </Link>
                   </div>
@@ -246,10 +248,10 @@ export default function AxDashboard() {
 
       <div className="grid gap-5 xl:grid-cols-3">
         {/* Margin summary */}
-        <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+        <section className="min-w-0 rounded-2xl border border-line bg-surface p-5 shadow-sm">
           <h2 className="font-bold text-ink">견적 / 매출 / Margin <span className="text-xs font-normal text-muted">(진행 기준)</span></h2>
           {canSeeMoney ? (
-            <div className="mt-4 flex items-center gap-5">
+            <div className="mt-4 flex flex-wrap items-center gap-5">
               <Donut pct={margin} />
               <dl className="flex-1 space-y-2 text-sm">
                 <div className="flex justify-between"><dt className="text-muted">예상 매출</dt><dd className="font-bold tabular-nums text-ink">{revenue.toLocaleString()}원</dd></div>
@@ -294,7 +296,7 @@ export default function AxDashboard() {
         </section>
 
         {/* Bid readiness */}
-        <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+        <section className="min-w-0 rounded-2xl border border-line bg-surface p-5 shadow-sm">
           <h2 className="font-bold text-ink">입찰 준비도 상위</h2>
           <ul className="mt-3 space-y-3">
             {[...seedBids].sort((a, b) => b.readiness - a.readiness).slice(0, 3).map((b) => (

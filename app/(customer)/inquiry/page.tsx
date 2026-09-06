@@ -7,6 +7,7 @@ import { IMG } from "@/lib/data";
 import { toast } from "@/components/Toast";
 import Faq from "@/components/customer/Faq";
 import { COMPANY } from "@/lib/company";
+import { track } from "@/lib/events";
 
 const CLIENT_TYPES = ["공공기관", "공기업", "병원", "학교", "일반기업", "상업시설", "기타"];
 const PROJECT_TYPES = ["외부 간판", "실내사인", "안내·유도사인", "종합 사인시스템", "환경그래픽", "제작·시공", "디자인만", "기타"];
@@ -81,7 +82,14 @@ export default function InquiryPage() {
     } catch {}
   };
 
-  const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const started = useRef(false);
+  const set = (k: keyof typeof form, v: string) => {
+    if (!started.current) {
+      started.current = true;
+      track("start_inquiry");
+    }
+    setForm((f) => ({ ...f, [k]: v }));
+  };
 
   const canNext =
     step === 0 ? !!form.clientType
@@ -115,7 +123,7 @@ export default function InquiryPage() {
         <div className="scrim-hero" aria-hidden />
         <div className="container-page relative py-20">
           <div className="mx-auto max-w-xl text-center">
-            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-shell" aria-hidden>
+            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-on-accent" aria-hidden>
               ✓
             </span>
             <h1 className="t-h1 mt-6 text-white">문의가 접수되었습니다</h1>
@@ -139,11 +147,14 @@ export default function InquiryPage() {
               ))}
             </dl>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link href="/inquiry/status" className="tap hover-lift btn btn-accent">
+                내 문의 현황 보기
+              </Link>
               <Link href="/portfolio" className="tap hover-lift btn btn-on-dark">
                 포트폴리오 더 보기
               </Link>
-              <Link href="/" className="tap hover-lift btn btn-accent">
-                홈으로 돌아가기
+              <Link href="/" className="tap hover-lift btn btn-on-dark">
+                홈으로
               </Link>
             </div>
           </div>
@@ -314,7 +325,7 @@ export default function InquiryPage() {
             <button
               onClick={submit}
               disabled={!canNext}
-              className="tap hover-lift rounded-lg bg-accent px-6 py-2.5 text-sm font-bold text-shell enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+              className="tap hover-lift rounded-lg bg-accent px-6 py-2.5 text-sm font-bold text-on-accent enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
             >
               문의 접수하기
             </button>

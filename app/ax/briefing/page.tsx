@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useApp } from "@/lib/store";
 import { marginOf, seedBids, seedProduction } from "@/lib/data";
 import { AxSkeleton } from "@/components/ax/Skeleton";
+import { ActionStateControl } from "@/components/ax/ActionState";
+import { AiReadyBadge } from "@/components/ax/AiReady";
+import { Provenance } from "@/components/ax/Provenance";
+import { AI_ENGINES, METHOD_LABELS, LEVEL_LABELS } from "@/lib/ai";
 
 interface Engine {
   id: string;
@@ -94,21 +98,30 @@ export default function BriefingPage() {
             왜(Why) → 무엇을 할지(Action) 순서로 알려줍니다.
           </p>
         </div>
-        <span className="shrink-0 rounded-lg bg-white/10 px-3 py-2 text-right text-[0.625rem] leading-tight text-nav-label">
-          <b className="block text-[0.6875rem] text-accent">AI READY</b>
-          현재: 규칙 기반 Demo
-          <br />
-          향후: LLM API 연동
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <AiReadyBadge dark />
+          <Provenance dark />
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         {engines.map((e) => (
           <section key={e.id} className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
-            <h3 className="flex items-center gap-2 font-bold text-ink">
-              <span className="h-2.5 w-2.5 rounded-full" style={{ background: e.color }} aria-hidden />
-              {e.name}
-            </h3>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="flex items-center gap-2 font-bold text-ink">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: e.color }} aria-hidden />
+                {e.name}
+              </h3>
+              <AiReadyBadge engineId={e.id} compact />
+            </div>
+            {(() => {
+              const meta = AI_ENGINES.find((m) => m.id === e.id);
+              return meta ? (
+                <p className="mt-1 text-[0.6875rem] text-muted">
+                  {METHOD_LABELS[meta.method].split(" ")[0]} · {LEVEL_LABELS[meta.level]} · 승인: {meta.approval.split(" — ")[0]}
+                </p>
+              ) : null;
+            })()}
             <p className="mt-3 rounded-xl p-3.5 text-sm font-bold leading-snug text-ink" style={{ background: `color-mix(in srgb, ${e.color} 8%, transparent)` }}>
               {e.what}
             </p>
@@ -130,6 +143,11 @@ export default function BriefingPage() {
                   {a.label} →
                 </Link>
               ))}
+            </div>
+            {/* 이 추천을 어떻게 처리했는지 — 추천 → 확인 → 실행중 → 완료 / 보류 / 무시 */}
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
+              <span className="text-[0.6875rem] font-bold tracking-wide text-muted">처리 상태</span>
+              <ActionStateControl id={`engine-${e.id}`} />
             </div>
           </section>
         ))}

@@ -16,26 +16,28 @@ const NAV = [
   { href: "/portfolio", label: "포트폴리오" },
   { href: "/process", label: "프로젝트 프로세스" },
   { href: "/inquiry", label: "프로젝트 문의" },
-];
+  /* 상단 인라인 메뉴에는 넣지 않고 Drawer의 '문의' 그룹에서만 보여준다 */
+  { href: "/inquiry/status", label: "내 문의 현황", drawerOnly: true },
+] as { href: string; label: string; drawerOnly?: boolean }[];
 
 /* Drawer에서는 목적별로 묶어 보여준다 */
 const NAV_GROUPS = [
   { label: "회사", hint: "누구인가", hrefs: ["/", "/about", "/services"] },
   { label: "실적·과정", hint: "무엇을 해왔나", hrefs: ["/portfolio", "/process"] },
-  { label: "문의", hint: "시작하기", hrefs: ["/inquiry"] },
+  { label: "문의", hint: "시작하기 · 확인하기", hrefs: ["/inquiry", "/inquiry/status"] },
 ];
 
 export function Logo({ dark = false }: { dark?: boolean }) {
   return (
-    <Link href="/" className="tap flex items-center gap-2.5" aria-label="샤인디자인 홈">
+    <Link href="/" className="tap flex min-w-0 items-center gap-2.5" aria-label="샤인디자인 홈">
       <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-shell text-lg font-black text-accent">
         S
       </span>
       <span className="leading-tight">
-        <span className={`block whitespace-nowrap text-[0.9375rem] font-black tracking-wide ${dark ? "text-nav-active" : "text-ink"}`}>
+        <span className={`logo-text block whitespace-nowrap text-[0.9375rem] font-black tracking-wide ${dark ? "text-nav-active" : "text-ink"}`}>
           SHINE DESIGN
         </span>
-        <span className={`block text-[0.625rem] font-medium tracking-[0.2em] ${dark ? "text-nav-muted" : "text-muted"}`}>
+        <span className={`logo-sub block text-[0.625rem] font-medium tracking-[0.2em] ${dark ? "text-nav-muted" : "text-muted"}`}>
           샤인디자인
         </span>
       </span>
@@ -65,12 +67,12 @@ export default function CustomerHeader() {
         scrolled ? "border-transparent shadow-[0_2px_16px_rgba(0,0,0,0.08)]" : "border-line"
       }`}
     >
-      <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6">
+      <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-3 px-4 py-2 sm:px-6">
         <Logo />
 
         {/* Desktop nav */}
-        <nav className="nav-inline hidden items-center gap-1 lg:flex" aria-label="주 메뉴">
-          {NAV.map((n) => (
+        <nav className="nav-inline hidden items-center gap-1 xl:flex" aria-label="주 메뉴">
+          {NAV.filter((n) => !n.drawerOnly).map((n) => (
             <Link
               key={n.href}
               href={n.href}
@@ -91,7 +93,7 @@ export default function CustomerHeader() {
           </button>
         </nav>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1">
           <PaletteButton compact />
           <span className="nav-inline hidden md:block">
             <DevicePreviewButton />

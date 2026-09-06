@@ -119,7 +119,7 @@ export function Presentation() {
       <div className="anim-sheet pointer-events-auto w-full max-w-xl rounded-2xl bg-shell/97 p-5 text-nav-primary shadow-2xl backdrop-blur">
         <div className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2">
-            <span className="rounded-md bg-accent px-2 py-0.5 text-[0.625rem] font-black text-shell">시연 모드</span>
+            <span className="rounded-md bg-accent px-2 py-0.5 text-[0.625rem] font-black text-on-accent">시연 모드</span>
             <span className="rounded-md bg-white/10 px-2 py-0.5 text-[0.625rem] font-bold text-nav-label">{s.tag}</span>
           </span>
           <span className="text-[0.6875rem] tabular-nums text-nav-muted">
@@ -147,11 +147,11 @@ export function Presentation() {
               ← 이전
             </button>
             {step < STEPS.length - 1 ? (
-              <button onClick={() => setStep(step + 1)} className="tap hover-lift rounded-lg bg-accent px-5 py-2 text-xs font-black text-shell hover:brightness-110">
+              <button onClick={() => setStep(step + 1)} className="tap hover-lift rounded-lg bg-accent px-5 py-2 text-xs font-black text-on-accent hover:brightness-110">
                 다음 →
               </button>
             ) : (
-              <button onClick={finish} className="tap hover-lift rounded-lg bg-accent px-5 py-2 text-xs font-black text-shell hover:brightness-110">
+              <button onClick={finish} className="tap hover-lift rounded-lg bg-accent px-5 py-2 text-xs font-black text-on-accent hover:brightness-110">
                 시연 마치기 ✓
               </button>
             )}

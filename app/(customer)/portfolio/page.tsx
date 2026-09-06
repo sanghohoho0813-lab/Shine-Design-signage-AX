@@ -6,6 +6,7 @@ import { CATEGORIES, portfolio, IMG } from "@/lib/data";
 import { Reveal } from "@/components/Reveal";
 import { PhotoBand } from "@/components/ui";
 import RecordsList from "@/components/customer/Records";
+import { RecentWorks } from "@/components/customer/RecentWorks";
 import { RECORD_TOTAL, sectorCounts } from "@/lib/records";
 
 export default function PortfolioPage() {
@@ -34,6 +35,7 @@ export default function PortfolioPage() {
 
       <section className="section-sm bg-canvas">
         <div className="container-page">
+          <RecentWorks />
           {/* 검색 */}
           <div className="mb-4 flex items-center gap-2 rounded-xl border border-line bg-surface px-4 shadow-sm focus-within:border-accent">
             <svg viewBox="0 0 24 24" className="h-[1.05rem] w-[1.05rem] shrink-0 text-muted" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -89,7 +91,7 @@ export default function PortfolioPage() {
                       {p.category}
                     </span>
                     <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                      <span className="m-4 flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-xs font-bold text-shell">
+                      <span className="m-4 flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-xs font-bold text-on-accent">
                         프로젝트 보기 <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
                       </span>
                     </div>

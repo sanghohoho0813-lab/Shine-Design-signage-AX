@@ -4,85 +4,155 @@
    SHINE DESIGN — Theme Library (6 themes, 6 core tokens each)
    Default: 01 Shine Graphite Gold (brand)
 --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   SHINE DESIGN — Theme Library
+   Unified v3.0 Q-1: Canonical 9 Theme × 6 core tokens
+   (shell / primary / secondary / accent / highlight / soft)
+   01 shine = Onyx Gold 시드를 샤인 브랜드 골드로 미세조정한 기본값.
+   canvas·shell-2·shell-3·on-accent 는 각 테마에서 파생한 보조 토큰이다.
+   본문·표·카드의 Neutral 토큰은 테마와 분리되어 고정된다(아래 :root).
+--------------------------------------------------------------------------- */
 :root,
 [data-theme="shine"] {
   --shell: #16181d;
   --shell-2: #1f232b;
   --shell-3: #2a2f39;
   --primary: #3f4854;
-  --accent: #c4a15f;
   --secondary: #6b7280;
+  --accent: #c4a15f;
+  --highlight: #e0c76f;
   --soft: #ecedef;
   --canvas: #faf9f7;
+  --on-accent: #16181d;
 }
-[data-theme="navy"] {
-  --shell: #0f2747;
-  --shell-2: #16325a;
-  --shell-3: #1e3f6e;
-  --primary: #1d4ed8;
-  --accent: #d4a94f;
-  --secondary: #2f6f8f;
-  --soft: #e8eef7;
-  --canvas: #f7f9fc;
+[data-theme="navy-blue"] {
+  --shell: #0b1830;
+  --shell-2: #12223f;
+  --shell-3: #1a2d50;
+  --primary: #2457d6;
+  --secondary: #1687a7;
+  --accent: #17a889;
+  --highlight: #e7c873;
+  --soft: #dce8f7;
+  --canvas: #f6f8fc;
+  --on-accent: #0b1830;
 }
-[data-theme="teal"] {
-  --shell: #073b3f;
-  --shell-2: #0b4a4f;
-  --shell-3: #105a60;
-  --primary: #0e7377;
-  --accent: #c9a76a;
-  --secondary: #4fa7a2;
-  --soft: #ddefea;
-  --canvas: #f7f5f0;
+[data-theme="navy-gold"] {
+  --shell: #111a2d;
+  --shell-2: #18243c;
+  --shell-3: #21304c;
+  --primary: #2847a7;
+  --secondary: #a37a28;
+  --accent: #d0a84b;
+  --highlight: #f0d995;
+  --soft: #efe8d7;
+  --canvas: #faf8f3;
+  --on-accent: #111a2d;
 }
-[data-theme="burgundy"] {
-  --shell: #3a1523;
-  --shell-2: #4a1c2e;
-  --shell-3: #5c2439;
-  --primary: #7c2845;
-  --accent: #c5a15a;
-  --secondary: #a75c73;
-  --soft: #f1e3e7;
-  --canvas: #fbf7f4;
+[data-theme="emerald-gold"] {
+  --shell: #11332b;
+  --shell-2: #17423a;
+  --shell-3: #1e5149;
+  --primary: #0e7663;
+  --secondary: #2c9277;
+  --accent: #b4862a;
+  --highlight: #e8ce88;
+  --soft: #e2f0ea;
+  --canvas: #f5faf7;
+  --on-accent: #11332b;
 }
-[data-theme="indigo"] {
-  --shell: #25265b;
-  --shell-2: #2e2f6e;
-  --shell-3: #383a82;
-  --primary: #4c51bf;
-  --accent: #b59ae7;
-  --secondary: #6b70d6;
-  --soft: #eae8f7;
-  --canvas: #f8f8fc;
+[data-theme="forest-sage"] {
+  --shell: #17352c;
+  --shell-2: #1e4439;
+  --shell-3: #265346;
+  --primary: #356e58;
+  --secondary: #73977e;
+  --accent: #a58e4d;
+  --highlight: #d9d2aa;
+  --soft: #e5ece5;
+  --canvas: #f7f9f6;
+  --on-accent: #17352c;
 }
-[data-theme="forest"] {
-  --shell: #173d32;
-  --shell-2: #1e4a3d;
-  --shell-3: #265a4b;
-  --primary: #2e6b55;
-  --accent: #c9a66b;
-  --secondary: #679b7f;
-  --soft: #e5efe9;
-  --canvas: #faf7f0;
+[data-theme="deep-teal"] {
+  --shell: #08323a;
+  --shell-2: #0d414a;
+  --shell-3: #13505b;
+  --primary: #087a83;
+  --secondary: #1597a3;
+  --accent: #d2704c;
+  --highlight: #e9b59b;
+  --soft: #ddedef;
+  --canvas: #f5f9fa;
+  --on-accent: #08323a;
 }
-[data-theme="copper"] {
-  --shell: #20242a;
-  --shell-2: #292e36;
-  --shell-3: #333a44;
-  --primary: #424a52;
-  --accent: #c37b4a;
-  --secondary: #64707a;
-  --soft: #ecedef;
-  --canvas: #fafaf8;
+[data-theme="burgundy-slate"] {
+  --shell: #3a1724;
+  --shell-2: #4a1f2f;
+  --shell-3: #5a283b;
+  --primary: #7a2c49;
+  --secondary: #667085;
+  --accent: #a85c72;
+  --highlight: #e6b6a5;
+  --soft: #eee4e8;
+  --canvas: #faf6f7;
+  --on-accent: #ffffff;
+}
+[data-theme="plum-indigo"] {
+  --shell: #291a3d;
+  --shell-2: #33224d;
+  --shell-3: #3e2b5e;
+  --primary: #573f91;
+  --secondary: #4e63a8;
+  --accent: #8b5aa6;
+  --highlight: #c4b0e6;
+  --soft: #e9e5f3;
+  --canvas: #f8f6fb;
+  --on-accent: #ffffff;
+}
+[data-theme="steel-platinum"] {
+  --shell: #24303b;
+  --shell-2: #2d3b48;
+  --shell-3: #374856;
+  --primary: #44647a;
+  --secondary: #6d8899;
+  --accent: #4c9aaa;
+  --highlight: #c9d6de;
+  --soft: #e7edf1;
+  --canvas: #f6f8fa;
+  --on-accent: #24303b;
+}
+
+/* v3.0 토큰 이름 별칭 — 스펙 표기(--theme-*)로도 참조할 수 있게 한다 */
+:root {
+  --theme-shell: var(--shell);
+  --theme-primary: var(--primary);
+  --theme-secondary: var(--secondary);
+  --theme-accent: var(--accent);
+  --theme-highlight: var(--highlight);
+  --theme-soft: var(--soft);
 }
 
 :root {
   /* Global utility tokens shared by every theme (v1.2 Pure White Surface Contract) */
   --surface: #ffffff;
+  --surface-raised: #ffffff;
   --ink: #111827;
   --ink-2: #374151;
   --muted: #6b7280;
   --line: #e5e7eb;
+  /* v3.0 neutral 별칭 */
+  --neutral-canvas: var(--canvas);
+  --neutral-surface: var(--surface);
+  --neutral-surface-raised: var(--surface-raised);
+  --neutral-text: var(--ink);
+  --neutral-text-secondary: var(--ink-2);
+  --neutral-border: var(--line);
+  --neutral-shadow: rgba(17, 24, 39, 0.08);
+  /* Semantic — 의미색은 테마와 무관하게 고정. 빨강은 오류·위험에만 쓴다 */
+  --semantic-success: #3c9a75;
+  --semantic-warning: #d79a43;
+  --semantic-error: #d66a5e;
+  --semantic-info: #5b8def;
   /* Dark-shell readability (v1.2 Dark Shell Readability Contract) */
   --nav-active: #ffffff;
   --nav-primary: #f3f4f6;
@@ -114,6 +184,8 @@
   --color-secondary: var(--secondary);
   --color-soft: var(--soft);
   --color-canvas: var(--canvas);
+  --color-highlight: var(--highlight);
+  --color-on-accent: var(--on-accent);
   --color-surface: var(--surface);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
@@ -303,6 +375,11 @@ li {
   font-weight: 700;
   white-space: nowrap;
   line-height: 1.2;
+  max-width: 100%;
+}
+/* 아주 좁은 화면 + 글자 확대에서는 버튼이 넘치는 대신 줄바꿈한다 */
+@media (max-width: 420px) {
+  .btn { white-space: normal; text-align: center; }
 }
 .btn-sm {
   padding: 0.5rem 1rem;
@@ -317,7 +394,7 @@ li {
 }
 .btn-accent {
   background: var(--accent);
-  color: var(--shell);
+  color: var(--on-accent);
 }
 .btn-accent:hover {
   filter: brightness(1.08);
@@ -512,6 +589,12 @@ a {
 }
 
 /* 글자를 키우면 상단 인라인 메뉴는 서랍(더보기)으로 넘긴다 — 줄바꿈 깨짐 방지 */
+/* 글자 확대 + 좁은 화면: 로고 글자를 줄여 헤더가 한 줄에 들어가게 */
+@media (max-width: 480px) {
+  [data-font="xl"] .logo-text { font-size: 0.75rem; letter-spacing: 0.02em; }
+  [data-font="xl"] .logo-sub { display: none; }
+  [data-font="lg"] .logo-text { font-size: 0.8125rem; }
+}
 [data-font="lg"] .nav-inline,
 [data-font="xl"] .nav-inline {
   display: none !important;
