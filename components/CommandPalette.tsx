@@ -157,7 +157,7 @@ export function CommandPalette() {
       id: "act-demo",
       group: "실행",
       title: "시연 모드 시작",
-      sub: "10단계 Guided Product Demo",
+      sub: "11단계 Guided Product Demo",
       keywords: "presentation demo 발표",
       run: () => window.dispatchEvent(new Event("shine-presentation")),
     });
@@ -166,7 +166,7 @@ export function CommandPalette() {
         id: "act-tutorial",
         group: "실행",
         title: "튜토리얼 다시 보기",
-        sub: "AX 4단계 가이드",
+        sub: "AX 5단계 가이드",
         keywords: "tutorial 가이드",
         run: () => {
           router.push("/ax");

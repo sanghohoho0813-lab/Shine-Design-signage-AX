@@ -1,6 +1,6 @@
 # SHINE DESIGN — Signage Business AX + Customer Platform
 
-㈜샤인디자인 하이브리드 MVP. 미래AI랩 **AX+Platform Unified Design & Development System v3.0** 기반 — Strategy 94 / Product 98 / P0 0 (QA_REPORT.md).
+㈜샤인디자인 하이브리드 MVP. 미래AI랩 **AX+Platform Unified Design & Development System v3.0** 기반 — Strategy 100 / Product 100 / P0 0 (QA_REPORT.md — 설계·구조 품질 기준, 실제 ROI는 PILOT 이후).
 
 - **Customer Platform** (`/`) — 기업 사이트 · 포트폴리오 · 프로젝트 문의 위저드 · 향후 확장 Preview
 - **Business AX** (`/ax`) — 대시보드 · 파이프라인 · 견적/원가/Margin · 제작 파트너 · 입찰 준비도 · AI 브리핑 · 증빙 · Why AX · 설정
@@ -32,7 +32,9 @@ npm run build && npm start
 - 포트폴리오는 상단 검색창으로 기관명·프로젝트명 검색, 상세에서 이전/다음 프로젝트 이동
 - 포트폴리오 하단 **전체 수행 실적 337건** — 기관명으로 검색하면 일치 부분이 하이라이트됨 (`/portfolio#records`)
 - 문의 위저드는 자동 저장되어 새로고침해도 이어서 작성 가능
-- 증빙·리포트 화면의 **실적 요약 인쇄** 버튼 → 브라우저 인쇄로 제출용 PDF 저장
+- 증빙·리포트 화면의 **실적 요약 인쇄** 버튼 → 브라우저 인쇄로 제출용 PDF 저장 (KPI 계약·Evidence Log·실적 337건 포함)
+- 설정 > 데이터 > **전체 데이터 내보내기/가져오기** — 브라우저를 바꾸거나 지워도 JSON으로 되찾습니다
+- 설정 > 데모 > **Delivery Stage** — 실제 프로젝트를 넣기 시작하면 PILOT으로 선언하고, 증빙 화면에서 Baseline 스냅샷을 찍습니다
 
 ## 데모 포인트
 

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { IMG } from "@/lib/data";
 import { RECORD_TOTAL, KOROAD_COUNT } from "@/lib/records";
 import { CREDENTIALS } from "@/lib/company";
-import { MONEY_KPIS, KPI_KIND_LABELS } from "@/lib/kpi";
+import { MONEY_KPIS, KPI_KIND_LABELS, UNIT_ECONOMICS } from "@/lib/kpi";
 import { AI_ENGINES, METHOD_LABELS, LEVEL_LABELS } from "@/lib/ai";
 
 const SECTIONS = [
@@ -208,7 +208,26 @@ export default function WhyAxPage() {
             주에 제작에 들어가면, &lsquo;공단 CI 승인이 언제 났는지&rsquo;, &lsquo;병원 야간 설치 인력이
             확정됐는지&rsquo;를 대표의 기억이 감당해야 합니다. 놓치는 순간이 곧 납기 리스크입니다.
           </p>
-        </Section>
+        
+          {/* Constraint → Feature 맵 — 가장 큰 병목과 기능이 어떻게 연결되는지 (v3.0 §2: 핵심 기능의 60~70%가 Constraint에 직결) */}
+          <div className="mt-5 rounded-xl border border-line bg-surface p-4">
+            <p className="text-xs font-bold tracking-wide text-muted">PRIMARY CONSTRAINT → 어떤 기능이 그 손실을 막는가</p>
+            <ul className="mt-2 grid gap-2 sm:grid-cols-3">
+              {[
+                ["TIME LEAK · 견적·승인 대기", "프로젝트 관리(단계 이력) · 오늘 할 일 · Project Risk", "문의→견적 소요일"],
+                ["MONEY LEAK · 원가 누락", "견적·원가 관리 · Margin Guard", "Margin 미달 비율"],
+                ["REVENUE LEAK · 문의 누락", "문의 브릿지 · 내 문의 현황 · Next Action", "문의→수주 전환율"],
+              ].map(([c, f, k]) => (
+                <li key={c} className="rounded-lg bg-canvas p-3">
+                  <p className="text-[0.6875rem] font-bold text-[var(--ic-risk)]">{c}</p>
+                  <p className="mt-1 text-sm text-ink">{f}</p>
+                  <p className="mt-1 text-[0.6875rem] text-muted">측정: {k}</p>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[0.6875rem] text-muted">9개 모듈 중 6개가 이 세 손실에 직접 붙어 있습니다. 나머지(입찰·Why AX·설정)는 보조입니다.</p>
+          </div>
+</Section>
 
         {/* 05 */}
         <Section n="05" title="왜 지금 AX인가">
@@ -393,7 +412,18 @@ export default function WhyAxPage() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-muted">증빙·리포트 화면에서 현재값(Demo)과 함께 볼 수 있습니다.</p>
+          <p className="mt-3 text-xs text-muted">증빙·리포트 화면에서 현재값과 Baseline 스냅샷을 함께 볼 수 있습니다. Baseline 대비 변화는 PILOT 이상에서만 표시됩니다.</p>
+
+          <p className="mt-6 text-xs font-bold tracking-wide text-muted">UNIT ECONOMICS — 값이 아니라 측정 항목</p>
+          <dl className="mt-2 grid gap-2 sm:grid-cols-2">
+            {UNIT_ECONOMICS.map((u) => (
+              <div key={u.q} className="rounded-xl border border-line bg-surface p-3.5">
+                <dt className="text-sm font-bold text-ink">{u.q}</dt>
+                <dd className="mt-1 text-xs leading-relaxed text-ink-2">{u.a}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-2 text-[0.6875rem] text-muted">CAC·LTV·Payback은 숫자를 꾸미지 않고 측정 항목만 둡니다. Industry SaaS는 Platform Readiness LOW(2/5)로 권고하지 않습니다.</p>
         </Section>
 
         {/* Return CTA */}

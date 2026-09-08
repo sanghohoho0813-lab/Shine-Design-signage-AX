@@ -7,6 +7,7 @@ import { STAGES } from "@/lib/data";
 import { COMPANY } from "@/lib/company";
 import { track } from "@/lib/events";
 import { Section } from "@/components/ui";
+import { useRouter } from "next/navigation";
 
 /* ---------------------------------------------------------------------------
    내 문의 현황 — Closed Loop의 마지막 단계 (Unified v3.0 U-1 / U-4)
@@ -32,6 +33,21 @@ function fmt(iso: string) {
 export default function InquiryStatusPage() {
   const { inquiries, projects, hydrated } = useApp();
   const [q, setQ] = useState("");
+  const router = useRouter();
+
+  /* Repeat / Reorder (U-2 #8) — 같은 조건으로 다시 문의: 초안에 채워 넣고 위저드로 보낸다 */
+  const reInquire = (i: Inquiry) => {
+    try {
+      localStorage.setItem(
+        "shine-inquiry-draft",
+        JSON.stringify({
+          form: { clientType: i.clientType, projectType: i.projectType, status: i.status, location: i.location, schedule: "", budget: i.budget, sites: i.sites, name: i.name, org: i.org, phone: i.phone, notes: "" },
+          step: 0,
+        }),
+      );
+    } catch {}
+    router.push("/inquiry");
+  };
 
   useEffect(() => {
     track("view_inquiry_status");
@@ -134,7 +150,12 @@ export default function InquiryStatusPage() {
                       </div>
                     )}
 
-                    <dl className="mt-4 grid gap-x-6 gap-y-1.5 border-t border-line pt-4 text-sm sm:grid-cols-2">
+                    <div className="mt-4 flex flex-wrap gap-2 border-t border-line pt-4">
+                      <button onClick={() => reInquire(i)} className="tap btn btn-ghost btn-sm">
+                        이 조건으로 다시 문의
+                      </button>
+                    </div>
+                    <dl className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
                       {[
                         ["진행 단계(문의 당시)", i.status],
                         ["예산 범위", i.budget || "미정"],

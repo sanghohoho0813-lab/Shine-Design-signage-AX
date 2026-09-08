@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useApp, THEMES, ROLE_LABELS, Role, FontScale, fmtTime } from "@/lib/store";
+import { useApp, THEMES, ROLE_LABELS, Role, FontScale, fmtTime, STAGE_LABELS, type DeliveryStage, SCHEMA_VERSION } from "@/lib/store";
+import { RECORD_TOTAL } from "@/lib/records";
 import { toast } from "@/components/Toast";
 import { AxSkeleton } from "@/components/ax/Skeleton";
 import { AiReadyBadge } from "@/components/ax/AiReady";
@@ -220,10 +221,31 @@ export default function SettingsPage() {
 
       {/* -------------------------------- 데모 ------------------------------ */}
       <Card title="데모" desc="현재 단계와 시연 도구입니다.">
-        <div className="mb-3 flex flex-wrap items-center gap-2 rounded-xl bg-canvas px-3.5 py-2.5 text-sm">
-          <span className="text-ink-2">현재 단계</span>
-          <span className="rounded-full bg-[var(--ic-sales)]/12 px-2.5 py-0.5 text-xs font-bold text-[var(--ic-sales)]">DEMO</span>
-          <span className="text-xs text-muted">→ PILOT(실데이터 일부) → PRODUCTION(실사용). 시연 데이터를 실제 성과처럼 말하지 않습니다.</span>
+        <div className="mb-3 rounded-xl bg-canvas px-3.5 py-3">
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-ink-2">현재 단계</span>
+            <span className="rounded-full bg-[var(--ic-sales)]/12 px-2.5 py-0.5 text-xs font-bold text-[var(--ic-sales)]">{app.deliveryStage}</span>
+            <span className="text-xs text-muted">{STAGE_LABELS[app.deliveryStage]}</span>
+          </div>
+          {/* Delivery Stage 선언 — DEMO에서는 Baseline 대비 변화를 숨겨 시연 값으로 개선율을 만들지 않는다 */}
+          <div className="mt-2.5 flex flex-wrap gap-1.5" role="radiogroup" aria-label="Delivery Stage">
+            {(["DEMO", "PILOT", "PRODUCTION"] as DeliveryStage[]).map((st) => (
+              <button
+                key={st}
+                role="radio"
+                aria-checked={app.deliveryStage === st}
+                onClick={() => {
+                  if (st !== "DEMO" && !window.confirm(`${st} 단계로 선언합니다. 실제 프로젝트 데이터가 들어와 있을 때만 사용하세요. 이후 KPI 화면에 Baseline 대비 변화가 표시됩니다.`)) return;
+                  app.setDeliveryStage(st);
+                  toast(`단계: ${st}`);
+                }}
+                className={`tap rounded-full px-3 py-1 text-xs font-semibold ${app.deliveryStage === st ? "bg-shell text-white" : "border border-line text-ink-2 hover:bg-soft"}`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-[0.6875rem] text-muted">DEMO → PILOT(실데이터 일부) → PRODUCTION(실사용). 단계를 올려도 시연 데이터가 실제 성과가 되지는 않습니다 — Baseline은 증빙 화면에서 별도로 잡습니다.</p>
         </div>
         <div className="grid gap-2 sm:grid-cols-2">
           <button
@@ -231,14 +253,14 @@ export default function SettingsPage() {
             className="tap hover-lift rounded-xl border border-accent/40 bg-accent/5 p-4 text-left hover:bg-accent/10"
           >
             <span className="block text-sm font-bold text-ink">▶ 시연 모드 시작</span>
-            <span className="text-xs text-muted">영업·심사용 10단계 Guided Product Demo</span>
+            <span className="text-xs text-muted">영업·심사용 11단계 Guided Product Demo</span>
           </button>
           <button
             onClick={() => window.dispatchEvent(new Event("shine-tutorial"))}
             className="tap hover-lift rounded-xl border border-line p-4 text-left hover:bg-soft"
           >
             <span className="block text-sm font-bold text-ink">튜토리얼 다시 보기</span>
-            <span className="text-xs text-muted">4단계 가이드를 실제 화면 위에서 재생</span>
+            <span className="text-xs text-muted">5단계 가이드를 실제 화면 위에서 재생</span>
           </button>
           <button
             onClick={() => {
@@ -261,10 +283,72 @@ export default function SettingsPage() {
       {/* ------------------------------- 데이터 ----------------------------- */}
       <Card title="데이터" desc="이 화면의 숫자가 어디서 오는지, 어떤 형식으로 들어오는지입니다.">
         <ul className="space-y-2 text-sm">
-          <Row k="데이터 소스" v="Demo Repository — 브라우저 localStorage (shine-ax-state-v1)" />
+          <Row k="데이터 소스" v={`${app.deliveryStage === "DEMO" ? "Demo Repository" : app.deliveryStage + " Repository"} — 브라우저 localStorage (shine-ax-state-v1 · schema v${SCHEMA_VERSION})`} />
           <Row k="마지막 업데이트" v={fmtTime(app.updatedAt) ?? "시드 상태 (변경 없음)"} />
           <Row k="교체 지점" v="CSV 가져오기 → Supabase → 외부 API — 같은 필드 구조" />
         </ul>
+
+        {/* 쌓이는 데이터 — 12개월 뒤 자산이 되는 것들의 현재 양 */}
+        <p className="mt-5 text-xs font-semibold text-ink-2">
+          쌓인 데이터 <span className="font-normal text-muted">— Data Asset이 실제로 늘고 있는지</span>
+        </p>
+        <ul className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {[
+            ["프로젝트", app.projects.length, `문의 유입 ${app.projects.filter((p) => p.fromInquiry).length}`],
+            ["단계 이력", app.projects.reduce((n, p) => n + (p.stageLog?.length ?? 0), 0), "stageLog 건"],
+            ["Action 기록", Object.keys(app.actionStates).length, `완료 ${app.doneActions.length}`],
+            ["행동 이벤트", events.length, "최근 200건 보관"],
+          ].map(([k, v, sub]) => (
+            <li key={String(k)} className="rounded-xl border border-line p-3">
+              <p className="text-[0.6875rem] text-muted">{k}</p>
+              <p className="mt-0.5 text-lg font-black tabular-nums text-ink">{v}</p>
+              <p className="text-[0.625rem] text-muted">{sub}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-1.5 text-[0.6875rem] text-muted">수행 실적 {RECORD_TOTAL}건(지명원)은 코드에 고정된 공개 자료라 여기에 세지 않습니다.</p>
+
+        {/* 백업 · 이관 — 데이터가 날아가지 않게 */}
+        <p className="mt-5 text-xs font-semibold text-ink-2">
+          백업 · 이관 <span className="font-normal text-muted">— 브라우저를 바꾸거나 지워도 되찾을 수 있게</span>
+        </p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button
+            onClick={() => {
+              const json = app.exportState();
+              const blob = new Blob([json], { type: "application/json" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `shine-ax-backup-${new Date().toISOString().slice(0, 10)}.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+              toast("전체 데이터를 JSON으로 내려받았습니다");
+            }}
+            className="tap btn btn-primary btn-sm"
+          >
+            ⬇ 전체 데이터 내보내기 (JSON)
+          </button>
+          <label className="tap btn btn-ghost btn-sm cursor-pointer">
+            ⬆ 가져오기
+            <input
+              type="file"
+              accept="application/json,.json"
+              className="sr-only"
+              aria-label="백업 JSON 가져오기"
+              onChange={async (e) => {
+                const f = e.target.files?.[0];
+                if (!f) return;
+                const text = await f.text();
+                if (!window.confirm("현재 브라우저의 데이터를 이 파일 내용으로 바꿉니다. 계속할까요?")) return;
+                const ok = app.importState(text);
+                toast(ok ? "가져오기 완료 — 화면을 새로고침해도 유지됩니다" : "가져오기 실패 — 형식이 맞지 않습니다. 기존 데이터는 그대로입니다");
+                e.target.value = "";
+              }}
+            />
+          </label>
+        </div>
+        <p className="mt-1.5 text-[0.6875rem] text-muted">가져오기는 형식을 검증한 뒤 적용합니다. 실패하면 아무것도 바뀌지 않습니다.</p>
 
         <p className="mt-5 text-xs font-semibold text-ink-2">
           CSV 샘플 <span className="font-normal text-muted">— 실제 필드명과 같은 헤더. 이 형식으로 채우면 바로 붙습니다.</span>

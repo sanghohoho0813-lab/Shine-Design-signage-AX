@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 /* ---------------------------------------------------------------------------
    시연 모드 (Presentation Mode) — Unified §15 Guided Product Demo
-   실제 Route를 자동 이동하며 제품 전체를 10단계로 설명한다.
+   실제 Route를 자동 이동하며 제품 전체를 11단계로 설명한다.
    루트 레이아웃에 마운트되어 Customer ↔ AX 이동에도 유지된다.
    시작: window.dispatchEvent(new Event("shine-presentation"))
 --------------------------------------------------------------------------- */
@@ -35,6 +35,12 @@ const STEPS: { route: string; tag: string; title: string; body: string }[] = [
     tag: "BRIDGE",
     title: "문의가 시작되는 곳",
     body: "5단계 양식으로 기관 유형·프로젝트·일정·예산이 정리되어 접수됩니다. 전화 메모가 아니라 데이터로 도착합니다.",
+  },
+  {
+    route: "/inquiry/status",
+    tag: "LOOP",
+    title: "고객에게 상태가 돌아옵니다",
+    body: "접수번호로 응대 상태(접수 → 검토중 → 상담예약)를 확인합니다. 담당자가 AX에서 상태를 바꾸면 이 화면이 바뀝니다 — Closed Loop의 마지막 단계입니다.",
   },
   {
     route: "/ax/pipeline",

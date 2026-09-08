@@ -9,12 +9,16 @@ import { COMPANY, CREDENTIALS } from "@/lib/company";
 import { BUSINESS_RECORDS, RECORD_TOTAL } from "@/lib/records";
 import { MONEY_KPIS, KPI_KIND_LABELS, kpiNow } from "@/lib/kpi";
 import { marginOf } from "@/lib/data";
-import { ACTION_LABELS, fmtTime } from "@/lib/store";
+import { ACTION_LABELS, fmtTime, STAGE_LABELS } from "@/lib/store";
+import { toast } from "@/components/Toast";
 
 export default function EvidencePage() {
-  const { projects, hydrated, inquiries, actionStates } = useApp();
+  const { projects, hydrated, inquiries, actionStates, deliveryStage, baselines, captureBaseline } = useApp();
   if (!hydrated) return <AxSkeleton variant="cards" />;
   const now = kpiNow(projects, inquiries, marginOf as never);
+  const baseline = baselines.length ? baselines[baselines.length - 1] : null;
+  /* DEMO 단계에서는 Baseline 대비 변화를 계산하지 않는다 — 시연 값으로 개선율을 만들지 않기 위해 */
+  const showDelta = deliveryStage !== "DEMO" && !!baseline && baseline.stage !== "DEMO";
 
   /* Evidence Log — 사람이 무엇을 했는지가 남는다 (v3.0 §9 Evidence Type) */
   type Ev = { type: string; at: string; note: string };
@@ -31,6 +35,9 @@ export default function EvidencePage() {
     (q.statusLog ?? [{ status: q.axStatus, at: q.createdAt }]).forEach((l) =>
       evidence.push({ type: "CUSTOMER", at: l.at, note: `문의 ${q.id.toUpperCase()} · ${q.clientType} · ${l.status}` }),
     ),
+  );
+  baselines.forEach((b) =>
+    evidence.push({ type: "BASELINE", at: b.at, note: `Baseline 스냅샷 (${b.stage})${b.note ? ` — ${b.note}` : ""} · ${Object.entries(b.values).map(([k, v]) => `${k}=${v}`).join(", ")}` }),
   );
   evidence.sort((a, b) => (a.at < b.at ? 1 : -1));
   const EV_TONE: Record<string, string> = { RESULT: "var(--ic-evidence)", ACTION: "var(--ic-overview)", RISK: "var(--ic-risk)", CUSTOMER: "var(--ic-crm)", BASELINE: "var(--ic-system)" };
@@ -99,6 +106,32 @@ export default function EvidencePage() {
           {CREDENTIALS.map((c) => c.label).join(" · ")}
         </p>
 
+        {/* Money KPI 계약 + Evidence Log — 제출자료에도 Baseline 상태를 정직하게 */}
+        <div className="print-block mt-8 border-t-2 border-black pt-4">
+          <h2 className="text-lg font-black">Money KPI 계약 — 단계 {deliveryStage} · Baseline {baseline ? (baseline.stage === "DEMO" ? "DEMO 스냅샷(실증 아님)" : "MEASURING") : "UNKNOWN"}</h2>
+          <table className="mt-2 w-full border-collapse text-xs">
+            <thead><tr className="border-b border-black text-left"><th className="py-1 pr-2">종류</th><th className="py-1 pr-2">KPI</th><th className="py-1 pr-2">측정</th><th className="py-1">현재값({deliveryStage})</th></tr></thead>
+            <tbody>
+              {MONEY_KPIS.map((k) => (
+                <tr key={k.id} className="print-block border-b border-gray-300">
+                  <td className="py-1 pr-2">{KPI_KIND_LABELS[k.kind]}</td><td className="py-1 pr-2 font-semibold">{k.name}</td><td className="py-1 pr-2">{k.measurement}</td><td className="py-1 tabular-nums">{now[k.id] ?? "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-1 text-[0.625rem]">개선율은 Baseline 확정(PILOT 4주) 이후에만 산출합니다.</p>
+        </div>
+        <div className="print-block mt-6">
+          <h2 className="text-lg font-black">Evidence Log ({evidence.length}건)</h2>
+          <ul className="mt-1.5">
+            {evidence.slice(0, 80).map((e, i) => (
+              <li key={i} className="print-block border-b border-gray-300 py-1 text-[0.6875rem]">
+                [{e.type}] {fmtTime(e.at) ?? e.at} — {e.note}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* 지명원 기업실적 전체 */}
         <div className="print-block mt-8 border-t-2 border-black pt-4">
           <h2 className="text-lg font-black">전체 수행 실적 ({RECORD_TOTAL}건)</h2>
@@ -150,17 +183,41 @@ export default function EvidencePage() {
           <h3 className="font-bold text-ink">
             Money KPI 계약 <span className="text-xs font-normal text-muted">— Cost · Revenue · Scale</span>
           </h3>
-          <span className="rounded-full bg-[var(--ic-system)]/12 px-2.5 py-0.5 text-[0.6875rem] font-bold text-[var(--ic-system)]">BASELINE: UNKNOWN</span>
+          <span className="rounded-full bg-[var(--ic-system)]/12 px-2.5 py-0.5 text-[0.6875rem] font-bold text-[var(--ic-system)]">
+            BASELINE: {baseline ? (baseline.stage === "DEMO" ? "DEMO 스냅샷 (실증 아님)" : `MEASURING · ${fmtTime(baseline.at)}`) : "UNKNOWN"}
+          </span>
         </div>
         <p className="mt-1 text-xs text-muted">
-          실제 Baseline은 실운영 12주 뒤에 확정합니다. 아래 &lsquo;현재값&rsquo;은 Demo 데이터 계산이며 개선율이 아닙니다.
+          {deliveryStage === "DEMO"
+            ? "현재 단계 DEMO — 아래 '현재값'은 시연 데이터 계산이며 개선율이 아닙니다. Baseline 대비 변화는 PILOT 이상에서만 표시합니다."
+            : `현재 단계 ${STAGE_LABELS[deliveryStage]} — Baseline 스냅샷 이후의 변화를 함께 표시합니다. 4주 이상 측정한 뒤 확정하세요.`}
         </p>
+        {/* Baseline 메커니즘 — 지금 값을 시각과 함께 고정한다. DEMO에서 찍은 스냅샷은 '실증 아님'으로 표기된다 */}
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => {
+              const note = window.prompt("스냅샷 메모 (선택) — 예: PILOT 1주차", "");
+              if (note === null) return;
+              captureBaseline(now, note.trim() || undefined);
+              toast(deliveryStage === "DEMO" ? "DEMO 스냅샷을 저장했습니다 — 실증 Baseline이 아닙니다" : "Baseline 스냅샷을 저장했습니다");
+            }}
+            className="tap btn btn-ghost btn-sm"
+          >
+            ⏱ 지금 값을 Baseline 스냅샷으로 저장
+          </button>
+          <span className="text-[0.6875rem] text-muted">스냅샷 {baselines.length}건 · Evidence Log에 BASELINE으로 남습니다</span>
+        </div>
         <ul className="mt-3 grid gap-2 md:grid-cols-2">
           {MONEY_KPIS.map((k) => (
             <li key={k.id} className="rounded-xl border border-line p-3.5">
               <div className="flex items-center justify-between gap-2">
                 <span className="rounded-md bg-soft px-1.5 py-0.5 text-[0.625rem] font-bold text-ink-2">{KPI_KIND_LABELS[k.kind]}</span>
-                <span className="text-[0.6875rem] tabular-nums text-muted">현재값(Demo) <b className="text-ink">{now[k.id] ?? "—"}</b></span>
+                <span className="text-[0.6875rem] tabular-nums text-muted">
+                  현재값({deliveryStage === "DEMO" ? "Demo" : deliveryStage}) <b className="text-ink">{now[k.id] ?? "—"}</b>
+                  {showDelta && baseline?.values[k.id] && baseline.values[k.id] !== "—" && (
+                    <span className="ml-1.5 text-[var(--ic-overview)]">Baseline {baseline.values[k.id]} → 측정 중</span>
+                  )}
+                </span>
               </div>
               <p className="mt-1.5 text-sm font-bold text-ink">{k.name}</p>
               <p className="mt-0.5 text-[0.75rem] text-ink-2">{k.definition}</p>

@@ -1,7 +1,7 @@
 # PROJECT_SPEC — ㈜샤인디자인 Signage AX + Customer Platform
 
 기준 문서: 미래AI랩 AX+Platform Unified Design & Development System **v3.0 (2026-09-02)** + 회사 Master Prompt + 「(주)샤인디자인 지명원_2026」.
-Delivery Stage: **DEMO** (시연 데이터 · 브라우저 저장). PILOT 전환 조건은 하단 PROOF PLAN 참조.
+Delivery Stage: **DEMO** (시연 데이터 · 브라우저 저장) — 설정>데모에서 PILOT/PRODUCTION 선언 가능. 단계는 라벨과 KPI 표시 규칙만 바꾸며 데이터를 실데이터로 만들지 않는다. PILOT 전환 조건은 하단 PROOF PLAN 참조.
 
 ---
 
@@ -42,7 +42,7 @@ PRIMARY CONSTRAINT (TIME + MONEY LEAK):
 | REVENUE | 입찰 참여 대비 낙찰률 | 입찰·제안 관리 (결과 필드는 NEXT) | **UNKNOWN** |
 | SCALE | 담당자 1인당 동시 관리 프로젝트 수 | 진행 프로젝트 ÷ 담당자 수 | **UNKNOWN** |
 
-`BASELINE STATUS: REQUIRED / UNKNOWN · TARGET: DO NOT INVENT`. 화면(증빙·리포트, Why AX §15)에는 "현재값(Demo)"만 표시하고 개선율은 쓰지 않는다.
+`BASELINE STATUS: REQUIRED / UNKNOWN · TARGET: DO NOT INVENT`. 증빙 화면의 **Baseline 스냅샷** 버튼이 현재값을 시각과 함께 고정한다. DEMO 단계 스냅샷은 "실증 아님"으로 남고, Baseline 대비 변화는 PILOT 이상에서만 표시한다. 문의→견적 소요일은 `Project.stageLog`(단계 진입 시각)로 실측한다.
 
 ### CUSTOMER PRIMARY CONVERSION
 **프로젝트 문의 접수** (`/inquiry` 5단계 위저드 → 접수번호 발급). 보조 전환: 전화·이메일 직접 연락, 수행 실적 검색 후 문의.
@@ -93,6 +93,9 @@ PRIMARY CONSTRAINT (TIME + MONEY LEAK):
 | Next Action | 오늘 무엇부터 | 5조건 | **RULE** L2 | 우선순위 목록 | 조건 수집 | LOW | 상태는 사람이 기록 | ADOPTION |
 
 AI Fit 통과 4개 · LLM 연결 0개 · 억지 AI 포장 없음. LLM은 "사유 문장화 / 공고문 읽기(RAG)"에만 NEXT.
+
+### UNIT ECONOMICS (측정 항목만 — `lib/kpi.ts` UNIT_ECONOMICS)
+누가(발주처, 프로젝트 단위) · 무엇에(설계·제작·설치 일괄, 유지관리는 NEXT) · 반복매출(다지점·다년 발주 실재, 유지관리 계약이 정기화 경로) · 변동비(자재·파트너·설치) · CAC(문의당 영업시간×인건비) · Contribution Margin(견적−원가7항목) · LTV(발주처별 누적×평균 Margin) · Payback(구축비÷월 Margin 개선분, Baseline 후). 값은 쓰지 않는다.
 
 ### PROOF PLAN
 - **Demand Proof (지금 있음)**: 지명원 실적 337건, 도로교통공단 57건, 병원·보건 39건.
@@ -159,7 +162,7 @@ Strategic P0 13항목 점검 → **0건** (QA_REPORT.md). Score A 목표 95+.
 ## System Core
 - Theme **Canonical 9** × 6 토큰(shell/primary/secondary/accent/highlight/soft) + neutral/semantic 고정 · 구버전 id 자동 마이그레이션
 - Role 3 · Surface Switch · Device Preview · Tutorial 4 · Presentation 10 · 날짜시각 · Demo Reset · ⌘K
-- 상태: localStorage `shine-ax-state-v1`(additive) · 이벤트 `shine-ax-events-v1` · 최근 본 `shine-recent-works`
+- 상태: localStorage `shine-ax-state-v1`(additive, schemaVersion 2) · 이벤트 `shine-ax-events-v1`(+ `NEXT_PUBLIC_ANALYTICS_ENDPOINT` sink) · 최근 본 `shine-recent-works` · **백업**: 설정>데이터 전체 내보내기/가져오기(검증)
 
 ## Non-Goals
 NOT BUILDING 목록과 동일. 향후 확장 메뉴는 Preview Sheet로만 존재한다.

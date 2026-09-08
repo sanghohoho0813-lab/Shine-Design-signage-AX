@@ -88,6 +88,25 @@ export interface ActionRecord {
   at: string; // ISO
 }
 
+/* ------------------------- Delivery Stage / Baseline ---------------------- */
+/* v3.0 §15 — DEMO → PILOT → PRODUCTION. 단계는 '선언'이며 화면 라벨과 KPI 표시 규칙을 바꾼다.
+   Demo 값으로 개선율을 계산하지 않도록 DEMO 단계에서는 Baseline 대비 변화를 숨긴다. */
+export type DeliveryStage = "DEMO" | "PILOT" | "PRODUCTION";
+export const STAGE_LABELS: Record<DeliveryStage, string> = {
+  DEMO: "DEMO — 시연 데이터",
+  PILOT: "PILOT — 실데이터 일부 · 현장 실증",
+  PRODUCTION: "PRODUCTION — 실제 업무 사용",
+};
+export interface BaselineSnapshot {
+  at: string;
+  stage: DeliveryStage;
+  values: Record<string, string>;
+  note?: string;
+}
+
+/** 저장 형식 버전 — 앞으로의 마이그레이션 기준점. 키는 바꾸지 않는다. */
+export const SCHEMA_VERSION = 2;
+
 interface AppState {
   theme: ThemeId;
   setTheme: (t: ThemeId) => void;
@@ -112,6 +131,14 @@ interface AppState {
   setAxOwner: (v: string) => void;
   /** 마지막으로 데이터가 바뀐 시각 — Data Freshness 표시용 */
   updatedAt: string | null;
+  deliveryStage: DeliveryStage;
+  setDeliveryStage: (s: DeliveryStage) => void;
+  baselines: BaselineSnapshot[];
+  captureBaseline: (values: Record<string, string>, note?: string) => void;
+  /** 전체 상태를 JSON 문자열로 — 백업·이관용 */
+  exportState: () => string;
+  /** JSON을 검증해 들여온다. 실패하면 false, 기존 데이터는 그대로 */
+  importState: (json: string) => boolean;
   resetDemo: () => void;
   hydrated: boolean;
   isEmbedded: boolean; // rendered inside a device-preview iframe
@@ -133,6 +160,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [actionStates, setActionStates] = useState<Record<string, ActionRecord>>({});
   const [axOwner, setAxOwner] = useState("권유진");
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
+  const [deliveryStage, setDeliveryStage] = useState<DeliveryStage>("DEMO");
+  const [baselines, setBaselines] = useState<BaselineSnapshot[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [isEmbedded, setIsEmbedded] = useState(false);
 
@@ -149,6 +178,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (Array.isArray(s.inquiries)) setInquiries(s.inquiries);
         if (typeof s.axOwner === "string" && s.axOwner.trim()) setAxOwner(s.axOwner);
         if (typeof s.updatedAt === "string") setUpdatedAt(s.updatedAt);
+        if (s.deliveryStage === "DEMO" || s.deliveryStage === "PILOT" || s.deliveryStage === "PRODUCTION") setDeliveryStage(s.deliveryStage);
+        if (Array.isArray(s.baselines)) setBaselines(s.baselines);
         // actionStates가 있으면 그대로, 없고 옛 doneActions만 있으면 완료 상태로 변환
         if (s.actionStates && typeof s.actionStates === "object") {
           setActionStates(s.actionStates);
@@ -189,10 +220,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           doneActions, // 구버전 호환용으로 함께 남긴다
           axOwner,
           updatedAt,
+          deliveryStage,
+          baselines,
+          schemaVersion: SCHEMA_VERSION,
         }),
       );
     } catch {}
-  }, [theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, doneActions, axOwner, updatedAt, hydrated]);
+  }, [theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, doneActions, axOwner, updatedAt, deliveryStage, baselines, hydrated]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -222,7 +256,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           ps.map((p) => {
             if (p.id !== id) return p;
             const i = STAGES.indexOf(p.stage);
-            return i < STAGES.length - 1 ? { ...p, stage: STAGES[i + 1], risk: i + 1 >= 6 ? "낮음" : p.risk } : p;
+            if (i >= STAGES.length - 1) return p;
+            const next = STAGES[i + 1];
+            // 단계 진입 시각을 남긴다 — 문의→견적 소요일 같은 KPI의 측정 근거
+            const stageLog = [...(p.stageLog ?? []), { stage: next, at: new Date().toISOString() }];
+            return { ...p, stage: next, risk: i + 1 >= 6 ? "낮음" : p.risk, stageLog };
           }),
         );
         touch();
@@ -251,6 +289,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             owner: "미배정",
             risk: "낮음" as const,
             fromInquiry: true,
+            stageLog: [{ stage: "문의" as Stage, at: now }],
           },
           ...ps,
         ]);
@@ -289,6 +328,53 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         touch();
       },
       updatedAt,
+      deliveryStage,
+      setDeliveryStage: (st) => {
+        setDeliveryStage(st);
+        touch();
+      },
+      baselines,
+      captureBaseline: (values, note) => {
+        setBaselines((b) => [...b, { at: new Date().toISOString(), stage: deliveryStage, values, note }]);
+        touch();
+      },
+      exportState: () =>
+        JSON.stringify(
+          {
+            schemaVersion: SCHEMA_VERSION,
+            exportedAt: new Date().toISOString(),
+            theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, axOwner, updatedAt, deliveryStage, baselines,
+          },
+          null,
+          2,
+        ),
+      importState: (json) => {
+        try {
+          const s = JSON.parse(json);
+          if (!s || typeof s !== "object" || !Array.isArray(s.projects)) return false;
+          // 필수 형태만 검증 — 들여온 뒤에도 옛 필드는 같은 마이그레이션을 탄다
+          setThemeRaw(normalizeTheme(s.theme));
+          if (s.fontScale && s.fontScale in FONT_SCALES) setFontScale(s.fontScale);
+          if (s.role === "ceo" || s.role === "staff" || s.role === "customer") setRole(s.role);
+          setReducedMotion(!!s.reducedMotion);
+          setProjects(s.projects);
+          setInquiries(Array.isArray(s.inquiries) ? s.inquiries : []);
+          if (s.actionStates && typeof s.actionStates === "object") setActionStates(s.actionStates);
+          else if (Array.isArray(s.doneActions)) {
+            const m: Record<string, ActionRecord> = {};
+            const at = new Date().toISOString();
+            s.doneActions.forEach((id: string) => (m[id] = { state: "done", at }));
+            setActionStates(m);
+          } else setActionStates({});
+          if (typeof s.axOwner === "string" && s.axOwner.trim()) setAxOwner(s.axOwner);
+          if (s.deliveryStage === "DEMO" || s.deliveryStage === "PILOT" || s.deliveryStage === "PRODUCTION") setDeliveryStage(s.deliveryStage);
+          setBaselines(Array.isArray(s.baselines) ? s.baselines : []);
+          touch();
+          return true;
+        } catch {
+          return false;
+        }
+      },
       resetDemo: () => {
         setProjects(seedProjects);
         setInquiries([]);
@@ -299,6 +385,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setReducedMotion(false);
         setAxOwner("권유진");
         setUpdatedAt(null);
+        setDeliveryStage("DEMO");
+        setBaselines([]);
         try {
           localStorage.removeItem(LS_KEY);
         } catch {}
@@ -307,7 +395,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       hydrated,
       isEmbedded,
     }),
-    [theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, doneActions, axOwner, updatedAt, hydrated, isEmbedded],
+    [theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, doneActions, axOwner, updatedAt, deliveryStage, baselines, hydrated, isEmbedded],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

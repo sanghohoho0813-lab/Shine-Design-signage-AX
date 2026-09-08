@@ -6,7 +6,6 @@ Unified v3.0 §21: Red Team 후 P0/P1만 고치고 P2는 여기에 남긴다. �
 - Supabase 연결 — `lib/dictionary.ts`의 SSOT 표를 그대로 테이블로. RLS는 설정 > 권한 매트릭스 표 그대로.
 - 문의 현황 실서비스화 — 접수번호 + 연락처 뒷자리 인증 후 조회. SMS/카카오 알림은 별도 견적.
 - 입찰 결과 필드(낙찰/유찰/미참여) 추가 → 낙찰률 KPI 실측.
-- 문의→견적 소요일 KPI는 파이프라인 단계 진입 시각을 Project에 기록해야 실측 가능(현재 Inquiry.statusLog만 있음).
 
 ## AI (LLM 연결 시 순서)
 1. Next Action 문장화(L1) — 오류비용 낮음.
@@ -23,6 +22,8 @@ Unified v3.0 §21: Red Team 후 P0/P1만 고치고 P2는 여기에 남긴다. �
 - 설치 일정·배차 캘린더 (향후 확장 NEXT 1순위).
 - Evidence Log 내보내기(CSV/PDF) — 현재는 인쇄 리포트로 대체.
 - 알림을 읽음 상태까지 localStorage에 저장(현재 세션 메모리).
+- 시드 프로젝트에 stageLog가 없어 소요일 KPI는 신규 건부터 — PILOT 시작 시 실제 프로젝트를 문의 단계부터 입력하면 자연히 쌓인다.
+- 오버레이 히스토리 통합(뒤로가기로 오버레이만 닫기)은 Next 라우터와의 충돌 때문에 보류 — DECISIONS 0-ag.
 
 ## 품질
 - Lighthouse 실측(현재 헤드리스 QA만).

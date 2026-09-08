@@ -125,7 +125,7 @@ export default function AxDashboard() {
       </section>
 
       {/* 오늘 할 일 */}
-      <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+      <section data-tutorial="todo" className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="font-bold text-ink">
             오늘 할 일

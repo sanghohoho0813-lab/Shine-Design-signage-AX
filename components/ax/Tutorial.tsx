@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { usePathname, useRouter } from "next/navigation";
 
 /* ---------------------------------------------------------------------------
-   AX Tutorial — 4-step guided spotlight over REAL routes (v1.1 Tutorial
+   AX Tutorial — 5-step guided spotlight over REAL routes (v1.1 Tutorial
    Contract). Auto-navigates, waits for the target, cleans up completely.
    Replay: window.dispatchEvent(new Event("shine-tutorial"))
 --------------------------------------------------------------------------- */
@@ -22,6 +22,12 @@ const STEPS = [
     target: "ai-card",
     title: "오늘의 AX 브리핑",
     body: "AI가 이번 주 가장 주의할 프로젝트를 이유와 함께 짚어줍니다. 근거(Why)와 추천 Action이 항상 함께 표시됩니다.",
+  },
+  {
+    route: "/ax",
+    target: "todo",
+    title: "오늘 할 일 — 추천은 처리돼야 끝납니다",
+    body: "리스크·검수·문의·Margin·입찰에서 자동으로 모은 목록입니다. 확인 → 실행중 → 완료(또는 보류·무시+사유)로 처리하면 증빙 Evidence Log에 남습니다.",
   },
   {
     route: "/ax/pipeline",

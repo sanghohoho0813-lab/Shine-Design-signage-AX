@@ -62,6 +62,8 @@ export interface Project {
   isBid?: boolean;
   fromInquiry?: boolean;
   costs?: CostBreakdown;
+  /** 단계 진입 시각 — 문의→견적 소요일 같은 KPI의 측정 근거. 시드에는 없고 운영 중 쌓인다 */
+  stageLog?: { stage: Stage; at: string }[];
 }
 
 export interface CostBreakdown {

@@ -29,6 +29,8 @@ export interface TrackedEvent {
 
 const KEY = "shine-ax-events-v1";
 const MAX = 200;
+/** 외부 Analytics sink — 환경변수가 있으면 같은 이벤트를 beacon으로도 보낸다. 없으면 no-op */
+const SINK = process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT;
 
 export function track(name: EventName, props?: TrackedEvent["props"]) {
   if (typeof window === "undefined") return;
@@ -38,6 +40,9 @@ export function track(name: EventName, props?: TrackedEvent["props"]) {
     while (list.length > MAX) list.shift();
     localStorage.setItem(KEY, JSON.stringify(list));
     window.dispatchEvent(new Event("shine-events"));
+    if (SINK && typeof navigator !== "undefined" && "sendBeacon" in navigator) {
+      navigator.sendBeacon(SINK, JSON.stringify({ name, at: list[list.length - 1].at, props }));
+    }
   } catch {}
 }
 

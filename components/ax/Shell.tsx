@@ -138,7 +138,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 export default function AxShell({ children }: { children: React.ReactNode }) {
-  const { role, hydrated, projects, inquiries } = useApp();
+  const { role, hydrated, projects, inquiries, deliveryStage } = useApp();
   const clock = useClock();
   const [drawer, setDrawer] = useState(false);
   const [notif, setNotif] = useState(false);
@@ -218,7 +218,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
               </button>
               <h1 className="truncate text-[0.9375rem] font-bold text-ink">{current?.label ?? "Business AX"}</h1>
-              <span className="ml-1 hidden rounded bg-accent/15 px-1.5 py-0.5 text-[0.625rem] font-bold text-accent sm:block">DEMO</span>
+              <span className="ml-1 hidden rounded bg-accent/15 px-1.5 py-0.5 text-[0.625rem] font-bold text-accent sm:block" title="현재 단계 — 설정 > 데모에서 변경">{deliveryStage}</span>
             </div>
 
             <div className="flex min-w-0 flex-wrap items-center justify-end gap-1 sm:gap-2">

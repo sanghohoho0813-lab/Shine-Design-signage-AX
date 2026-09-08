@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { fmtTime } from "@/lib/store";
 import { useApp, Inquiry } from "@/lib/store";
 import { STAGES, Stage, Project, fmtKRWshort, costTotal, marginOf } from "@/lib/data";
 import { Overlay } from "@/components/Overlay";
@@ -275,6 +276,21 @@ export default function PipelinePage() {
                 <Info k="견적금액" v={current.budget ? current.budget.toLocaleString() + "원" : "견적 전"} />
                 <Info k="예상 원가" v={current.costs ? costTotal(current.costs).toLocaleString() + "원" : "-"} />
               </dl>
+
+              {/* 단계 이력 — KPI(문의→견적 소요일)의 측정 근거가 되는 시각 기록 */}
+              {current.stageLog && current.stageLog.length > 0 && (
+                <div className="rounded-xl bg-canvas p-4">
+                  <p className="text-xs font-semibold text-muted">단계 이력 <span className="font-normal">— 진입 시각 기록</span></p>
+                  <ol className="mt-2 space-y-1">
+                    {current.stageLog.map((l, i) => (
+                      <li key={i} className="flex items-center justify-between gap-3 text-xs">
+                        <span className="font-semibold text-ink">{l.stage}</span>
+                        <span className="tabular-nums text-muted">{fmtTime(l.at) ?? l.at}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
 
               {current.costs && (
                 <div className="rounded-xl bg-canvas p-4">

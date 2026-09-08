@@ -7,12 +7,12 @@ import { useApp, ROLE_LABELS } from "@/lib/store";
 /* Demo Control Layer — admin/ceo roles discover the Business AX entry point;
    hidden entirely for the customer role (v1.1 Hybrid Demo Control Layer). */
 export default function DemoBar() {
-  const { role, hydrated, isEmbedded } = useApp();
+  const { role, hydrated, isEmbedded, deliveryStage } = useApp();
   if (!hydrated || role === "customer" || isEmbedded) return null;
   return (
     <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2 rounded-full bg-shell/95 py-1.5 pl-4 pr-1.5 text-xs text-nav-primary shadow-xl backdrop-blur">
       <span className="hidden sm:block">
-        <b className="text-accent">DEMO</b> · {ROLE_LABELS[role]} 모드
+        <b className="text-accent">{deliveryStage}</b> · {ROLE_LABELS[role]} 모드
       </span>
       <Link
         href="/ax"

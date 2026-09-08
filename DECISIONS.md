@@ -1,6 +1,15 @@
 
 # DECISIONS
 
+0-ag. **100점 마감 — 남은 점수는 '메커니즘'으로 채운다(v13)** — 94/98에서 빠진 점수는 전부 "정의는 했는데 잡을 방법이 없는 것"이었다. 값을 지어내지 않고 점수를 채우는 길은 측정 장치를 실제로 넣는 것뿐이다.
+  - DECISION: Baseline은 버튼으로 스냅샷을 찍되, Delivery Stage가 DEMO면 "실증 아님"으로 남기고 변화량을 계산하지 않는다. WHY: §4.2 "Demo 시드로 개선률을 꾸미면 P0". WHY NOT: 스냅샷 자체를 PILOT에서만 허용하면 시연에서 메커니즘을 보여줄 수 없다. REVISIT WHEN: 실제 프로젝트 5건 입력 후 PILOT 선언.
+  - DECISION: Delivery Stage는 '선언'이고 데이터를 바꾸지 않는다. 단계를 올려도 시드가 실데이터가 되지 않는다는 문구를 설정에 둔다. WHY: §15 "상태를 혼동시키지 않는다".
+  - DECISION: Project.stageLog를 추가해 단계 진입 시각을 남긴다. 시드에는 넣지 않는다. WHY: 시드에 가짜 시각을 넣으면 소요일 KPI가 Demo 값으로 채워진다. 새로 진행한 건부터만 집계.
+  - DECISION: 전체 데이터 내보내기/가져오기는 형식을 검증하고 실패 시 아무것도 바꾸지 않는다. schemaVersion을 저장한다. WHY: "데이터가 날아가는 일이 없도록" — 브라우저 저장의 약점을 사용자가 스스로 메울 수 있어야 한다.
+  - DECISION: Overlay는 히스토리에 항목을 쌓지 않는다. popstate가 오면 닫고 cleanup만 보장한다. WHY NOT pushState: 구현해 봤더니 (1) 부모 재렌더로 effect가 재실행되며 cleanup의 history.back()이 오버레이를 저절로 닫았고(Device Preview 회귀), (2) 고친 뒤에도 back()이 Next 라우터의 진행 중 내비게이션을 abort시켰다(ERR_ABORTED). 브라우저 뒤로가기가 "페이지 이동 + 오버레이 정리"로 동작하면 Q-4 Browser Back safety의 목적(잔존 잠금 0)은 충족된다. REVISIT WHEN: Next가 라우터 통합 dialog 히스토리를 제공할 때.
+  - DECISION: Unit Economics는 8항목의 '측정 정의'만 둔다. WHY: §11 "실제 값이 없으면 측정항목만 정의하고 숫자를 꾸미지 않는다".
+  - 100점의 의미: v3.0 Score A/B는 설계·구현 품질 점수다. 실제 ROI·개선률·WAU는 §7 VALIDATE LATER이며, 이 프로젝트는 그것을 "잡을 수 있는 상태"까지를 100으로 본다.
+
 0-ae. **Unified v3.0 전략 잠금 + Dual Score(v12)** — v3.0 기준 채점 결과 Strategy 49 / Product 85 였다. 전략 문서가 없어서 낮은 것이지 제품이 틀린 것은 아니었으므로, 코드로 고정할 수 있는 전략 요소(KPI·SSOT·AI Matrix·Action Lifecycle·Evidence)를 먼저 코드에 넣고 문서는 그 코드를 가리키게 했다. 결과 94 / 98, P0 0.
   - DECISION: Baseline 없이 개선율을 쓰지 않는다. 화면에는 "현재값(Demo)"만. WHY: Demo 시드로 개선률을 꾸미면 v3.0 P0. WHY NOT ALTERNATIVE: "예상 30% 단축" 같은 표기는 심사자에게 강해 보이지만 실증 후 뒤집힐 위험이 더 크다. REVISIT WHEN: PILOT 4주 Baseline 확정 후.
   - DECISION: Canonical 9 Theme로 확장하되 브랜드 기본값(Shine Graphite Gold)은 Onyx Gold 시드를 미세조정한 1번으로 둔다. WHY: Q-1이 9종을 Full QA 기준으로 못박았고, 브랜드 시드 허용 조항이 있다. WHY NOT: 7종 유지는 U-9 SUPERSEDED. REVISIT WHEN: 실제 브랜드 가이드가 오면 Hue 미세조정.
