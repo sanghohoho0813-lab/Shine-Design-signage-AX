@@ -158,7 +158,7 @@ Strategic P0 13항목 점검 → **0건** (QA_REPORT.md). Score A 목표 95+.
 4. 제작·파트너 관리 5. 입찰·제안 관리(서류 12항목) 6. AI 브리핑(엔진 5 · Method/Level 표시 · 처리 상태)
 7. 증빙·리포트 — Money KPI 계약 · Evidence Log · 완료 증빙 · 실적 337 인쇄
 8. Why AX — **15 섹션**(13 정책환경 · 14 기술자산 · 15 KPI 계약 추가)
-9. 설정 — 화면(**Theme 9**) · 사용자/권한(매트릭스·AX Owner) · 데모(단계 표시) · 데이터(SSOT·CSV·이벤트) · AI(Method Matrix) · 기술·사업화 자산(정직)
+9. 설정 — 화면(**Theme 7**) · 사용자/권한(매트릭스·AX Owner) · 데모(단계 표시) · 데이터(SSOT·CSV·이벤트) · AI(Method Matrix) · 기술·사업화 자산(정직)
 
 ## System Core
 - Theme **Canonical 9** × 6 토큰(shell/primary/secondary/accent/highlight/soft) + neutral/semantic 고정 · 구버전 id 자동 마이그레이션
@@ -169,4 +169,4 @@ Strategic P0 13항목 점검 → **0건** (QA_REPORT.md). Score A 목표 95+.
 NOT BUILDING 목록과 동일. 향후 확장 메뉴는 Preview Sheet로만 존재한다.
 
 ## Acceptance
-QA_REPORT.md — 헤드리스 인수 테스트 + 테마 9 스윕 + 8폭 반응형 + Closed Loop + Red Team 1회.
+QA_REPORT.md — 헤드리스 인수 테스트 + 테마 7 스윕 + 8폭 반응형 + Closed Loop + Red Team 1회.

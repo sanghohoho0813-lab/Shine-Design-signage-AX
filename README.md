@@ -43,6 +43,6 @@ npm run build && npm start
 3. 고객 **프로젝트 문의** 접수 → AX 파이프라인 "문의" 단계 자동 유입 (Data Bridge)
 4. 파이프라인에서 프로젝트 **완료** 처리 → 증빙 레코드 + 고객 홈 "최근 완료" 노출
 5. 입찰 **직접 등록·서류 체크·결과 입력** → 준비도·낙찰률 KPI · 낙찰은 파이프라인 프로젝트로 / 견적·원가 **원가 실입력** / 제작 **발주 등록·상태** / 파이프라인 **납기 변경(사유)** / **설치 일정** 월 캘린더 / 규칙 엔진 5(Schedule Guard)
-6. AX 설정 — 테마 9종 / 글자 크기 3단계 / 역할·권한 매트릭스·AX Owner / 데이터 SSOT·CSV / AI Method Matrix / 기술자산 / Demo Reset
+6. AX 설정 — 테마 7종 / 글자 크기 3단계 / 역할·권한 매트릭스·AX Owner / 데이터 SSOT·CSV / AI Method Matrix / 기술자산 / Demo Reset
 
 Vercel에 바로 배포 가능(빌드 설정 기본값).

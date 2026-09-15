@@ -162,14 +162,28 @@ export const Icons = {
 
 export type IconName = keyof typeof Icons;
 
-export function MenuIcon({ name, color, active }: { name: IconName; color: string; active?: boolean }) {
+/**
+ * 같은 그룹 색을 톤만 바꿔 쓴다 (v16).
+ * 어두운 배경에서는 흰색 쪽으로, 밝은 배경에서는 잉크 쪽으로 단계가 벌어진다 —
+ * 그래야 4단계가 어느 배경에서도 다 읽힌다.
+ */
+export function menuToneColor(color: string, tone: number = 1, onDark = true) {
+  const step = Math.min(3, Math.max(0, Math.round(tone) - 1));
+  if (step === 0) return color;
+  return onDark
+    ? `color-mix(in srgb, ${color} ${100 - step * 15}%, #ffffff)`
+    : `color-mix(in srgb, ${color} ${100 - step * 15}%, #1b2430)`;
+}
+
+export function MenuIcon({ name, color, tone, active, onDark = true }: { name: IconName; color: string; tone?: number; active?: boolean; onDark?: boolean }) {
+  const c = menuToneColor(color, tone, onDark);
   return (
     <span
       aria-hidden
       className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg [&>svg]:h-[17px] [&>svg]:w-[17px]"
       style={{
-        color,
-        background: `color-mix(in srgb, ${color} ${active ? 22 : 13}%, transparent)`,
+        color: c,
+        background: `color-mix(in srgb, ${c} ${active ? 26 : 16}%, transparent)`,
       }}
     >
       {Icons[name]}

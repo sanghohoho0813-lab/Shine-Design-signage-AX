@@ -1,12 +1,9 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   SHINE DESIGN — Theme Library (6 themes, 6 core tokens each)
-   Default: 01 Shine Graphite Gold (brand)
---------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------
    SHINE DESIGN — Theme Library
-   Unified v3.0 Q-1: Canonical 9 Theme × 6 core tokens
+   Unified v3.0 Q-1: Canonical 7 Theme × 6 core tokens
    (shell / primary / secondary / accent / highlight / soft)
    01 shine = Onyx Gold 시드를 샤인 브랜드 골드로 미세조정한 기본값.
    canvas·shell-2·shell-3·on-accent 는 각 테마에서 파생한 보조 토큰이다.
@@ -85,30 +82,6 @@
   --canvas: #f5f9fa;
   --on-accent: #08323a;
 }
-[data-theme="burgundy-slate"] {
-  --shell: #3a1724;
-  --shell-2: #4a1f2f;
-  --shell-3: #5a283b;
-  --primary: #7a2c49;
-  --secondary: #667085;
-  --accent: #a85c72;
-  --highlight: #e6b6a5;
-  --soft: #eee4e8;
-  --canvas: #faf6f7;
-  --on-accent: #ffffff;
-}
-[data-theme="plum-indigo"] {
-  --shell: #291a3d;
-  --shell-2: #33224d;
-  --shell-3: #3e2b5e;
-  --primary: #573f91;
-  --secondary: #4e63a8;
-  --accent: #8b5aa6;
-  --highlight: #c4b0e6;
-  --soft: #e9e5f3;
-  --canvas: #f8f6fb;
-  --on-accent: #ffffff;
-}
 [data-theme="steel-platinum"] {
   --shell: #24303b;
   --shell-2: #2d3b48;
@@ -159,7 +132,16 @@
   --nav-inactive: #e5e7eb;
   --nav-label: #aeb7c3;
   --nav-muted: #94a3b8;
-  /* Sidebar / menu icon accents (v1.1 icon color system) */
+  /* 사이드바 메뉴 — 목차(그룹)마다 색 하나. 항목은 같은 색의 톤만 다르게 쓴다(v16).
+     톤은 MenuIcon이 계산한다 — 어두운 사이드바에서는 밝은 쪽으로, 밝은 배경에서는
+     어두운 쪽으로 단계가 벌어져 어느 배경에서도 4단계가 구분된다.
+     아래 ic-* 는 차트·리스크 등 화면 안의 의미 색이라 그대로 둔다. */
+  --mg-today: #6d9bf2;
+  --mg-ops: #2fb5a6;
+  --mg-growth: #dda63f;
+  --mg-system: #9ea4aa; /* 설명·설정은 업무 색이 아니라 크롬 — 무채색 */
+
+  /* Sidebar / 화면 내 의미 색 (v1.1 icon color system) */
   --ic-overview: #5b8def;
   --ic-ops: #3aafa9;
   --ic-sales: #d79a43;
@@ -414,6 +396,17 @@ li {
 }
 .btn-on-dark:hover {
   background: rgba(255, 255, 255, 0.12);
+}
+
+/* KPI 타일 — 열 수를 rem 기준으로 자동 조정하되, 폰에서는 2열까지 좁힌다.
+   숫자 8장이 세로로 쌓여 '오늘 할 일'이 화면 밖으로 밀리던 문제(v16). */
+.kpi-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(var(--kpi-min, 9.5rem), 1fr));
+}
+@media (max-width: 520px) {
+  .kpi-grid { --kpi-min: 6.5rem; gap: 0.5rem; }
 }
 
 /* 폼 입력 — 고객 문의·AX 원가 입력이 같은 모양을 쓴다 */

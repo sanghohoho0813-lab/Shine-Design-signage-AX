@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Overlay } from "../Overlay";
 import { DevicePreviewButton } from "../DevicePreview";
-import { MenuIcon, Icons } from "./icons";
+import { MenuIcon, Icons, menuToneColor } from "./icons";
 import { AX_MENU_GROUPS, AX_MENU_FLAT } from "./menu";
 import { AX_FUTURE } from "./future";
 import { FutureRow, FutureSheet, type FutureMenu } from "../FutureSheet";
@@ -30,7 +30,9 @@ function NavList({ onNavigate, onFuture }: { onNavigate?: () => void; onFuture: 
         return (
           <div key={group.label} className="mb-1 last:mb-0">
             {/* 그룹 머리 — 목차를 업무 흐름대로 나눈다 */}
-            <p className="flex items-baseline gap-2 px-2.5 pb-1 pt-3 text-[0.6875rem] font-bold tracking-wide text-nav-label">
+            {/* 메뉴가 길어 스크롤될 때 지금 보는 목차가 위에 남는다 */}
+            <p className="sticky top-0 z-10 flex items-baseline gap-2 bg-shell px-2.5 pb-1 pt-3 text-[0.6875rem] font-bold tracking-wide text-nav-label">
+              <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: group.items[0].color }} aria-hidden />
               {group.label}
               <span className="text-[0.625rem] font-normal text-nav-muted">{group.hint}</span>
             </p>
@@ -50,7 +52,7 @@ function NavList({ onNavigate, onFuture }: { onNavigate?: () => void; onFuture: 
                     }`}
                     aria-current={active ? "page" : undefined}
                   >
-                    <MenuIcon name={m.icon} color={m.color} active={active} />
+                    <MenuIcon name={m.icon} color={m.color} tone={m.tone} active={active} />
                     {m.label}
                   </Link>
                 );
@@ -272,7 +274,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
               href={m.href}
               className={`tap flex flex-col items-center gap-0.5 whitespace-nowrap py-2 text-[0.625rem] leading-tight ${pathname === m.href ? "font-semibold text-nav-active" : "text-nav-muted"}`}
             >
-              <span className="[&>svg]:h-5 [&>svg]:w-5" style={{ color: pathname === m.href ? m.color : undefined }} aria-hidden>
+              <span className="[&>svg]:h-5 [&>svg]:w-5" style={{ color: pathname === m.href ? menuToneColor(m.color, m.tone, true) : undefined }} aria-hidden>
                 {Icons[m.icon]}
               </span>
               {m.label.split("·")[0].replace(" 관리", "")}

@@ -41,11 +41,11 @@ Date: 2026-09-06 · Stage: **DEMO** (설정에서 PILOT/PRODUCTION 선언 가능
 **Product P0 → 0건 · P1 → 0건.** 
 
 ## Whole-Hybrid Acceptance (U-7) — 헤드리스 실행 결과
-`scratchpad/qa.mjs` **204/204 PASS** (v1~v13 누적) → v14에서 236/236. 포함: Fresh Load → Tutorial → 고객 홈 → 문의 5단계 → 접수번호 → 내 문의 현황 → AX 파이프라인 반영 → 상태 변경 → 고객 화면 반영 → Evidence Log → 브리핑 AI 근거/모달 → Action 승인·처리 → 설정(9 Theme/Font/Role/Owner) → Why AX 15 → 시연 모드 → PC↔Mobile Preview → Overlay Escape → Demo Reset → 재확인.
+`scratchpad/qa.mjs` **204/204 PASS** (v1~v13 누적) → v14에서 236/236. 포함: Fresh Load → Tutorial → 고객 홈 → 문의 5단계 → 접수번호 → 내 문의 현황 → AX 파이프라인 반영 → 상태 변경 → 고객 화면 반영 → Evidence Log → 브리핑 AI 근거/모달 → Action 승인·처리 → 설정(Theme/Font/Role/Owner) → Why AX 15 → 시연 모드 → PC↔Mobile Preview → Overlay Escape → Demo Reset → 재확인.
 
 - Responsive tested widths: 360 / 390 / 430 / 768 / 1024 / 1280 / 1440 / 1920 (× 9 routes) + 360 with Font XL
 - v13 추가 검증: Tutorial 5단계 · 시연 11단계 · DEMO 스냅샷 '실증 아님' 표기 · PILOT 선언 후 MEASURING · stageLog → 소요일 0.0일 실측 · 재문의 프리필 · 잘못된 백업 파일 거부/유효 파일 적용 후 새로고침 유지 · 뒤로가기 후 오버레이 잔존 0 · 포커스 복귀
-- Theme 9 status: 전부 실제 동작 · shell 9종 상이 · 본문 Neutral 고정 · 사이드바 White 계열 · 카드 #FFFFFF
+- Theme status: 전부 실제 동작 · shell 상이(v16 기준 7종) · 본문 Neutral 고정 · 사이드바 White 계열 · 카드 #FFFFFF
 - Primary Journey: PASS (closed loop 왕복)
 - Data / AI / Proof: SSOT 8 · AI RULE 4 (LLM 0) · KPI 5 BASELINE UNKNOWN · Evidence 9 type
 
@@ -121,6 +121,21 @@ Red Team 3차(짧게): QA — 설치 일정 360px에서 grid 항목이 `min-widt
 Red Team 4차(짧게): QA — 새 폼 3종 360px overflow 0. 대표 — "발주 상태를 잘못 눌렀다" → 되돌림은 RECOMMENDATIONS(사유 필수). 심사자 — "유사실적 매칭이 AI인가" → 규칙·건수로 표기, 근거 실적명 예시 노출.
 
 `scratchpad/qa.mjs` **264/264 PASS** (v1~v15 누적).
+
+## v16 — 테마 정리 · 메뉴 색 체계 · 폰 우선순위 (회귀 0)
+사용자 요청(테마 2종 삭제 · 목차별 톤 색)에 UI/UX 감사 3건을 붙였다.
+
+| # | 목표 | 반영 | 검증 |
+|---|---|---|---|
+| 1 | 안 쓰는 테마가 선택지만 늘림 | Burgundy Slate·Plum Indigo 삭제 → 7종. 저장값은 shine / navy-blue로 이동(store + 첫 페인트 스크립트) | 4개 옛 id 모두 마이그레이션 · 삭제 블록 잔존 0 · 7종 셸 상이 · 7×5 스윕 |
+| 2 | 메뉴 아이콘 색이 항목마다 제각각 | 목차 4개 = 색 4개, 항목은 톤만(`--mg-*`, MenuIcon이 배경에 맞춰 톤 계산) | 목차 안 hue 편차 ≤ 25° · 톤 차이 ≥ 0.06 · 업무 목차 3색 상이 · 시스템 무채색 |
+| 3 | 메뉴가 길어 지금 목차를 놓침 | 그룹 머리말 sticky + 목차 색 점 | position: sticky |
+| 4 | 폰에서 '오늘 할 일'이 화면 두 개 아래 | KPI 폰 2열(`.kpi-grid`), order로 할 일 먼저(데스크톱 순서 유지) | 폰 todo < KPI · KPI 2열 · 데스크톱은 KPI 먼저 |
+| 5 | 폰에서 할 일 제목이 잘려 무슨 일인지 모름 | 제목 truncate 제거, 처리 버튼은 아랫줄 | text-overflow ≠ ellipsis · 가로 overflow 0 |
+
+Red Team 5차(짧게): QA — 시스템 목차 슬레이트가 '오늘' 파랑과 hue가 겹쳐 목차 구분이 사라짐 **P1 → 무채색으로 분리**(테스트를 느슨하게 하지 않고 디자인을 고침). 대표 — "테마를 쓰고 있었는데 사라지면?" → 자동 이동 + 설정 화면에 한 줄 고지.
+
+`scratchpad/qa.mjs` **281/281 PASS** (v1~v16 누적).
 
 ## Known Issues
 - 지명원 실적 337건의 연도는 페이지 단위 기간으로만 표기(원문 레이아웃 한계).

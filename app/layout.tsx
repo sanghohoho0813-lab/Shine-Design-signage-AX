@@ -46,7 +46,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-const themeInit = `try{var s=JSON.parse(localStorage.getItem("shine-ax-state-v1")||"{}");var m={navy:"navy-gold",teal:"deep-teal",burgundy:"burgundy-slate",indigo:"plum-indigo",forest:"forest-sage",copper:"steel-platinum"};if(s.theme)document.documentElement.dataset.theme=m[s.theme]||s.theme;var f={md:1.22,lg:1.45,xl:1.7}[s.fontScale];document.documentElement.style.setProperty("--font-scale",String(f||1.22));document.documentElement.dataset.font=s.fontScale||"md";if(s.reducedMotion)document.documentElement.dataset.motion="reduced";}catch(e){}`;
+const themeInit = `try{var s=JSON.parse(localStorage.getItem("shine-ax-state-v1")||"{}");var m={navy:"navy-gold",teal:"deep-teal",forest:"forest-sage",copper:"steel-platinum",burgundy:"shine","burgundy-slate":"shine",indigo:"navy-blue","plum-indigo":"navy-blue"};if(s.theme)document.documentElement.dataset.theme=m[s.theme]||s.theme;var f={md:1.22,lg:1.45,xl:1.7}[s.fontScale];document.documentElement.style.setProperty("--font-scale",String(f||1.22));document.documentElement.dataset.font=s.fontScale||"md";if(s.reducedMotion)document.documentElement.dataset.motion="reduced";}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

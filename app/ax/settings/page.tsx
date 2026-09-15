@@ -98,6 +98,8 @@ export default function SettingsPage() {
         </div>
         <p className="mt-2 text-[0.6875rem] leading-relaxed text-muted">
           테마는 사이드바·강조·선택 상태만 바꿉니다. 본문 글자·표·카드 배경은 어떤 테마에서도 같은 Neutral을 씁니다.
+          번호는 목록 순번이 아니라 표준 팔레트의 원본 번호입니다 — 실제로 쓰지 않는 색(와인·자주 계열)은 뺐고,
+          그 테마를 쓰고 있었다면 가장 가까운 테마로 자동 전환됩니다.
         </p>
 
         <p className="mt-5 text-xs font-semibold text-ink-2">Font Scale</p>

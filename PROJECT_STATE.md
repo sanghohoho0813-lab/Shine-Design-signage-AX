@@ -20,7 +20,14 @@
 - 「(주)샤인디자인 지명원_2026」 — `lib/company.ts` / `lib/records.ts` (337건)
 - 사업자등록증 · 실제 현장 사진 47장
 
-## v15 — 운영 완결 (최신)
+## v16 — 테마 정리 · 메뉴 색 체계 · 폰 우선순위 (최신)
+- **Theme 7종** — Burgundy Slate·Plum Indigo 삭제. 저장값은 가장 가까운 테마로 자동 이동(store + 첫 페인트 스크립트 동일 맵) ✅
+- **메뉴 색 = 목차 색** — 목차 4개에 색 하나씩, 항목은 톤만 다르게(`--mg-*` + `MenuIcon` 톤 계산). 시스템 목차는 무채색 ✅
+- 사이드바 그룹 머리말 sticky + 목차 색 점 ✅
+- **폰 대시보드** — KPI 2열, '오늘 할 일'을 KPI보다 먼저, 할 일 제목 잘림 제거(데스크톱 순서는 그대로) ✅
+- QA 281/281 · 회귀 0 ✅
+
+## v15 — 운영 완결
 - **입찰 직접 등록** + 발주기관 토큰으로 지명원 실적 매칭(유사실적 n건 · RULE) · **서류 체크 저장** → 준비도 = 확인 ÷ 전체로 재계산(시드도 체크하면 재계산) ✅
 - **제작 발주 실입력** 새 발주 등록(프로젝트·파트너·품목·납기·제작비) · 상태 흐름(발주 전→제작중→검수대기→완료→설치대기) · 검수 토글 · 이력 → 설치 일정·오늘 할 일·브리핑에 반영 ✅
 - **납기 변경 + 사유** 파이프라인 상세에서 변경, deadlineLog 이력 · Evidence SCHEDULE ✅
@@ -46,10 +53,10 @@
 - Overlay 포커스 복귀 + 뒤로가기 cleanup · Analytics sink adapter + `.env.example` ✅
 
 ## v12 — Unified v3.0 반영
-- **Canonical 9 Theme** (`lib/store.tsx`, `app/globals.css`) — 6토큰 + highlight/on-accent, neutral·semantic 별칭. 구버전 id 자동 마이그레이션(store + 초기 스크립트). 9×5 잔존색 스윕 통과 ✅
+- **Canonical Theme** (`lib/store.tsx`, `app/globals.css`) — 6토큰 + highlight/on-accent, neutral·semantic 별칭. 구버전 id 자동 마이그레이션(store + 초기 스크립트). 잔존색 스윕 통과 ✅ (v16에서 7종으로 정리)
 - **Action Lifecycle** — 추천됨→확인→실행중→완료 / 보류 / 무시(사유). `doneActions` → `actionStates` 마이그레이션, 새로고침 유지 ✅
 - **Closed Loop 완성** — `/inquiry/status` 내 문의 현황: AX 상태 변경 → 고객 화면 즉시 반영, statusLog 타임라인 ✅
-- **Settings 6섹션** — 화면(9테마×6도트) · 사용자/권한(매트릭스·AX Owner) · 데모(Stage) · 데이터(SSOT·CSV·이벤트) · AI(Matrix) · 기술자산(정직) ✅
+- **Settings 6섹션** — 화면(테마×6도트) · 사용자/권한(매트릭스·AX Owner) · 데모(Stage) · 데이터(SSOT·CSV·이벤트) · AI(Matrix) · 기술자산(정직) ✅
 - **AI Ready 모달**(16.3) + 엔진별 Method·Level·승인 표기 ✅ · **Provenance 칩** 전 AX 화면 ✅
 - **증빙** — Money KPI 계약(BASELINE UNKNOWN) + Evidence Log ✅ · **Why AX 15섹션**(정책환경·기술자산·KPI) ✅
 - **Event 레이어** 12종 · **최근 본 프로젝트** ✅
@@ -59,7 +66,7 @@
 ## v11 향후 확장 · v10 지명원 · v9 메뉴 분류 · v8 전환 연출 — 유지 (DECISIONS.md)
 
 ## BUSINESS AX
-- 10 모듈 + 향후 확장 9(접힘) · 메뉴 4그룹 · Role 3 · Tutorial 5 · Presentation 11 · Theme 9 · 규칙 엔진 5 ✅
+- 10 모듈 + 향후 확장 9(접힘) · 메뉴 4그룹(목차별 톤 색) · Role 3 · Tutorial 5 · Presentation 11 · Theme 7 · 규칙 엔진 5 ✅
 
 ## CUSTOMER FRONT
 - 홈 / 회사소개 / 사업분야(+카탈로그 48 +확장 10) / 포트폴리오(21 + 실적 337 + 최근 본) / 프로세스 / 문의(5단계) / **문의 현황** ✅ · 404 없음 ✅
@@ -71,7 +78,7 @@
 - **Bridge 4 (v14)**: 입찰 낙찰 → 파이프라인 '승인' 프로젝트 → 원가 미입력 목록 ✅
 
 ## QA
-- 헤드리스 인수 테스트 **264/264 PASS** (`scratchpad/qa.mjs`, v1~v15)
+- 헤드리스 인수 테스트 **281/281 PASS** (`scratchpad/qa.mjs`, v1~v16)
 
 ## USER ACTION QUEUE
 - (선택) Vercel 재배포

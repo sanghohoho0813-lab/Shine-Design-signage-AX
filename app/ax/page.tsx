@@ -129,8 +129,9 @@ export default function AxDashboard() {
   const handledCount = todo.filter((t) => ["done", "hold", "skip"].includes(stateOf(t.id))).length;
 
   return (
-    <div className="space-y-5 p-4 sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    /* 폰에서는 숫자보다 '오늘 할 일'을 먼저 본다 — order로 순서만 바꾼다 (v16) */
+    <div className="flex flex-col gap-5 p-4 sm:p-6">
+      <div className="order-first flex flex-wrap items-center justify-between gap-2 sm:order-none">
         {role === "ceo" ? (
           <p className="text-sm text-muted">
             <b className="text-ink">{axOwner} 대표님</b>, 오늘의 샤인디자인입니다 — 확인이 필요한 항목{" "}
@@ -141,13 +142,8 @@ export default function AxDashboard() {
         )}
         <Provenance />
       </div>
-      {/* KPI row */}
-      {/* 열 수를 rem 기준으로 자동 조정 — 글자를 키워도 카드가 눌리지 않는다 */}
-      <section
-        data-tutorial="kpi-row"
-        className="grid gap-3"
-        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(9.5rem, 1fr))" }}
-      >
+      {/* KPI row — .kpi-grid 가 열 수를 정한다 (폰 2열) */}
+      <section data-tutorial="kpi-row" className="kpi-grid">
         {kpis.map((k) => (
           <Link key={k.label} href={k.href} className="tap hover-lift group relative overflow-hidden rounded-xl border border-line bg-surface p-3.5 shadow-sm">
             <p className="text-[0.6875rem] font-medium text-muted">{k.label}</p>
@@ -159,7 +155,7 @@ export default function AxDashboard() {
       </section>
 
       {/* 오늘 할 일 */}
-      <section data-tutorial="todo" className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+      <section data-tutorial="todo" className="order-first rounded-2xl border border-line bg-surface p-4 shadow-sm sm:order-none sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="font-bold text-ink">
             오늘 할 일
@@ -179,14 +175,17 @@ export default function AxDashboard() {
             const st = stateOf(t.id);
             const closed = st === "done" || st === "skip";
             return (
+              /* 폰에서는 제목이 잘리지 않게 처리 버튼을 아랫줄로 내린다 (v16) */
               <li key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-2.5">
                 <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: closed ? "var(--line)" : t.tone }} aria-hidden />
-                <Link href={t.href} className="tap min-w-0 flex-1">
-                  <p className={`truncate text-sm font-semibold ${closed ? "text-muted line-through" : "text-ink"}`}>{t.label}</p>
+                <Link href={t.href} className="tap min-w-0 flex-1 basis-[calc(100%-1.75rem)] sm:basis-auto">
+                  <p className={`text-sm font-semibold ${closed ? "text-muted line-through" : "text-ink"}`}>{t.label}</p>
                   <p className="truncate text-[0.6875rem] text-muted">{t.why}</p>
                 </Link>
                 {/* 추천됨 → 확인 → 실행중 → 완료 / 보류 / 무시 — 무엇을 했는지가 남는다 */}
-                <ActionStateControl id={t.id} compact />
+                <span className="ml-auto flex items-center">
+                  <ActionStateControl id={t.id} compact />
+                </span>
               </li>
             );
           })}

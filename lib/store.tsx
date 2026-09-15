@@ -14,8 +14,10 @@ import { track } from "./events";
 --------------------------------------------------------------------------- */
 
 /* -------------------------------- Theme ---------------------------------- */
-/* Unified v3.0 Q-1 — Canonical 9 Theme. 01은 브랜드 시드(Onyx Gold를 샤인
-   골드로 미세조정)이고 나머지 8종은 표준 팔레트 그대로다. */
+/* Unified v3.0 Q-1 — Canonical 팔레트에서 고른 7종. 01은 브랜드 시드(Onyx Gold를
+   샤인 골드로 미세조정)이고 나머지 6종은 표준 팔레트 그대로다.
+   v16에서 Burgundy Slate·Plum Indigo를 뺐다 — 공공 발주처 화면에서 와인·자주 계열이
+   사인 시안 색과 부딪혀 실제로 고르지 않는 색이었다. 저장값은 아래 맵으로 살린다. */
 export const THEMES = [
   { id: "shine", name: "Shine Graphite Gold", seed: "Onyx Gold 기반 브랜드 시드", shell: "#16181d", accent: "#c4a15f" },
   { id: "navy-blue", name: "Deep Navy Blue", seed: "Canonical 01", shell: "#0b1830", accent: "#17a889" },
@@ -23,20 +25,22 @@ export const THEMES = [
   { id: "emerald-gold", name: "Emerald Gold", seed: "Canonical 03", shell: "#11332b", accent: "#b4862a" },
   { id: "forest-sage", name: "Forest Sage", seed: "Canonical 04", shell: "#17352c", accent: "#a58e4d" },
   { id: "deep-teal", name: "Deep Teal", seed: "Canonical 05", shell: "#08323a", accent: "#d2704c" },
-  { id: "burgundy-slate", name: "Burgundy Slate", seed: "Canonical 07", shell: "#3a1724", accent: "#a85c72" },
-  { id: "plum-indigo", name: "Plum Indigo", seed: "Canonical 08", shell: "#291a3d", accent: "#8b5aa6" },
   { id: "steel-platinum", name: "Steel Platinum", seed: "Canonical 09", shell: "#24303b", accent: "#4c9aaa" },
 ] as const;
 export type ThemeId = (typeof THEMES)[number]["id"];
 
-/** v1~v11에서 저장된 옛 테마 id → 가장 가까운 Canonical id. 저장값을 잃지 않는다. */
+/** 삭제·개명된 테마 id → 가장 가까운 현재 id. 저장값을 잃지 않는다.
+    v1~v11 짧은 id와 v16에서 뺀 2종을 함께 받는다. */
 const LEGACY_THEME: Record<string, ThemeId> = {
   navy: "navy-gold",
   teal: "deep-teal",
-  burgundy: "burgundy-slate",
-  indigo: "plum-indigo",
   forest: "forest-sage",
   copper: "steel-platinum",
+  // v16 제거 — 어두운 셸 + 따뜻한 강조는 shine, 어두운 셸 + 차가운 강조는 navy-blue로
+  burgundy: "shine",
+  "burgundy-slate": "shine",
+  indigo: "navy-blue",
+  "plum-indigo": "navy-blue",
 };
 export function normalizeTheme(id: unknown): ThemeId {
   if (typeof id !== "string") return "shine";

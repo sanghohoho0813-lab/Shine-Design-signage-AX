@@ -21,7 +21,7 @@
 
 ## 마이그레이션 규칙
 - 저장 키는 바꾸지 않는다. 필드는 더하기만 한다.
-- 테마 id: `navy→navy-gold`, `teal→deep-teal`, `burgundy→burgundy-slate`, `indigo→plum-indigo`, `forest→forest-sage`, `copper→steel-platinum` (store + pre-hydration script 동시 적용)
+- 테마 id: `navy→navy-gold`, `teal→deep-teal`, `forest→forest-sage`, `copper→steel-platinum`, `burgundy·burgundy-slate→shine`, `indigo·plum-indigo→navy-blue` (store + pre-hydration script 동시 적용)
 - `doneActions[]` → `actionStates{id: done}` 자동 변환, `doneActions`는 파생값으로 계속 저장
 
 ## CSV 형식
