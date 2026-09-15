@@ -6,10 +6,10 @@
 | Gate | 상태 | 근거 |
 |---|---|---|
 | PRIMARY CONSTRAINT STATUS | **LOCKED** | PROJECT_SPEC — 견적·승인 대기 / 원가 누락 / 문의 누락. 핵심기능 6/9 직결 |
-| MONEY KPI / BASELINE STATUS | **DEFINED · BASELINE UNKNOWN · 스냅샷 메커니즘 준비** | `lib/kpi.ts` 5개, stageLog로 소요일 실측, Baseline 스냅샷 버튼, DEMO에서는 변화량 숨김 |
-| DATA FOUNDATION | **SSOT 정의됨 · 백업 가능** | `lib/dictionary.ts` 8 Entity · Data Moat 6/12 · schemaVersion 2 · 내보내기/가져오기 |
+| MONEY KPI / BASELINE STATUS | **DEFINED · BASELINE UNKNOWN · 5/5 측정 가능** | `lib/kpi.ts` 5개 — v14부터 낙찰률(입찰 결과)·Margin 미달(원가 실입력)까지 입력 지점 있음. Baseline 스냅샷, DEMO에서는 변화량 숨김 |
+| DATA FOUNDATION | **SSOT 정의됨 · 백업 가능** | `lib/dictionary.ts` 8 Entity · Data Moat 6/12 · schemaVersion 3 · 내보내기/가져오기 |
 | AI / LOGIC STATUS | **RULE ×4 · LLM 0** | `lib/ai.ts` Method Matrix · L2 · 오류비용 · 승인 · AI Ready 모달 |
-| PROOF STATUS | **PREPARE NOW (메커니즘 완료)** | Evidence Log 9 type · Action Lifecycle · Baseline 스냅샷 · 인쇄 Evidence Pack · Event 12종 + sink |
+| PROOF STATUS | **PREPARE NOW (메커니즘 완료)** | Evidence Log 6 type(+BID) · CSV/복사 · Action Lifecycle · Baseline 스냅샷 · 인쇄 Evidence Pack · Event 15종 + sink |
 | ADOPTION READINESS | **준비됨** | AX Owner 필드 · 직원 이익 3 · Adoption KPI 정의 |
 | RISK / GOVERNANCE | **정리됨** | Inquiry 민감도 높음/1년 · HIGH 오류비용 사람 승인 · Provenance 전 화면 |
 | PLATFORM READINESS | **LOW (2/5)** | Industry SaaS 권고 안 함 · 고객 Portal = 내 문의 현황 수준 |
@@ -20,7 +20,14 @@
 - 「(주)샤인디자인 지명원_2026」 — `lib/company.ts` / `lib/records.ts` (337건)
 - 사업자등록증 · 실제 현장 사진 47장
 
-## v13 — 100점 마감 (최신)
+## v14 — 실측 확대 (최신)
+- **입찰 결과 기록** 발굴→검토→준비→제출→결과대기 진행 + 낙찰/유찰/미참여(메모) → **낙찰률 KPI 실측**(미참여는 분모 제외) · Evidence BID · 낙찰은 파이프라인 '승인' 프로젝트로(Bridge 4) ✅
+- **원가 실입력** 견적·원가 관리에서 7항목+견적금액 입력·수정, "원가 미입력" 목록(문의·낙찰 유입 건) → Margin 미달 KPI가 실입력 기준 ✅
+- **설치 일정** `/ax/schedule` 월 캘린더(납기·제작 납기), 겹침 경고, 지난 납기, 30일 목록 — 새 데이터 없이 기존 날짜만 사용 ✅
+- Evidence Log **CSV 내보내기 + 복사**(KPI 현재값 포함) · 알림 읽음 상태 저장 · schemaVersion 3(추가 필드만) ✅
+- QA 236/236 · 회귀 0 · 신규 P1 1건(설치 일정 360px overflow) 수정 ✅
+
+## v13 — 100점 마감
 - **Delivery Stage** DEMO/PILOT/PRODUCTION 선언 (설정>데모, confirm) — 상단 배지·DemoBar·Provenance가 따라감 ✅
 - **Baseline 스냅샷** (증빙) — DEMO 스냅샷은 "실증 아님", PILOT 이상에서만 Baseline 대비 라벨 ✅
 - **stageLog** — 단계 진입 시각 → 문의→견적 소요일 실측, 파이프라인 상세 단계 이력 ✅
@@ -43,7 +50,7 @@
 ## v11 향후 확장 · v10 지명원 · v9 메뉴 분류 · v8 전환 연출 — 유지 (DECISIONS.md)
 
 ## BUSINESS AX
-- 9 모듈 + 향후 확장 9(접힘) · 메뉴 4그룹 · Role 3 · Tutorial 4 · Presentation 10 · Theme 9 ✅
+- 10 모듈(+설치 일정) + 향후 확장 9(접힘) · 메뉴 4그룹 · Role 3 · Tutorial 5 · Presentation 11 · Theme 9 ✅
 
 ## CUSTOMER FRONT
 - 홈 / 회사소개 / 사업분야(+카탈로그 48 +확장 10) / 포트폴리오(21 + 실적 337 + 최근 본) / 프로세스 / 문의(5단계) / **문의 현황** ✅ · 404 없음 ✅
@@ -52,13 +59,14 @@
 - Bridge 1: 문의 → 파이프라인 '문의' + 오늘 할 일 + 알림 ✅
 - Bridge 2: 완료 → 증빙 + 고객 홈 ✅
 - **Bridge 3 (v12)**: AX 응대 상태 → 고객 '내 문의 현황' ✅
+- **Bridge 4 (v14)**: 입찰 낙찰 → 파이프라인 '승인' 프로젝트 → 원가 미입력 목록 ✅
 
 ## QA
-- 헤드리스 인수 테스트 **204/204 PASS** (`scratchpad/qa.mjs`, v1~v13)
+- 헤드리스 인수 테스트 **236/236 PASS** (`scratchpad/qa.mjs`, v1~v14)
 
 ## USER ACTION QUEUE
 - (선택) Vercel 재배포
-- (선택) PILOT 진입: 실제 진행 프로젝트 5건 입력 → 4주 Baseline 측정
+- (선택) PILOT 진입: 실제 진행 프로젝트 5건 입력 + 입찰 결과·원가 실입력 → 4주 Baseline 측정
 - (선택) Supabase 연결 — SSOT 표 그대로 · RLS = 권한 매트릭스
 - (선택) 지명원 현장 사진 추출 → 포트폴리오 확대
 

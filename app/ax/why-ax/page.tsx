@@ -214,9 +214,9 @@ export default function WhyAxPage() {
             <p className="text-xs font-bold tracking-wide text-muted">PRIMARY CONSTRAINT → 어떤 기능이 그 손실을 막는가</p>
             <ul className="mt-2 grid gap-2 sm:grid-cols-3">
               {[
-                ["TIME LEAK · 견적·승인 대기", "프로젝트 관리(단계 이력) · 오늘 할 일 · Project Risk", "문의→견적 소요일"],
-                ["MONEY LEAK · 원가 누락", "견적·원가 관리 · Margin Guard", "Margin 미달 비율"],
-                ["REVENUE LEAK · 문의 누락", "문의 브릿지 · 내 문의 현황 · Next Action", "문의→수주 전환율"],
+                ["TIME LEAK · 견적·승인 대기", "프로젝트 관리(단계 이력) · 오늘 할 일 · 설치 일정(겹침 경고) · Project Risk", "문의→견적 소요일"],
+                ["MONEY LEAK · 원가 누락", "견적·원가 관리(원가 실입력) · Margin Guard", "Margin 미달 비율"],
+                ["REVENUE LEAK · 문의 누락", "문의 브릿지 · 내 문의 현황 · 입찰 결과 기록 · Next Action", "문의→수주 전환율 · 낙찰률"],
               ].map(([c, f, k]) => (
                 <li key={c} className="rounded-lg bg-canvas p-3">
                   <p className="text-[0.6875rem] font-bold text-[var(--ic-risk)]">{c}</p>
@@ -225,7 +225,7 @@ export default function WhyAxPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-2 text-[0.6875rem] text-muted">9개 모듈 중 6개가 이 세 손실에 직접 붙어 있습니다. 나머지(입찰·Why AX·설정)는 보조입니다.</p>
+            <p className="mt-2 text-[0.6875rem] text-muted">10개 모듈 중 8개가 이 세 손실에 직접 붙어 있습니다. 나머지(Why AX·설정)는 보조입니다.</p>
           </div>
 </Section>
 

@@ -58,7 +58,7 @@ export const MONEY_KPIS: MoneyKpi[] = [
     kind: "REVENUE",
     name: "입찰 참여 대비 낙찰률",
     definition: "제출한 입찰 중 낙찰된 비율",
-    measurement: "입찰·제안 관리에서 상태 '제출' → 결과 입력 시 집계 (결과 입력 필드는 다음 단계)",
+    measurement: "입찰·제안 관리에서 결과(낙찰/유찰/미참여) 입력 시 자동 집계 — 낙찰 ÷ (낙찰 + 유찰). 미참여는 분모에서 제외",
     screen: "입찰·제안 관리",
     baseline: "UNKNOWN",
     constraint: "REVENUE LEAK — 준비 부족으로 인한 미참여",
@@ -104,7 +104,13 @@ export function kpiNow(
   projects: { stage: string; budget: number; costs?: unknown; fromInquiry?: boolean; stageLog?: { stage: string; at: string }[] }[],
   inquiries: { id: string }[],
   marginOf: (p: never) => number | null,
+  bidStates: Record<string, { result?: string }> = {},
 ) {
+  // 입찰 낙찰률: 결과가 입력된 건만. 미참여는 제출이 아니므로 제외
+  const results = Object.values(bidStates).map((b) => b.result).filter(Boolean);
+  const won = results.filter((r) => r === "낙찰").length;
+  const lost = results.filter((r) => r === "유찰").length;
+  const bidWin = won + lost ? `${Math.round((won / (won + lost)) * 100)}%` : "—";
   // 문의 → 견적 소요일: stageLog에 '문의'와 '견적' 진입 시각이 둘 다 있는 건만
   const leads = projects
     .map((p) => {
@@ -128,6 +134,6 @@ export function kpiNow(
     "inquiry-conv": inquiries.length ? `${Math.round((converted / Math.max(inquiries.length, 1)) * 100)}%` : "—",
     "per-head": `${(active / 3).toFixed(1)}건`,
     "quote-lead": quoteLead,
-    "bid-win": "—",
+    "bid-win": bidWin,
   } as Record<string, string>;
 }

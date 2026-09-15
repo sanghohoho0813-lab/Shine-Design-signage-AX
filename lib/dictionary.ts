@@ -79,9 +79,9 @@ export const ENTITIES: EntityDef[] = [
   {
     entity: "Bid",
     ko: "입찰",
-    sor: { now: "lib/data.ts seedBids (Demo 고정)", next: "Supabase bids + 나라장터 수집(NEXT)" },
+    sor: { now: "lib/data.ts seedBids (Demo 고정) + localStorage bidStates (상태·결과)", next: "Supabase bids + 나라장터 수집(NEXT)" },
     writer: "AX 담당자",
-    update: "체크리스트 완료 · 상태",
+    update: "상태 진행 · 결과(낙찰/유찰/미참여) 입력",
     sensitivity: "보통",
     retention: "영구",
     ai: "가능",
@@ -91,6 +91,7 @@ export const ENTITIES: EntityDef[] = [
       { key: "readiness", type: "number", desc: "준비도 % (체크리스트 완료율)" },
       { key: "checklist[]", type: "{label, done}", desc: "서류 항목 — 보유 자격 8종 기준" },
       { key: "portfolioMatch", type: "enum", desc: "유사실적 매칭 높음/보통/낮음" },
+      { key: "status / result / resultAt / log[]", type: "enum, ISO", desc: "진행 상태 · 결과 · 이력 — 낙찰률 KPI 근거" },
     ],
   },
   {

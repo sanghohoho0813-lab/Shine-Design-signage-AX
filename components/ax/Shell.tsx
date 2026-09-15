@@ -138,7 +138,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 export default function AxShell({ children }: { children: React.ReactNode }) {
-  const { role, hydrated, projects, inquiries, deliveryStage } = useApp();
+  const { role, hydrated, projects, inquiries, deliveryStage, readAlerts: readKeys, markAlertsRead } = useApp();
   const clock = useClock();
   const [drawer, setDrawer] = useState(false);
   const [notif, setNotif] = useState(false);
@@ -146,7 +146,6 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [readKeys, setReadKeys] = useState<string[]>([]);
   const topbarRef = useRef<HTMLElement>(null);
 
   /* 상단바 실제 높이를 CSS 변수로 — 하위의 sticky 요소가 가려지지 않게 */
@@ -318,7 +317,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
               <div className="flex items-center gap-1">
                 {unread.length > 0 && (
                   <button
-                    onClick={() => setReadKeys(alerts.map((a) => a.key))}
+                    onClick={() => markAlertsRead(alerts.map((a) => a.key))}
                     className="tap rounded-lg px-2.5 py-1.5 text-xs font-semibold text-muted hover:bg-soft hover:text-ink"
                   >
                     모두 읽음
@@ -340,7 +339,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
                   <button
                     key={a.key}
                     onClick={() => {
-                      setReadKeys((k) => (k.includes(a.key) ? k : [...k, a.key]));
+                      markAlertsRead([a.key]);
                       setNotif(false);
                       router.push(a.href);
                     }}

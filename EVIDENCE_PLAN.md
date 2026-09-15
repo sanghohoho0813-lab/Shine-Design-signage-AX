@@ -2,16 +2,17 @@
 
 현재 단계 **DEMO**. 아래는 PILOT 진입 시 그대로 켜지는 측정 구조이며, 지금 숫자를 채우지 않는다.
 
-## Evidence Type (코드: `app/ax/evidence/page.tsx`)
+## Evidence Type (코드: `lib/evidence.ts` — 화면과 CSV 내보내기가 같은 목록)
 | Type | 지금 생성되는 곳 | PILOT에서 |
 |---|---|---|
-| BASELINE | — (UNKNOWN) | 첫 4주 값을 고정 |
+| BASELINE | Baseline 스냅샷 버튼(DEMO는 '실증 아님') | 첫 4주 값을 고정 |
+| BID | 입찰 상태 진행 · 결과(낙찰/유찰/미참여) | 동일 → 낙찰률 |
 | ACTION | Action Lifecycle 확인·실행중 | 동일 |
 | RESULT | Action 완료 · 프로젝트 완료 | 동일 + 결과 필드 |
 | ADOPTION | Action 확인·실행률 | WAU · 핵심 업무 AX 처리비율 |
 | CUSTOMER | 문의 접수 · 상태 변경 | 동일 |
 | EFFICIENCY | — | 문의→견적 소요일, Margin 미달률 |
-| REVENUE | — | 전환율, 낙찰률 |
+| REVENUE | — (KPI 현재값으로 계산: 전환율·낙찰률) | 전환율, 낙찰률 |
 | SCALE | — | 1인당 동시 프로젝트 |
 | RISK / EXCEPTION | 보류·무시(사유) | 동일 |
 

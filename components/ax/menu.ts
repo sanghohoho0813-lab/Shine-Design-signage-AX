@@ -64,6 +64,13 @@ export const AX_MENU_GROUPS: AxMenuGroup[] = [
         ceoOnly: true,
       },
       {
+        href: "/ax/schedule",
+        label: "설치 일정",
+        icon: "calendar",
+        color: "var(--ic-partner)",
+        desc: "납기 · 제작 납기 · 설치일 월 캘린더, 겹침 경고",
+      },
+      {
         href: "/ax/production",
         label: "제작·파트너 관리",
         icon: "factory",

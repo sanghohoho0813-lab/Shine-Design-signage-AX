@@ -26,7 +26,7 @@ PRIMARY CONSTRAINT (TIME + MONEY LEAK):
 겪고 있다. 이번 프로젝트의 핵심은 문의부터 완료까지 한 흐름으로 보이게 하고, 견적 전에
 원가·마진을 계산하며, 추천된 행동이 실제로 처리됐는지 남게 만드는 것이다.
 ```
-핵심 기능 9개 중 Constraint 직결: 대시보드(오늘 할 일) · 프로젝트 관리 · 견적·원가 · 제작·파트너 · AI 브리핑 · 증빙 = **6/9 (67%)**. 입찰·Why AX·설정은 보조.
+핵심 기능 10개 중 Constraint 직결: 대시보드(오늘 할 일) · 프로젝트 관리 · 견적·원가(원가 실입력) · 설치 일정(겹침 경고) · 제작·파트너 · 입찰(결과→낙찰률) · AI 브리핑 · 증빙 = **8/10 (80%)**. Why AX·설정은 보조.
 
 ### CORE VALUE 3
 1. **Cost / Efficiency** — 견적 전 원가·Margin 가시화, 승인·검수 대기 감소
@@ -68,7 +68,7 @@ PRIMARY CONSTRAINT (TIME + MONEY LEAK):
 | Inquiry | localStorage → Supabase | 고객 | 높음 | 집계만 |
 | Project | localStorage(시드+유입) → Supabase | AX 담당자·브릿지 | 보통 | 가능 |
 | ProductionOrder | 코드 시드 → Supabase | AX 담당자 | 보통 | 가능 |
-| Bid | 코드 시드 → Supabase + 나라장터(NEXT) | AX 담당자 | 보통 | 가능 |
+| Bid | 코드 시드 + localStorage bidStates(상태·결과) → Supabase + 나라장터(NEXT) | AX 담당자 | 보통 | 가능 |
 | Action | localStorage → Supabase | 시스템·사람 | 낮음 | 가능 |
 | Evidence | 파생(append-only) → Supabase | 시스템 | 보통 | 가능 |
 | Record | lib/records.ts (337) → Supabase | 회사 | 낮음 | 가능 |
@@ -162,7 +162,7 @@ Strategic P0 13항목 점검 → **0건** (QA_REPORT.md). Score A 목표 95+.
 ## System Core
 - Theme **Canonical 9** × 6 토큰(shell/primary/secondary/accent/highlight/soft) + neutral/semantic 고정 · 구버전 id 자동 마이그레이션
 - Role 3 · Surface Switch · Device Preview · Tutorial 4 · Presentation 10 · 날짜시각 · Demo Reset · ⌘K
-- 상태: localStorage `shine-ax-state-v1`(additive, schemaVersion 2) · 이벤트 `shine-ax-events-v1`(+ `NEXT_PUBLIC_ANALYTICS_ENDPOINT` sink) · 최근 본 `shine-recent-works` · **백업**: 설정>데이터 전체 내보내기/가져오기(검증)
+- 상태: localStorage `shine-ax-state-v1`(additive, schemaVersion 3 — v14: bidStates·readAlerts) · 이벤트 `shine-ax-events-v1`(+ `NEXT_PUBLIC_ANALYTICS_ENDPOINT` sink) · 최근 본 `shine-recent-works` · **백업**: 설정>데이터 전체 내보내기/가져오기(검증)
 
 ## Non-Goals
 NOT BUILDING 목록과 동일. 향후 확장 메뉴는 Preview Sheet로만 존재한다.

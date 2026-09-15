@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useApp } from "@/lib/store";
-import { costTotal, marginOf, Project } from "@/lib/data";
+import { costTotal, marginOf, Project, CostBreakdown } from "@/lib/data";
 import { PageHeader } from "@/components/ax/PageHeader";
 import { AxSkeleton } from "@/components/ax/Skeleton";
+import { toast } from "@/components/Toast";
 
 /* 원가 카테고리 팔레트 — dataviz 검증 통과(고정 순서, 순환 금지) */
 const COST_ITEMS: { key: keyof NonNullable<Project["costs"]>; label: string; color: string }[] = [
@@ -34,9 +35,62 @@ function quoteInsights(p: Project): { level: "risk" | "warn" | "ok"; text: strin
   return out;
 }
 
+/* 원가 실입력 — v14. 시드 원가는 DEMO지만 여기서 고친 값은 브라우저에 저장되고
+   Margin 미달 KPI가 실입력 기준으로 바뀐다. 빈 항목은 0으로 저장한다. */
+function CostEditor({ project, onDone }: { project: Project; onDone: () => void }) {
+  const { updateProject } = useApp();
+  const init = project.costs ?? { design: 0, material: 0, oem: 0, direct: 0, transport: 0, install: 0, etc: 0 };
+  const [budget, setBudget] = useState(String(project.budget || ""));
+  const [c, setC] = useState<Record<keyof CostBreakdown, string>>(
+    Object.fromEntries(COST_ITEMS.map((i) => [i.key, init[i.key] ? String(init[i.key]) : ""])) as Record<keyof CostBreakdown, string>,
+  );
+  const num = (v: string) => Math.max(0, Math.round(Number(v.replace(/[^\d]/g, "")) || 0));
+  const total = COST_ITEMS.reduce((s, i) => s + num(c[i.key]), 0);
+  const b = num(budget);
+  const m = b > 0 && total > 0 ? ((b - total) / b) * 100 : null;
+  return (
+    <form
+      className="rounded-xl border border-accent/40 bg-canvas p-4"
+      aria-label={`${project.client} 원가 입력`}
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (b <= 0) { toast("견적금액을 입력하세요", "info"); return; }
+        const costs = Object.fromEntries(COST_ITEMS.map((i) => [i.key, num(c[i.key])])) as unknown as CostBreakdown;
+        updateProject(project.id, { budget: b, costs });
+        toast("원가를 저장했습니다 — Margin KPI에 반영됩니다");
+        onDone();
+      }}
+    >
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        <label className="text-xs text-ink-2 sm:col-span-2 lg:col-span-4">
+          견적금액 (원)
+          <input inputMode="numeric" value={budget} onChange={(e) => setBudget(e.target.value)} className="input mt-1 w-full tabular-nums" aria-label="견적금액" placeholder="예: 25000000" />
+        </label>
+        {COST_ITEMS.map((i) => (
+          <label key={i.key} className="text-xs text-ink-2">
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-[2px]" style={{ background: i.color }} aria-hidden />{i.label}</span>
+            <input inputMode="numeric" value={c[i.key]} onChange={(e) => setC({ ...c, [i.key]: e.target.value })} className="input mt-1 w-full tabular-nums" aria-label={i.label} placeholder="0" />
+          </label>
+        ))}
+      </div>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm">
+        <span className="text-ink-2">
+          원가 합계 <b className="tabular-nums text-ink">{total.toLocaleString()}원</b>
+          {m !== null && <> · 예상 Margin <b className="tabular-nums" style={{ color: marginColor(m) }}>{m.toFixed(1)}%</b></>}
+        </span>
+        <span className="flex gap-2">
+          <button type="button" onClick={onDone} className="tap btn btn-ghost btn-sm">취소</button>
+          <button type="submit" className="tap btn btn-primary btn-sm">저장</button>
+        </span>
+      </div>
+    </form>
+  );
+}
+
 export default function QuotesPage() {
   const { projects, hydrated, role } = useApp();
   const [openId, setOpenId] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
   if (!hydrated) return <AxSkeleton variant="list" />;
 
@@ -53,9 +107,10 @@ export default function QuotesPage() {
   }
 
   const quoted = projects.filter((p) => p.costs);
+  const unquoted = projects.filter((p) => !p.costs && p.stage !== "완료");
   const totalQuote = quoted.reduce((s, p) => s + p.budget, 0);
   const totalCost = quoted.reduce((s, p) => s + costTotal(p.costs), 0);
-  const totalMargin = ((totalQuote - totalCost) / totalQuote) * 100;
+  const totalMargin = totalQuote ? ((totalQuote - totalCost) / totalQuote) * 100 : 0;
   const lowCount = quoted.filter((p) => (marginOf(p) ?? 100) < 30).length;
 
   return (
@@ -68,7 +123,7 @@ export default function QuotesPage() {
       {/* Summary — 컬러 스탯 타일 */}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Stat label="견적 합계" value={totalQuote.toLocaleString() + "원"} bar="var(--ic-overview)" sub={`${quoted.length}개 프로젝트`} />
-        <Stat label="예상 원가 합계" value={totalCost.toLocaleString() + "원"} bar="var(--ic-partner)" sub={`OEM 비중 ${((quoted.reduce((s, p) => s + (p.costs?.oem ?? 0), 0) / totalCost) * 100).toFixed(0)}%`} />
+        <Stat label="예상 원가 합계" value={totalCost.toLocaleString() + "원"} bar="var(--ic-partner)" sub={`OEM 비중 ${totalCost ? ((quoted.reduce((s, p) => s + (p.costs?.oem ?? 0), 0) / totalCost) * 100).toFixed(0) : 0}%`} />
         <Stat label="예상 Margin" value={totalMargin.toFixed(1) + "%"} bar={marginColor(totalMargin)} sub={(totalQuote - totalCost).toLocaleString() + "원"} accent />
         <Stat label="Margin 미달 건" value={`${lowCount}건`} bar={lowCount ? "var(--ic-risk)" : "var(--ic-evidence)"} sub="목표 30% 기준" />
       </div>
@@ -168,7 +223,13 @@ export default function QuotesPage() {
                     </div>
                   </div>
                   <div>
-                    <p className="mb-2 text-xs font-bold text-muted">견적 인사이트 <span className="font-normal">(규칙 기반 · AI READY)</span></p>
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <p className="text-xs font-bold text-muted">견적 인사이트 <span className="font-normal">(규칙 기반 · AI READY)</span></p>
+                      {editId !== p.id && (
+                        <button onClick={() => setEditId(p.id)} className="tap btn btn-ghost btn-sm" aria-label={`${p.client} 원가 수정`}>✎ 원가 수정</button>
+                      )}
+                    </div>
+                    {editId === p.id && <div className="mb-3"><CostEditor project={p} onDone={() => setEditId(null)} /></div>}
                     <ul className="space-y-2">
                       {insights.map((ins, i) => (
                         <li
@@ -190,7 +251,33 @@ export default function QuotesPage() {
           );
         })}
       </div>
-      <p className="text-[0.6875rem] text-muted">※ 금액은 데모 데이터입니다. 점선 구간은 견적 대비 Margin 여유분입니다.</p>
+      {/* 원가 미입력 — 문의·낙찰로 들어온 건은 여기서 원가를 채워야 Margin KPI에 잡힌다 */}
+      <section className="rounded-2xl border border-dashed border-line bg-surface p-5" data-testid="unquoted">
+        <h3 className="font-bold text-ink">
+          원가 미입력 프로젝트 <span className="text-xs font-normal text-muted">({unquoted.length}건) — 입력해야 Margin 미달 KPI에 집계됩니다</span>
+        </h3>
+        {unquoted.length === 0 ? (
+          <p className="mt-2 text-sm text-muted">진행 중인 모든 프로젝트에 원가가 입력되어 있습니다.</p>
+        ) : (
+          <ul className="mt-3 space-y-2">
+            {unquoted.map((p) => (
+              <li key={p.id} className="rounded-xl border border-line p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-ink">{p.client} <span className="font-normal text-muted">· {p.name}</span></p>
+                    <p className="text-xs text-muted">{p.stage} · 납기 {p.deadline}{p.fromInquiry ? " · 문의 유입" : p.isBid ? " · 입찰 수주" : ""}</p>
+                  </div>
+                  {editId !== p.id && (
+                    <button onClick={() => setEditId(p.id)} className="tap btn btn-primary btn-sm" aria-label={`${p.client} 원가 입력`}>원가 입력</button>
+                  )}
+                </div>
+                {editId === p.id && <div className="mt-3"><CostEditor project={p} onDone={() => setEditId(null)} /></div>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+      <p className="text-[0.6875rem] text-muted">※ 시드 금액은 데모 데이터이며, 여기서 입력·수정한 값은 브라우저에 저장됩니다. 점선 구간은 견적 대비 Margin 여유분입니다.</p>
     </div>
   );
 }

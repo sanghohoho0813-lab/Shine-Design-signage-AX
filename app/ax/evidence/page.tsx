@@ -9,38 +9,50 @@ import { COMPANY, CREDENTIALS } from "@/lib/company";
 import { BUSINESS_RECORDS, RECORD_TOTAL } from "@/lib/records";
 import { MONEY_KPIS, KPI_KIND_LABELS, kpiNow } from "@/lib/kpi";
 import { marginOf } from "@/lib/data";
-import { ACTION_LABELS, fmtTime, STAGE_LABELS } from "@/lib/store";
+import { fmtTime, STAGE_LABELS } from "@/lib/store";
 import { toast } from "@/components/Toast";
+import { buildEvidence, evidenceCsv, EVIDENCE_TYPES } from "@/lib/evidence";
+import { seedBids } from "@/lib/data";
+import { track } from "@/lib/events";
 
 export default function EvidencePage() {
-  const { projects, hydrated, inquiries, actionStates, deliveryStage, baselines, captureBaseline } = useApp();
+  const { projects, hydrated, inquiries, actionStates, deliveryStage, baselines, captureBaseline, bidStates } = useApp();
   if (!hydrated) return <AxSkeleton variant="cards" />;
-  const now = kpiNow(projects, inquiries, marginOf as never);
+  const now = kpiNow(projects, inquiries, marginOf as never, bidStates);
   const baseline = baselines.length ? baselines[baselines.length - 1] : null;
   /* DEMO 단계에서는 Baseline 대비 변화를 계산하지 않는다 — 시연 값으로 개선율을 만들지 않기 위해 */
   const showDelta = deliveryStage !== "DEMO" && !!baseline && baseline.stage !== "DEMO";
 
-  /* Evidence Log — 사람이 무엇을 했는지가 남는다 (v3.0 §9 Evidence Type) */
-  type Ev = { type: string; at: string; note: string };
-  const evidence: Ev[] = [];
-  Object.entries(actionStates).forEach(([id, r]) => {
-    if (r.state === "todo") return;
-    evidence.push({
-      type: r.state === "done" ? "RESULT" : r.state === "skip" || r.state === "hold" ? "RISK" : "ACTION",
-      at: r.at,
-      note: `${id.replace(/^engine-/, "엔진 ").replace(/^risk-/, "리스크 ").replace(/^mg-/, "Margin ").replace(/^qc-/, "검수 ").replace(/^inq-/, "문의 ").replace(/^bid-/, "입찰 ")} → ${ACTION_LABELS[r.state]}${r.reason ? ` (${r.reason})` : ""}`,
-    });
-  });
-  inquiries.forEach((q) =>
-    (q.statusLog ?? [{ status: q.axStatus, at: q.createdAt }]).forEach((l) =>
-      evidence.push({ type: "CUSTOMER", at: l.at, note: `문의 ${q.id.toUpperCase()} · ${q.clientType} · ${l.status}` }),
-    ),
-  );
-  baselines.forEach((b) =>
-    evidence.push({ type: "BASELINE", at: b.at, note: `Baseline 스냅샷 (${b.stage})${b.note ? ` — ${b.note}` : ""} · ${Object.entries(b.values).map(([k, v]) => `${k}=${v}`).join(", ")}` }),
-  );
-  evidence.sort((a, b) => (a.at < b.at ? 1 : -1));
-  const EV_TONE: Record<string, string> = { RESULT: "var(--ic-evidence)", ACTION: "var(--ic-overview)", RISK: "var(--ic-risk)", CUSTOMER: "var(--ic-crm)", BASELINE: "var(--ic-system)" };
+  /* Evidence Log — 사람이 무엇을 했는지가 남는다 (v3.0 §9 Evidence Type). 화면과 CSV가 같은 목록 */
+  const evidence = buildEvidence({ actionStates, inquiries, baselines, bidStates, bidName: (id) => seedBids.find((b) => b.id === id)?.institution ?? id });
+  const csv = () => evidenceCsv(evidence, MONEY_KPIS.map((k) => ({ name: k.name, value: now[k.id] ?? "—", stage: deliveryStage })));
+  const downloadCsv = () => {
+    const blob = new Blob([csv()], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `shine-evidence-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    track("export_evidence", { rows: evidence.length, how: "csv" });
+    toast("Evidence Log를 CSV로 내려받았습니다");
+  };
+  const copyCsv = async () => {
+    const text = csv();
+    try {
+      await navigator.clipboard.writeText(text);
+      toast("Evidence Log를 복사했습니다 — 엑셀·시트에 붙여넣으세요");
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); toast("Evidence Log를 복사했습니다"); } catch { toast("복사할 수 없습니다 — CSV 다운로드를 이용하세요", "info"); }
+      document.body.removeChild(ta);
+    }
+    track("export_evidence", { rows: evidence.length, how: "copy" });
+  };
+  const EV_TONE: Record<string, string> = { RESULT: "var(--ic-evidence)", ACTION: "var(--ic-overview)", RISK: "var(--ic-risk)", CUSTOMER: "var(--ic-crm)", BASELINE: "var(--ic-system)", BID: "var(--ic-sales)" };
 
   const completed = projects.filter((p) => p.stage === "완료");
 
@@ -235,7 +247,7 @@ export default function EvidencePage() {
             Evidence Log <span className="text-xs font-normal text-muted">({evidence.length}건)</span>
           </h3>
           <div className="flex flex-wrap gap-1">
-            {["BASELINE", "ACTION", "RESULT", "CUSTOMER", "RISK"].map((t) => (
+            {EVIDENCE_TYPES.map((t) => (
               <span key={t} className="rounded-md px-1.5 py-0.5 text-[0.5625rem] font-bold" style={{ color: EV_TONE[t], background: `color-mix(in srgb, ${EV_TONE[t]} 12%, transparent)` }}>
                 {t}
               </span>
@@ -243,6 +255,10 @@ export default function EvidencePage() {
           </div>
         </div>
         <p className="mt-1 text-xs text-muted">추천 → 사람의 결정 → 결과가 시간순으로 남습니다. 12주 실증 종료 시 Evidence Pack의 재료가 됩니다.</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button onClick={downloadCsv} disabled={evidence.length === 0} className="tap btn btn-ghost btn-sm disabled:opacity-50">⬇ CSV 내보내기</button>
+          <button onClick={copyCsv} disabled={evidence.length === 0} className="tap btn btn-ghost btn-sm disabled:opacity-50">⎘ 복사 (KPI 현재값 포함)</button>
+        </div>
         {evidence.length === 0 ? (
           <p className="mt-3 rounded-xl bg-canvas p-4 text-sm text-muted">
             아직 기록이 없습니다. 대시보드 &lsquo;오늘 할 일&rsquo;에서 Action을 확인·완료하거나, 고객 문의를 접수하면 여기에 쌓입니다.

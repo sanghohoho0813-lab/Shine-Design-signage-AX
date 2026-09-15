@@ -41,7 +41,7 @@ Date: 2026-09-06 · Stage: **DEMO** (설정에서 PILOT/PRODUCTION 선언 가능
 **Product P0 → 0건 · P1 → 0건.** 
 
 ## Whole-Hybrid Acceptance (U-7) — 헤드리스 실행 결과
-`scratchpad/qa.mjs` **204/204 PASS** (v1~v13 누적). 포함: Fresh Load → Tutorial → 고객 홈 → 문의 5단계 → 접수번호 → 내 문의 현황 → AX 파이프라인 반영 → 상태 변경 → 고객 화면 반영 → Evidence Log → 브리핑 AI 근거/모달 → Action 승인·처리 → 설정(9 Theme/Font/Role/Owner) → Why AX 15 → 시연 모드 → PC↔Mobile Preview → Overlay Escape → Demo Reset → 재확인.
+`scratchpad/qa.mjs` **204/204 PASS** (v1~v13 누적) → v14에서 236/236. 포함: Fresh Load → Tutorial → 고객 홈 → 문의 5단계 → 접수번호 → 내 문의 현황 → AX 파이프라인 반영 → 상태 변경 → 고객 화면 반영 → Evidence Log → 브리핑 AI 근거/모달 → Action 승인·처리 → 설정(9 Theme/Font/Role/Owner) → Why AX 15 → 시연 모드 → PC↔Mobile Preview → Overlay Escape → Demo Reset → 재확인.
 
 - Responsive tested widths: 360 / 390 / 430 / 768 / 1024 / 1280 / 1440 / 1920 (× 9 routes) + 360 with Font XL
 - v13 추가 검증: Tutorial 5단계 · 시연 11단계 · DEMO 스냅샷 '실증 아님' 표기 · PILOT 선언 후 MEASURING · stageLog → 소요일 0.0일 실측 · 재문의 프리필 · 잘못된 백업 파일 거부/유효 파일 적용 후 새로고침 유지 · 뒤로가기 후 오버레이 잔존 0 · 포커스 복귀
@@ -89,8 +89,26 @@ P2 아이디어는 RECOMMENDATIONS.md로 이동.
 
 무한 루프 종료. 남은 P2는 RECOMMENDATIONS.md.
 
+## v14 — 실측 확대 (100점 유지 · 회귀 0)
+목표를 "새 화면"이 아니라 "아직 입력 지점이 없는 KPI"로 잡았다. v13 기준 5개 Money KPI 중 낙찰률은 결과 필드가 없어 영원히 "—", Margin 미달은 시드 원가만 보고 있었다.
+
+| # | 목표 | 반영 | 검증 |
+|---|---|---|---|
+| 1 | 낙찰률 KPI "—" 제거 | 입찰 상태 진행 + 결과(낙찰/유찰/미참여) 기록, 미참여 분모 제외, Evidence BID, 낙찰→파이프라인 '승인' 프로젝트(Bridge 4) | 낙찰 1·유찰 1 → 50% · 새로고침 유지 · 파이프라인 반영 · Evidence BID 2건 |
+| 2 | Margin 미달 KPI 실입력화 | 원가 7항목+견적금액 입력·수정 폼, "원가 미입력" 목록(문의·낙찰 유입) | 입력 후 목록 이탈 · 새로고침 Margin 40.0% 유지 · 수정 후 6.7% |
+| 3 | 향후 확장 NEXT 1순위(설치 일정) 기본 반영 | `/ax/schedule` 월 캘린더 · 겹침 경고 · 지난 납기 · 30일 목록 — 기존 납기만 사용, 배차·장비는 향후 확장에 유지 | grid 7열 · 다음 달 이동 · 메뉴/⌘K 노출 · 360/768/1024 overflow 0 |
+| 4 | Evidence Pack 재료 반출 | CSV 내보내기 + 클립보드 복사(KPI 현재값 포함) | 복사 토스트 · CSV 헤더/BID/kpi 표 |
+| 5 | 알림 읽음 유실 | readAlerts를 store에 저장 | 모두 읽음 → 새로고침 후 0건 |
+| 6 | 저장 형식 | schemaVersion 3 — bidStates·readAlerts 추가, 없으면 빈 값 | v2 저장값 로드 → doneActions·테마 마이그레이션 유지 |
+
+Red Team 3차(짧게): QA — 설치 일정 360px에서 grid 항목이 `min-width:auto`로 679px 넘침 **P1 → 섹션 `min-w-0`로 수정**. QA — 헤드리스에서 하이드레이션 직후 단축키·튜토리얼 타이밍 오탐 3건 → 테스트를 "사람이 누르는 간격"으로 보정(제품 이상 없음). 대표 — "입찰 건을 새로 못 넣는다" → RECOMMENDATIONS(나라장터 수집과 함께).
+
+`scratchpad/qa.mjs` **236/236 PASS** (v1~v14 누적).
+
 ## Known Issues
 - 지명원 실적 337건의 연도는 페이지 단위 기간으로만 표기(원문 레이아웃 한계).
 - KPI "문의→견적 소요일"은 v13부터 stageLog로 실측 — 시드 프로젝트는 이력이 없어 새로 진행한 건부터 집계.
 - 문의 현황은 같은 브라우저에서만 조회(로그인·인증 NOT BUILDING).
+- 입찰은 시드 4건에 상태·결과를 기록하는 구조 — 신규 입찰 등록은 나라장터 수집(Preview)과 함께 다음 단계.
+- 설치 일정의 "지난 납기"는 시드 납기가 오늘보다 앞이면 그대로 잡힌다(DEMO 데이터 특성, 계산은 정직).
 - `<a download>`(CSV 샘플)는 일부 임베디드 미리보기 환경에서 차단될 수 있음.

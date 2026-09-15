@@ -18,6 +18,9 @@ export type EventName =
   | "ax_inquiry_status"
   | "ax_project_advance"
   | "ax_action_state"
+  | "ax_project_update"
+  | "ax_bid_update"
+  | "export_evidence"
   | "theme_change"
   | "demo_reset";
 
@@ -74,6 +77,9 @@ export const EVENT_LABELS: Record<EventName, string> = {
   ax_inquiry_status: "AX · 문의 응대 상태 변경",
   ax_project_advance: "AX · 프로젝트 단계 진행",
   ax_action_state: "AX · Action 상태 변경",
+  ax_project_update: "AX · 원가·견적 실입력",
+  ax_bid_update: "AX · 입찰 상태·결과 입력",
+  export_evidence: "AX · Evidence Log 내보내기",
   theme_change: "테마 변경",
   demo_reset: "Demo Reset",
 };

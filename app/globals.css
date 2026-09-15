@@ -416,6 +416,24 @@ li {
   background: rgba(255, 255, 255, 0.12);
 }
 
+/* 폼 입력 — 고객 문의·AX 원가 입력이 같은 모양을 쓴다 */
+.input {
+  width: 100%;
+  border-radius: 0.625rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  outline: none;
+  min-width: 0;
+}
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.input::placeholder { color: var(--muted); }
+
 } /* @layer components */
 
 /* Interaction quality baseline (v1.2 Motion Contract) */
