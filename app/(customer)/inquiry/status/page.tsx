@@ -134,7 +134,10 @@ export default function InquiryStatusPage() {
                     {/* 내부 진행 단계 — 문의가 프로젝트로 넘어가면 여기서도 보인다 */}
                     {proj && (
                       <div className="mt-4">
-                        <p className="text-[0.6875rem] font-bold tracking-wide text-muted">프로젝트 진행 단계</p>
+                        <p className="text-[0.6875rem] font-bold tracking-wide text-muted">
+                          프로젝트 진행 단계
+                          {/^\d{4}-\d{2}-\d{2}$/.test(proj.deadline) && <span className="ml-2 font-normal normal-case">· 예정 {proj.stage === "완료" ? "완료일" : "납기"} <b className="tabular-nums text-ink">{proj.deadline}</b></span>}
+                        </p>
                         <div className="mt-1.5 flex flex-wrap gap-1">
                           {STAGES.map((st, k) => (
                             <span

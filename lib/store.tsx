@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { Project, seedProjects, Stage } from "./data";
+import { Project, seedProjects, Stage, ProductionOrder, ProductionStatus } from "./data";
 import { track } from "./events";
 
 /* ---------------------------------------------------------------------------
@@ -118,9 +118,27 @@ export interface BidRecord {
   log: { status: BidStatus | BidResult; at: string }[];
 }
 
+/* v15 — 사람이 직접 등록하는 입찰. 시드와 같은 모양이되 체크리스트는 bidChecks로 따로 둔다 */
+export interface CustomBid {
+  id: string;
+  institution: string;
+  project: string;
+  deadline: string;
+  amount: number;
+  status: BidStatus;
+  createdAt: string;
+}
+/* v15 — 제작 발주 상태·검수 기록 (시드 발주 6건 + 신규 발주) */
+export interface OrderRecord {
+  status: ProductionStatus;
+  qc: "완료" | "대기" | "-";
+  at: string;
+  log: { status: string; at: string }[];
+}
+
 /** 저장 형식 버전 — 앞으로의 마이그레이션 기준점. 키는 바꾸지 않는다.
-    v3: bidStates · readAlerts 추가 (없으면 빈 값으로 읽는다) */
-export const SCHEMA_VERSION = 3;
+    v3: bidStates · readAlerts / v4: customBids · bidChecks · customOrders · orderStates (없으면 빈 값) */
+export const SCHEMA_VERSION = 4;
 
 interface AppState {
   theme: ThemeId;
@@ -160,6 +178,19 @@ interface AppState {
   /** 읽은 알림 키 — 새로고침해도 유지 */
   readAlerts: string[];
   markAlertsRead: (keys: string[]) => void;
+  /** v15 — 신규 입찰 등록 */
+  customBids: CustomBid[];
+  addBid: (b: Omit<CustomBid, "id" | "createdAt" | "status">) => CustomBid;
+  /** v15 — 입찰별 서류 체크 (bidId → label → done). 시드 값은 기록이 없을 때만 쓴다 */
+  bidChecks: Record<string, Record<string, boolean>>;
+  setBidCheck: (bidId: string, label: string, done: boolean) => void;
+  /** v15 — 제작 발주 */
+  customOrders: ProductionOrder[];
+  addOrder: (o: Omit<ProductionOrder, "id" | "status" | "qc" | "orderDate">) => ProductionOrder;
+  orderStates: Record<string, OrderRecord>;
+  setOrderState: (id: string, patch: { status?: ProductionStatus; qc?: OrderRecord["qc"] }, seed: { status: ProductionStatus; qc: OrderRecord["qc"] }) => void;
+  /** v15 — 납기 변경 + 사유 (deadlineLog) */
+  changeDeadline: (id: string, to: string, reason: string) => void;
   /** 전체 상태를 JSON 문자열로 — 백업·이관용 */
   exportState: () => string;
   /** JSON을 검증해 들여온다. 실패하면 false, 기존 데이터는 그대로 */
@@ -189,6 +220,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [baselines, setBaselines] = useState<BaselineSnapshot[]>([]);
   const [bidStates, setBidStates] = useState<Record<string, BidRecord>>({});
   const [readAlerts, setReadAlerts] = useState<string[]>([]);
+  const [customBids, setCustomBids] = useState<CustomBid[]>([]);
+  const [bidChecks, setBidChecks] = useState<Record<string, Record<string, boolean>>>({});
+  const [customOrders, setCustomOrders] = useState<ProductionOrder[]>([]);
+  const [orderStates, setOrderStates] = useState<Record<string, OrderRecord>>({});
   const [hydrated, setHydrated] = useState(false);
   const [isEmbedded, setIsEmbedded] = useState(false);
 
@@ -209,6 +244,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (Array.isArray(s.baselines)) setBaselines(s.baselines);
         if (s.bidStates && typeof s.bidStates === "object") setBidStates(s.bidStates);
         if (Array.isArray(s.readAlerts)) setReadAlerts(s.readAlerts.filter((k: unknown) => typeof k === "string"));
+        if (Array.isArray(s.customBids)) setCustomBids(s.customBids);
+        if (s.bidChecks && typeof s.bidChecks === "object") setBidChecks(s.bidChecks);
+        if (Array.isArray(s.customOrders)) setCustomOrders(s.customOrders);
+        if (s.orderStates && typeof s.orderStates === "object") setOrderStates(s.orderStates);
         // actionStates가 있으면 그대로, 없고 옛 doneActions만 있으면 완료 상태로 변환
         if (s.actionStates && typeof s.actionStates === "object") {
           setActionStates(s.actionStates);
@@ -253,11 +292,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           baselines,
           bidStates,
           readAlerts,
+          customBids,
+          bidChecks,
+          customOrders,
+          orderStates,
           schemaVersion: SCHEMA_VERSION,
         }),
       );
     } catch {}
-  }, [theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, doneActions, axOwner, updatedAt, deliveryStage, baselines, bidStates, readAlerts, hydrated]);
+  }, [theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, doneActions, axOwner, updatedAt, deliveryStage, baselines, bidStates, readAlerts, customBids, bidChecks, customOrders, orderStates, hydrated]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -421,12 +464,55 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       markAlertsRead: (keys) => {
         setReadAlerts((r) => Array.from(new Set([...r, ...keys])));
       },
+      customBids,
+      addBid: (b) => {
+        const bid: CustomBid = { ...b, id: "bc-" + Date.now().toString(36), status: "발굴", createdAt: new Date().toISOString() };
+        setCustomBids((xs) => [bid, ...xs]);
+        touch();
+        track("ax_bid_create", { id: bid.id });
+        return bid;
+      },
+      bidChecks,
+      setBidCheck: (bidId, label, done) => {
+        setBidChecks((m) => ({ ...m, [bidId]: { ...(m[bidId] ?? {}), [label]: done } }));
+        touch();
+        track("ax_bid_update", { id: bidId, check: label, done });
+      },
+      customOrders,
+      addOrder: (o) => {
+        const order: ProductionOrder = { ...o, id: "mc-" + Date.now().toString(36), status: "발주 전", qc: "-", orderDate: new Date().toISOString().slice(0, 10) };
+        setCustomOrders((xs) => [order, ...xs]);
+        touch();
+        track("ax_order_update", { id: order.id, status: "발주 전" });
+        return order;
+      },
+      orderStates,
+      setOrderState: (id, patch, seed) => {
+        const at = new Date().toISOString();
+        setOrderStates((m) => {
+          const cur = m[id] ?? { status: seed.status, qc: seed.qc, at, log: [] };
+          const next = { ...cur, ...patch, at };
+          const label = patch.status ? patch.status : `QC ${patch.qc}`;
+          return { ...m, [id]: { ...next, log: [...cur.log, { status: label, at }] } };
+        });
+        touch();
+        track("ax_order_update", { id, ...patch });
+      },
+      changeDeadline: (id, to, reason) => {
+        const at = new Date().toISOString();
+        setProjects((ps) =>
+          ps.map((p) => (p.id === id && p.deadline !== to ? { ...p, deadline: to, deadlineLog: [...(p.deadlineLog ?? []), { from: p.deadline, to, reason, at }] } : p)),
+        );
+        touch();
+        track("ax_deadline_change", { id, to, reason });
+      },
       exportState: () =>
         JSON.stringify(
           {
             schemaVersion: SCHEMA_VERSION,
             exportedAt: new Date().toISOString(),
             theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, axOwner, updatedAt, deliveryStage, baselines, bidStates, readAlerts,
+            customBids, bidChecks, customOrders, orderStates,
           },
           null,
           2,
@@ -454,6 +540,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           setBaselines(Array.isArray(s.baselines) ? s.baselines : []);
           setBidStates(s.bidStates && typeof s.bidStates === "object" ? s.bidStates : {});
           setReadAlerts(Array.isArray(s.readAlerts) ? s.readAlerts.filter((k: unknown) => typeof k === "string") : []);
+          setCustomBids(Array.isArray(s.customBids) ? s.customBids : []);
+          setBidChecks(s.bidChecks && typeof s.bidChecks === "object" ? s.bidChecks : {});
+          setCustomOrders(Array.isArray(s.customOrders) ? s.customOrders : []);
+          setOrderStates(s.orderStates && typeof s.orderStates === "object" ? s.orderStates : {});
           touch();
           return true;
         } catch {
@@ -474,6 +564,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setBaselines([]);
         setBidStates({});
         setReadAlerts([]);
+        setCustomBids([]);
+        setBidChecks({});
+        setCustomOrders([]);
+        setOrderStates({});
         try {
           localStorage.removeItem(LS_KEY);
         } catch {}
@@ -482,7 +576,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       hydrated,
       isEmbedded,
     }),
-    [theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, doneActions, axOwner, updatedAt, deliveryStage, baselines, bidStates, readAlerts, hydrated, isEmbedded],
+    [theme, fontScale, role, reducedMotion, projects, inquiries, actionStates, doneActions, axOwner, updatedAt, deliveryStage, baselines, bidStates, readAlerts, customBids, bidChecks, customOrders, orderStates, hydrated, isEmbedded],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

@@ -68,7 +68,7 @@ PRIMARY CONSTRAINT (TIME + MONEY LEAK):
 | Inquiry | localStorage → Supabase | 고객 | 높음 | 집계만 |
 | Project | localStorage(시드+유입) → Supabase | AX 담당자·브릿지 | 보통 | 가능 |
 | ProductionOrder | 코드 시드 → Supabase | AX 담당자 | 보통 | 가능 |
-| Bid | 코드 시드 + localStorage bidStates(상태·결과) → Supabase + 나라장터(NEXT) | AX 담당자 | 보통 | 가능 |
+| Bid | 코드 시드 + localStorage customBids·bidChecks·bidStates(등록·서류 체크·상태·결과) → Supabase + 나라장터(NEXT) | AX 담당자 | 보통 | 가능 |
 | Action | localStorage → Supabase | 시스템·사람 | 낮음 | 가능 |
 | Evidence | 파생(append-only) → Supabase | 시스템 | 보통 | 가능 |
 | Record | lib/records.ts (337) → Supabase | 회사 | 낮음 | 가능 |
@@ -89,7 +89,8 @@ PRIMARY CONSTRAINT (TIME + MONEY LEAK):
 |---|---|---|---|---|---|---|---|---|
 | Project Risk | 어떤 프로젝트가 설치일을 놓칠 위험인가 | 단계·납기·지연·파트너 납기 | **RULE** L2 | 높음/보통/낮음 + 다음 행동 | 기준값 비교로 충분 | MID | 추천만 | RISK/ACTION |
 | Margin Guard | 이 견적 이대로 내면 남는가 | 견적·원가 7항목 | **RULE** L2 | Margin·경고 | 수식 | **HIGH** | 견적 확정은 대표 | EFFICIENCY/REVENUE |
-| Bid Readiness | 이 입찰 서류가 되는가 | 자격 8종·체크리스트·실적 | **RULE** L2 | 준비도 %·매칭 | 완료율 | MID | 참여 결정은 사람 | ACTION/RESULT |
+| Bid Readiness | 이 입찰 서류가 되는가 | 자격 8종·체크리스트·실적 | **RULE** L2 | 준비도 %·유사실적 건수 | 완료율·기관 토큰 매칭 | MID | 참여 결정은 사람 | ACTION/RESULT |
+| Schedule Guard | 어느 날이 겹치고 무엇이 늦었나 | 프로젝트 납기·제작 납기·발주 상태 | **RULE** L2 | 겹침·지난 납기·제작납기>납기 | 날짜 비교 | MID | 납기 변경은 사람+사유 | SCHEDULE/RISK |
 | Next Action | 오늘 무엇부터 | 5조건 | **RULE** L2 | 우선순위 목록 | 조건 수집 | LOW | 상태는 사람이 기록 | ADOPTION |
 
 AI Fit 통과 4개 · LLM 연결 0개 · 억지 AI 포장 없음. LLM은 "사유 문장화 / 공고문 읽기(RAG)"에만 NEXT.
@@ -154,7 +155,7 @@ Strategic P0 13항목 점검 → **0건** (QA_REPORT.md). Score A 목표 95+.
 1. 대시보드 — KPI 8(클릭 → 상세) · 오늘 할 일(Action Lifecycle) · AI 브리핑 · Provenance
 2. 프로젝트 관리 — 리스트/보드 · 상세 · 문의 응대 상태
 3. 견적·원가 관리(대표) — 7항목 · Margin · 규칙 인사이트
-4. 제작·파트너 관리 5. 입찰·제안 관리(서류 12항목) 6. AI 브리핑(엔진 4 · Method/Level 표시 · 처리 상태)
+4. 제작·파트너 관리 5. 입찰·제안 관리(서류 12항목) 6. AI 브리핑(엔진 5 · Method/Level 표시 · 처리 상태)
 7. 증빙·리포트 — Money KPI 계약 · Evidence Log · 완료 증빙 · 실적 337 인쇄
 8. Why AX — **15 섹션**(13 정책환경 · 14 기술자산 · 15 KPI 계약 추가)
 9. 설정 — 화면(**Theme 9**) · 사용자/권한(매트릭스·AX Owner) · 데모(단계 표시) · 데이터(SSOT·CSV·이벤트) · AI(Method Matrix) · 기술·사업화 자산(정직)
@@ -162,7 +163,7 @@ Strategic P0 13항목 점검 → **0건** (QA_REPORT.md). Score A 목표 95+.
 ## System Core
 - Theme **Canonical 9** × 6 토큰(shell/primary/secondary/accent/highlight/soft) + neutral/semantic 고정 · 구버전 id 자동 마이그레이션
 - Role 3 · Surface Switch · Device Preview · Tutorial 4 · Presentation 10 · 날짜시각 · Demo Reset · ⌘K
-- 상태: localStorage `shine-ax-state-v1`(additive, schemaVersion 3 — v14: bidStates·readAlerts) · 이벤트 `shine-ax-events-v1`(+ `NEXT_PUBLIC_ANALYTICS_ENDPOINT` sink) · 최근 본 `shine-recent-works` · **백업**: 설정>데이터 전체 내보내기/가져오기(검증)
+- 상태: localStorage `shine-ax-state-v1`(additive, schemaVersion 4 — v14: bidStates·readAlerts / v15: customBids·bidChecks·customOrders·orderStates, Project.deadlineLog) · 이벤트 `shine-ax-events-v1`(+ `NEXT_PUBLIC_ANALYTICS_ENDPOINT` sink) · 최근 본 `shine-recent-works` · **백업**: 설정>데이터 전체 내보내기/가져오기(검증)
 
 ## Non-Goals
 NOT BUILDING 목록과 동일. 향후 확장 메뉴는 Preview Sheet로만 존재한다.

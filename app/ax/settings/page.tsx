@@ -466,7 +466,7 @@ export default function SettingsPage() {
           </table>
         </div>
         <p className="mt-3 text-[0.6875rem] leading-relaxed text-muted">
-          지금 4개 엔진은 모두 조건·수식·기준값으로 돌아갑니다. 규칙으로 충분한 곳에 AI라는 이름을 붙이지 않았고,
+          지금 {AI_SUMMARY.total}개 엔진은 모두 조건·수식·기준값으로 돌아갑니다. 규칙으로 충분한 곳에 AI라는 이름을 붙이지 않았고,
           오류비용이 높은 견적 확정은 어떤 단계에서도 사람이 승인합니다. LLM은 사유를 문장으로 쓰거나 공고문을
           읽는 곳에만 붙일 계획입니다.
         </p>

@@ -293,7 +293,7 @@ export default function WhyAxPage() {
         <Section n="09" title="AI Decision Layer — AI가 실제로 하는 일">
           <p className="text-sm leading-relaxed text-ink-2">
             AI는 장식이 아니라 판단이 필요한 곳에만 배치했습니다. <b className="text-ink">Project Risk ·
-            Margin Guard · Bid Readiness · Next Action</b> 4개 엔진이 일정·원가·서류 데이터를 함께 비교해
+            Margin Guard · Bid Readiness · Schedule Guard · Next Action</b> 5개 규칙 엔진이 일정·원가·서류 데이터를 함께 비교해
             &lsquo;오늘 무엇을 해야 하는가&rsquo;를 이유와 함께 제시합니다. 현재는 규칙 기반 데모(AI
             READY)로 동작하며, 같은 구조에 LLM API를 연결할 수 있습니다.
           </p>

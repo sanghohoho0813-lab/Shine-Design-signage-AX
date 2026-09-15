@@ -20,6 +20,9 @@ export type EventName =
   | "ax_action_state"
   | "ax_project_update"
   | "ax_bid_update"
+  | "ax_bid_create"
+  | "ax_order_update"
+  | "ax_deadline_change"
   | "export_evidence"
   | "theme_change"
   | "demo_reset";
@@ -79,6 +82,9 @@ export const EVENT_LABELS: Record<EventName, string> = {
   ax_action_state: "AX · Action 상태 변경",
   ax_project_update: "AX · 원가·견적 실입력",
   ax_bid_update: "AX · 입찰 상태·결과 입력",
+  ax_bid_create: "AX · 입찰 신규 등록",
+  ax_order_update: "AX · 제작 발주 등록·상태 변경",
+  ax_deadline_change: "AX · 납기 변경(사유)",
   export_evidence: "AX · Evidence Log 내보내기",
   theme_change: "테마 변경",
   demo_reset: "Demo Reset",

@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useApp } from "@/lib/store";
-import { marginOf, seedBids, seedProduction } from "@/lib/data";
+import { marginOf } from "@/lib/data";
+import { resolveBids } from "@/lib/bids";
+import { resolveOrders } from "@/lib/production";
 import { AxSkeleton } from "@/components/ax/Skeleton";
 import { ActionStateControl } from "@/components/ax/ActionState";
 import { AiReadyBadge } from "@/components/ax/AiReady";
@@ -19,15 +21,26 @@ interface Engine {
 }
 
 export default function BriefingPage() {
-  const { projects, hydrated, inquiries } = useApp();
+  const { projects, hydrated, inquiries, customBids, bidChecks, bidStates, customOrders, orderStates } = useApp();
   if (!hydrated) return <AxSkeleton variant="cards" />;
+  const seedBids = resolveBids(customBids, bidChecks, bidStates).filter((b) => !b.record?.result);
+  const seedProduction = resolveOrders(customOrders, orderStates);
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const late = projects.filter((p) => p.stage !== "완료" && /^\d{4}-\d{2}-\d{2}$/.test(p.deadline) && p.deadline < todayIso);
+  const byDate = new Map<string, string[]>();
+  projects.filter((p) => p.stage !== "완료" && /^\d{4}-\d{2}-\d{2}$/.test(p.deadline)).forEach((p) => byDate.set(p.deadline, [...(byDate.get(p.deadline) ?? []), p.client]));
+  const clashes = [...byDate.entries()].filter(([, v]) => v.length >= 2);
+  const lateOrders = seedProduction.filter((o) => {
+    const proj = projects.find((p) => p.id === o.projectId);
+    return proj && o.status !== "완료" && o.status !== "설치대기" && /^\d{4}-\d{2}-\d{2}$/.test(proj.deadline) && o.due > proj.deadline;
+  });
 
   const risky = projects.filter((p) => p.risk === "높음");
   const lowMargin = projects.filter((p) => {
     const m = marginOf(p);
     return m !== null && m < 30 && p.stage !== "완료";
   });
-  const topBid = [...seedBids].sort((a, b) => b.readiness - a.readiness)[0];
+  const topBid = [...seedBids].sort((a, b) => b.readiness - a.readiness)[0] ?? { institution: "—", readiness: 0, deadline: "—", insight: "결과가 기록되지 않은 입찰이 없습니다.", checklist: [] as { done: boolean }[] };
   const qcPending = seedProduction.filter((o) => o.status === "검수대기");
 
   const engines: Engine[] = [
@@ -72,6 +85,24 @@ export default function BriefingPage() {
       ],
     },
     {
+      id: "schedule",
+      name: "Schedule Guard",
+      color: "var(--ic-partner)",
+      what: late.length || clashes.length || lateOrders.length
+        ? `지난 납기 ${late.length}건 · 겹치는 날 ${clashes.length}일 · 제작 납기가 프로젝트 납기보다 늦은 발주 ${lateOrders.length}건`
+        : "일정 충돌·지난 납기 없음",
+      why: [
+        ...late.slice(0, 3).map((p) => `${p.client}: 납기 ${p.deadline} 지남 (현재 ${p.stage}) — 납기 조정 또는 완료 처리`),
+        ...clashes.slice(0, 2).map(([d, v]) => `${d}: ${v.join(", ")} 같은 날 납기 — 시공팀 분리 필요`),
+        ...lateOrders.slice(0, 2).map((o) => `${o.partner} ${o.item}: 제작 납기 ${o.due}가 프로젝트 납기보다 늦음`),
+        ...(late.length + clashes.length + lateOrders.length === 0 ? ["진행 프로젝트 납기와 제작 납기가 모두 오늘 이후이고 같은 날 겹치지 않습니다."] : []),
+      ],
+      actions: [
+        { label: "설치 일정 보기", href: "/ax/schedule" },
+        { label: "납기 변경(사유)", href: "/ax/pipeline" },
+      ],
+    },
+    {
       id: "next",
       name: "Next Action",
       color: "var(--ic-ai)",
@@ -94,7 +125,7 @@ export default function BriefingPage() {
         <div className="min-w-0">
           <h2 className="font-black text-nav-active">AI 브리핑 — 오늘의 판단</h2>
           <p className="mt-1 max-w-xl text-xs leading-relaxed text-nav-inactive">
-            4개의 핵심 엔진(Project Risk · Margin Guard · Bid Readiness · Next Action)이 무엇을(What) →
+            5개의 규칙 엔진(Project Risk · Margin Guard · Bid Readiness · Schedule Guard · Next Action)이 무엇을(What) →
             왜(Why) → 무엇을 할지(Action) 순서로 알려줍니다.
           </p>
         </div>

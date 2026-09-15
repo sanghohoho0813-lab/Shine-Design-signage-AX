@@ -5,14 +5,14 @@
 import type { ActionRecord, BaselineSnapshot, BidRecord, Inquiry } from "./store";
 import { ACTION_LABELS } from "./store";
 
-export type EvidenceType = "RESULT" | "ACTION" | "RISK" | "CUSTOMER" | "BASELINE" | "BID";
+export type EvidenceType = "RESULT" | "ACTION" | "RISK" | "CUSTOMER" | "BASELINE" | "BID" | "SCHEDULE";
 export interface EvidenceItem {
   type: EvidenceType;
   at: string;
   note: string;
 }
 
-export const EVIDENCE_TYPES: EvidenceType[] = ["BASELINE", "ACTION", "RESULT", "CUSTOMER", "BID", "RISK"];
+export const EVIDENCE_TYPES: EvidenceType[] = ["BASELINE", "ACTION", "RESULT", "CUSTOMER", "BID", "SCHEDULE", "RISK"];
 
 export function buildEvidence(input: {
   actionStates: Record<string, ActionRecord>;
@@ -20,8 +20,18 @@ export function buildEvidence(input: {
   baselines: BaselineSnapshot[];
   bidStates: Record<string, BidRecord>;
   bidName?: (id: string) => string;
+  /** v15 — 납기 변경 이력 · 발주 상태 이력 */
+  projects?: { client: string; deadlineLog?: { from: string; to: string; reason: string; at: string }[] }[];
+  orderStates?: Record<string, { log: { status: string; at: string }[] }>;
+  orderName?: (id: string) => string;
 }): EvidenceItem[] {
   const out: EvidenceItem[] = [];
+  input.projects?.forEach((p) =>
+    p.deadlineLog?.forEach((l) => out.push({ type: "SCHEDULE", at: l.at, note: `${p.client} 납기 ${l.from} → ${l.to} · ${l.reason}` })),
+  );
+  Object.entries(input.orderStates ?? {}).forEach(([id, r]) =>
+    r.log.forEach((l) => out.push({ type: "ACTION", at: l.at, note: `발주 ${input.orderName ? input.orderName(id) : id} → ${l.status}` })),
+  );
   Object.entries(input.actionStates).forEach(([id, r]) => {
     if (r.state === "todo") return;
     out.push({

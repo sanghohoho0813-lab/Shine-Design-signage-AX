@@ -7,7 +7,7 @@
 | Inquiry 고객 문의 | localStorage `shine-ax-state-v1.inquiries` → Supabase `inquiries` | 고객(양식) | AX 담당자 axStatus | 높음 | 상담 종료 후 1년 | 집계만 |
 | Project 프로젝트 | localStorage `projects` → Supabase `projects` | AX 담당자 · 브릿지 | 단계 진행 · 원가 | 보통 | 영구 | 가능 |
 | ProductionOrder 제작 발주 | `lib/data.ts` 시드 → Supabase `production_orders` | AX 담당자 | 상태 5종 | 보통 | 프로젝트와 동일 | 가능 |
-| Bid 입찰 | `lib/data.ts` 시드 + localStorage `bidStates`(상태·결과·이력) → Supabase `bids` + 나라장터(NEXT) | AX 담당자 | 상태 진행 · 결과(낙찰/유찰/미참여) | 보통 | 영구 | 가능 |
+| Bid 입찰 | `lib/data.ts` 시드 + localStorage `customBids`(직접 등록) · `bidChecks`(서류 체크) · `bidStates`(상태·결과·이력) → Supabase `bids` + 나라장터(NEXT) | AX 담당자 | 등록 · 서류 체크 · 상태 · 결과 | 보통 | 영구 | 가능 (유사실적 건수 RULE) |
 | Action 추천 Action | localStorage `actionStates` → Supabase `actions` | 시스템(생성)·사람(상태) | todo→confirmed→doing→done / hold / skip(reason) | 낮음 | 영구 | 가능 |
 | Evidence 증빙 | 파생(Project 완료 + Action + Inquiry) → Supabase `evidence` (append-only) | 시스템 | 추가만 | 보통 | 영구 | 가능 |
 | Record 수행 실적 | `lib/records.ts` (337건) → Supabase `records` | 회사 | 연 1회 | 낮음 | 영구 | 가능 |

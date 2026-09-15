@@ -12,19 +12,29 @@ import { marginOf } from "@/lib/data";
 import { fmtTime, STAGE_LABELS } from "@/lib/store";
 import { toast } from "@/components/Toast";
 import { buildEvidence, evidenceCsv, EVIDENCE_TYPES } from "@/lib/evidence";
-import { seedBids } from "@/lib/data";
+import { resolveBids } from "@/lib/bids";
+import { resolveOrders } from "@/lib/production";
 import { track } from "@/lib/events";
 
 export default function EvidencePage() {
-  const { projects, hydrated, inquiries, actionStates, deliveryStage, baselines, captureBaseline, bidStates } = useApp();
+  const { projects, hydrated, inquiries, actionStates, deliveryStage, baselines, captureBaseline, bidStates, customBids, bidChecks, customOrders, orderStates } = useApp();
   if (!hydrated) return <AxSkeleton variant="cards" />;
+  const allBids = resolveBids(customBids, bidChecks, bidStates);
+  const allOrders = resolveOrders(customOrders, orderStates);
+  const seedBids = allBids;
   const now = kpiNow(projects, inquiries, marginOf as never, bidStates);
   const baseline = baselines.length ? baselines[baselines.length - 1] : null;
   /* DEMO 단계에서는 Baseline 대비 변화를 계산하지 않는다 — 시연 값으로 개선율을 만들지 않기 위해 */
   const showDelta = deliveryStage !== "DEMO" && !!baseline && baseline.stage !== "DEMO";
 
   /* Evidence Log — 사람이 무엇을 했는지가 남는다 (v3.0 §9 Evidence Type). 화면과 CSV가 같은 목록 */
-  const evidence = buildEvidence({ actionStates, inquiries, baselines, bidStates, bidName: (id) => seedBids.find((b) => b.id === id)?.institution ?? id });
+  const evidence = buildEvidence({
+    actionStates, inquiries, baselines, bidStates,
+    bidName: (id) => seedBids.find((b) => b.id === id)?.institution ?? id,
+    projects, orderStates,
+    orderName: (id) => { const o = allOrders.find((x) => x.id === id); return o ? `${o.partner} · ${o.item}` : id; },
+  });
+  const decidedBids = allBids.filter((b) => b.record?.result);
   const csv = () => evidenceCsv(evidence, MONEY_KPIS.map((k) => ({ name: k.name, value: now[k.id] ?? "—", stage: deliveryStage })));
   const downloadCsv = () => {
     const blob = new Blob([csv()], { type: "text/csv;charset=utf-8" });
@@ -52,7 +62,7 @@ export default function EvidencePage() {
     }
     track("export_evidence", { rows: evidence.length, how: "copy" });
   };
-  const EV_TONE: Record<string, string> = { RESULT: "var(--ic-evidence)", ACTION: "var(--ic-overview)", RISK: "var(--ic-risk)", CUSTOMER: "var(--ic-crm)", BASELINE: "var(--ic-system)", BID: "var(--ic-sales)" };
+  const EV_TONE: Record<string, string> = { RESULT: "var(--ic-evidence)", ACTION: "var(--ic-overview)", RISK: "var(--ic-risk)", CUSTOMER: "var(--ic-crm)", BASELINE: "var(--ic-system)", BID: "var(--ic-sales)", SCHEDULE: "var(--ic-partner)" };
 
   const completed = projects.filter((p) => p.stage === "완료");
 
@@ -133,6 +143,19 @@ export default function EvidencePage() {
           </table>
           <p className="mt-1 text-[0.625rem]">개선율은 Baseline 확정(PILOT 4주) 이후에만 산출합니다.</p>
         </div>
+        {decidedBids.length > 0 && (
+          <div className="print-block mt-6">
+            <h2 className="text-lg font-black">입찰 결과 ({decidedBids.length}건)</h2>
+            <table className="mt-2 w-full border-collapse text-xs">
+              <thead><tr className="border-b border-black text-left"><th className="py-1 pr-2">발주기관</th><th className="py-1 pr-2">사업명</th><th className="py-1 pr-2">마감</th><th className="py-1 pr-2">추정가</th><th className="py-1">결과</th></tr></thead>
+              <tbody>
+                {decidedBids.map((b) => (
+                  <tr key={b.id} className="print-block border-b border-gray-300"><td className="py-1 pr-2 font-semibold">{b.institution}</td><td className="py-1 pr-2">{b.project}</td><td className="py-1 pr-2">{b.deadline}</td><td className="py-1 pr-2 tabular-nums">{b.amount.toLocaleString()}원</td><td className="py-1">{b.record?.result}{b.record?.note ? ` — ${b.record.note}` : ""}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
         <div className="print-block mt-6">
           <h2 className="text-lg font-black">Evidence Log ({evidence.length}건)</h2>
           <ul className="mt-1.5">

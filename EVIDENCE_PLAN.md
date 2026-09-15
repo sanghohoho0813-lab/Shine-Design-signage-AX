@@ -7,6 +7,7 @@
 |---|---|---|
 | BASELINE | Baseline 스냅샷 버튼(DEMO는 '실증 아님') | 첫 4주 값을 고정 |
 | BID | 입찰 상태 진행 · 결과(낙찰/유찰/미참여) | 동일 → 낙찰률 |
+| SCHEDULE | 납기 변경(사유 필수) | 동일 → 납기 지연 원인 분포 |
 | ACTION | Action Lifecycle 확인·실행중 | 동일 |
 | RESULT | Action 완료 · 프로젝트 완료 | 동일 + 결과 필드 |
 | ADOPTION | Action 확인·실행률 | WAU · 핵심 업무 AX 처리비율 |

@@ -64,6 +64,8 @@ export interface Project {
   costs?: CostBreakdown;
   /** 단계 진입 시각 — 문의→견적 소요일 같은 KPI의 측정 근거. 시드에는 없고 운영 중 쌓인다 */
   stageLog?: { stage: Stage; at: string }[];
+  /** 납기 변경 이력 — 왜 밀렸는지가 남아야 다음 견적의 일정 근거가 된다 (v15) */
+  deadlineLog?: { from: string; to: string; reason: string; at: string }[];
 }
 
 export interface CostBreakdown {

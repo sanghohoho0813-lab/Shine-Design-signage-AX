@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { seedBids, Bid } from "@/lib/data";
+import { type Bid } from "@/lib/data";
 import { useApp, BID_STATUSES, type BidResult, type BidStatus, fmtTime } from "@/lib/store";
+import { resolveBids, similarRecords, matchLevel, type ResolvedBid } from "@/lib/bids";
 import { Overlay } from "@/components/Overlay";
 import { PageHeader } from "@/components/ax/PageHeader";
 import { AxSkeleton } from "@/components/ax/Skeleton";
@@ -17,14 +18,68 @@ import { toast } from "@/components/Toast";
 
 const RESULT_TONE: Record<BidResult, string> = { 낙찰: "var(--ic-evidence)", 유찰: "var(--ic-risk)", 미참여: "var(--ic-system)" };
 
+/* 신규 입찰 등록 — v15. 발주기관 이름으로 지명원 실적을 즉시 매칭해 보여준다(규칙·건수) */
+function NewBidForm({ onDone }: { onDone: () => void }) {
+  const { addBid } = useApp();
+  const [f, setF] = useState({ institution: "", project: "", deadline: "", amount: "" });
+  const sim = f.institution.trim().length >= 2 ? similarRecords(f.institution.trim()) : null;
+  return (
+    <form
+      aria-label="새 입찰 등록"
+      className="rounded-2xl border border-accent/40 bg-surface p-5 shadow-sm"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!f.institution.trim() || !f.project.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(f.deadline)) { toast("발주기관·사업명·마감일(YYYY-MM-DD)을 입력하세요", "info"); return; }
+        addBid({ institution: f.institution.trim(), project: f.project.trim(), deadline: f.deadline, amount: Math.max(0, Number(f.amount.replace(/[^\d]/g, "")) || 0) });
+        toast("입찰을 등록했습니다 — 체크리스트에서 서류를 확인하세요");
+        onDone();
+      }}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="font-bold text-ink">새 입찰 등록</h3>
+        <button type="button" onClick={onDone} className="tap rounded-lg p-1.5 text-muted hover:bg-soft" aria-label="등록 취소">✕</button>
+      </div>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <label className="text-xs text-ink-2">발주기관
+          <input value={f.institution} onChange={(e) => setF({ ...f, institution: e.target.value })} className="input mt-1" aria-label="발주기관" placeholder="예: 보령시" />
+        </label>
+        <label className="text-xs text-ink-2">사업명
+          <input value={f.project} onChange={(e) => setF({ ...f, project: e.target.value })} className="input mt-1" aria-label="사업명" placeholder="예: 시청사 안내사인 정비" />
+        </label>
+        <label className="text-xs text-ink-2">마감일
+          <input type="date" value={f.deadline} onChange={(e) => setF({ ...f, deadline: e.target.value })} className="input mt-1" aria-label="마감일" />
+        </label>
+        <label className="text-xs text-ink-2">추정가격 (원)
+          <input inputMode="numeric" value={f.amount} onChange={(e) => setF({ ...f, amount: e.target.value })} className="input mt-1 tabular-nums" aria-label="추정가격" placeholder="예: 45000000" />
+        </label>
+      </div>
+      {sim && (
+        <p className="mt-3 rounded-xl bg-canvas p-3 text-xs text-ink-2" data-testid="sim-preview">
+          <b className="text-ink">유사실적 {sim.count}건</b> · Portfolio Match <b>{matchLevel(sim.count)}</b>
+          {sim.sample.length > 0 && <span className="text-muted"> — {sim.sample.join(" / ")}</span>}
+          <span className="block text-[0.6875rem] text-muted">지명원 실적 337건에서 기관명 토큰으로 검색한 규칙 결과입니다.</span>
+        </p>
+      )}
+      <div className="mt-3 flex justify-end gap-2">
+        <button type="button" onClick={onDone} className="tap btn btn-ghost btn-sm">취소</button>
+        <button type="submit" className="tap btn btn-primary btn-sm">등록</button>
+      </div>
+    </form>
+  );
+}
+
 export default function BidsPage() {
-  const { hydrated, bidStates, setBidStatus, setBidResult } = useApp();
-  const [sel, setSel] = useState<Bid | null>(null);
+  const { hydrated, bidStates, setBidStatus, setBidResult, customBids, bidChecks, setBidCheck } = useApp();
+  const [selId, setSelId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
   if (!hydrated) return <AxSkeleton variant="cards" />;
 
+  const bids = resolveBids(customBids, bidChecks, bidStates);
+  const sel = selId ? bids.find((b) => b.id === selId) ?? null : null;
+  const setSel = (b: ResolvedBid | null) => setSelId(b ? b.id : null);
   const statusOf = (b: Bid): BidStatus => bidStates[b.id]?.status ?? b.status;
   const resultOf = (b: Bid) => bidStates[b.id]?.result;
-  const results = seedBids.map(resultOf).filter(Boolean) as BidResult[];
+  const results = bids.map(resultOf).filter(Boolean) as BidResult[];
   const won = results.filter((r) => r === "낙찰").length;
   const lost = results.filter((r) => r === "유찰").length;
   const skipped = results.filter((r) => r === "미참여").length;
@@ -49,8 +104,13 @@ export default function BidsPage() {
       <PageHeader
         title="입찰·제안 관리"
         purpose="발굴 → 검토 → 준비 → 제출 → 결과. 결과를 입력하면 낙찰률이 실측되고, 낙찰 건은 파이프라인 프로젝트가 됩니다."
-        stat={`${seedBids.length}건 추적 중`}
-      />
+        stat={`${bids.length}건 추적 중`}
+      >
+        {!adding && (
+          <button onClick={() => setAdding(true)} className="tap hover-lift btn btn-primary btn-sm">＋ 새 입찰 등록</button>
+        )}
+      </PageHeader>
+      {adding && <NewBidForm onDone={() => setAdding(false)} />}
 
       {/* 결과 집계 — 낙찰률 KPI의 현재값. 결과가 없으면 "—" */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" data-testid="bid-summary">
@@ -61,7 +121,7 @@ export default function BidsPage() {
       </div>
 
       <div data-tutorial="bid-list" className="grid gap-4 lg:grid-cols-2">
-        {seedBids.map((b) => {
+        {bids.map((b) => {
           const st = statusOf(b);
           const rs = resultOf(b);
           const rec = bidStates[b.id];
@@ -72,6 +132,7 @@ export default function BidsPage() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-soft px-2 py-0.5 text-[0.625rem] font-bold text-ink-2">{st}</span>
+                    {b.custom && <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[0.625rem] font-bold text-accent">직접 등록</span>}
                     {rs && (
                       <span className="rounded-full px-2 py-0.5 text-[0.625rem] font-black" style={{ color: RESULT_TONE[rs], background: `color-mix(in srgb, ${RESULT_TONE[rs]} 12%, transparent)` }}>
                         {rs}{rec?.resultAt ? ` · ${fmtTime(rec.resultAt)}` : ""}
@@ -102,7 +163,7 @@ export default function BidsPage() {
 
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
                 <span>예상 규모 <b className="tabular-nums text-ink-2">{b.amount.toLocaleString()}원</b></span>
-                <span>Portfolio Match <b className={b.portfolioMatch === "높음" ? "text-[var(--ic-evidence)]" : "text-ink-2"}>{b.portfolioMatch}</b></span>
+                <span>Portfolio Match <b className={b.portfolioMatch === "높음" ? "text-[var(--ic-evidence)]" : "text-ink-2"}>{b.portfolioMatch}</b> <span className="text-muted">(유사실적 {b.similar}건)</span></span>
                 <span>서류 <b className="tabular-nums text-ink-2">{b.checklist.filter((c) => c.done).length}/{b.checklist.length}</b></span>
               </div>
 
@@ -160,7 +221,7 @@ export default function BidsPage() {
           );
         })}
       </div>
-      <p className="text-[0.6875rem] text-muted">※ 입찰 건 4개는 시연용 시드입니다. 상태·결과 입력은 브라우저에 저장되고 Evidence Log(BID)와 낙찰률 KPI에 반영됩니다.</p>
+      <p className="text-[0.6875rem] text-muted">※ 시드 4건은 시연용입니다. 직접 등록한 입찰·서류 체크·상태·결과는 브라우저에 저장되고 Evidence Log(BID)와 낙찰률 KPI에 반영됩니다. 준비도 = 확인된 서류 ÷ 전체 서류.</p>
 
       {sel && (
         <Overlay onClose={() => setSel(null)} align="right" labelledBy="bid-title">
@@ -173,25 +234,26 @@ export default function BidsPage() {
               </div>
               <button onClick={() => setSel(null)} className="tap rounded-lg p-2 text-muted hover:bg-soft" aria-label="닫기">✕</button>
             </div>
-            <ul className="flex-1 space-y-2 p-5">
+            <p className="px-5 pt-4 text-[0.6875rem] text-muted">체크하면 저장되고 준비도가 다시 계산됩니다. 서류 {sel.checklist.filter((c) => c.done).length}/{sel.checklist.length}</p>
+            <ul className="flex-1 space-y-2 p-5 pt-2" aria-label="서류 체크리스트">
               {sel.checklist.map((c) => (
-                <li
-                  key={c.label}
-                  className={`flex items-center gap-3 rounded-xl border p-3 text-sm ${
-                    c.done ? "border-line bg-canvas text-ink-2" : "border-[var(--ic-risk)]/25 bg-[var(--ic-risk)]/5 text-ink"
-                  }`}
-                >
-                  <span
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.6875rem] font-bold ${
-                      c.done ? "bg-[var(--ic-evidence)]/15 text-[var(--ic-evidence)]" : "bg-[var(--ic-risk)]/15 text-[var(--ic-risk)]"
+                <li key={c.label}>
+                  <label
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm ${
+                      c.done ? "border-line bg-canvas text-ink-2" : "border-[var(--ic-risk)]/25 bg-[var(--ic-risk)]/5 text-ink"
                     }`}
-                    aria-hidden
                   >
-                    {c.done ? "✓" : "!"}
-                  </span>
-                  <span className="flex-1 font-medium">{c.label}</span>
-                  {c.demo && <span className="rounded bg-soft px-1.5 py-0.5 text-[0.5625rem] font-bold text-muted">DEMO</span>}
-                  {!c.done && <span className="text-[0.6875rem] font-semibold text-[var(--ic-risk)]">미확인</span>}
+                    <input
+                      type="checkbox"
+                      checked={c.done}
+                      onChange={(e) => setBidCheck(sel.id, c.label, e.target.checked)}
+                      aria-label={c.label}
+                      className="h-4 w-4 shrink-0 accent-[var(--accent)]"
+                    />
+                    <span className="flex-1 font-medium">{c.label}</span>
+                    {c.demo && <span className="rounded bg-soft px-1.5 py-0.5 text-[0.5625rem] font-bold text-muted">DEMO</span>}
+                    {!c.done && <span className="text-[0.6875rem] font-semibold text-[var(--ic-risk)]">미확인</span>}
+                  </label>
                 </li>
               ))}
             </ul>

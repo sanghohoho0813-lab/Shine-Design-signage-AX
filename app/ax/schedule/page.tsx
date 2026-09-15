@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useApp } from "@/lib/store";
-import { seedProduction, STAGES } from "@/lib/data";
+import { STAGES } from "@/lib/data";
+import { resolveOrders } from "@/lib/production";
 import { PageHeader } from "@/components/ax/PageHeader";
 import { AxSkeleton } from "@/components/ax/Skeleton";
 
@@ -28,7 +29,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}`;
 
 export default function SchedulePage() {
-  const { projects, hydrated } = useApp();
+  const { projects, hydrated, customOrders, orderStates } = useApp();
+  const seedProduction = useMemo(() => resolveOrders(customOrders, orderStates), [customOrders, orderStates]);
   const today = new Date();
   const todayIso = iso(today.getFullYear(), today.getMonth(), today.getDate());
   const [cur, setCur] = useState({ y: today.getFullYear(), m: today.getMonth() });
@@ -46,7 +48,7 @@ export default function SchedulePage() {
       out.push({ date: o.due, kind: "제작 납기", title: `${client} · ${o.partner}`, sub: o.item, href: "/ax/production", overdue: o.due < todayIso });
     });
     return out.sort((a, b) => a.date.localeCompare(b.date));
-  }, [projects, todayIso]);
+  }, [projects, seedProduction, todayIso]);
 
   if (!hydrated) return <AxSkeleton variant="cards" />;
 

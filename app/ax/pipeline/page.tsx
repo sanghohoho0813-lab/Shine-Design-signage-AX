@@ -28,8 +28,9 @@ function dday(deadline: string): { label: string; urgent: boolean } | null {
 }
 
 export default function PipelinePage() {
-  const { projects, hydrated, advanceProject, inquiries, markInquiry } = useApp();
+  const { projects, hydrated, advanceProject, inquiries, markInquiry, changeDeadline } = useApp();
   const [sel, setSel] = useState<Project | null>(null);
+  const [editDl, setEditDl] = useState<{ to: string; reason: string } | null>(null);
   const [view, setView] = useState<"list" | "board">("list");
   const [stageFilter, setStageFilter] = useState<Stage | "전체">("전체");
   const [sort, setSort] = useState<"deadline" | "budget" | "risk">("deadline");
@@ -276,6 +277,45 @@ export default function PipelinePage() {
                 <Info k="견적금액" v={current.budget ? current.budget.toLocaleString() + "원" : "견적 전"} />
                 <Info k="예상 원가" v={current.costs ? costTotal(current.costs).toLocaleString() + "원" : "-"} />
               </dl>
+
+              {/* 납기 변경 — 사유가 남아야 다음 견적의 일정 근거가 된다 (v15) */}
+              <div className="rounded-xl bg-canvas p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs font-semibold text-muted">납기 <span className="font-normal">— 변경 시 사유 기록</span></p>
+                  {!editDl && current.stage !== "완료" && (
+                    <button onClick={() => setEditDl({ to: /^\d{4}-\d{2}-\d{2}$/.test(current.deadline) ? current.deadline : "", reason: "" })} className="tap btn btn-ghost btn-sm" aria-label="납기 변경">✎ 납기 변경</button>
+                  )}
+                </div>
+                {editDl && (
+                  <form
+                    aria-label="납기 변경 폼"
+                    className="mt-2 space-y-2"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!/^\d{4}-\d{2}-\d{2}$/.test(editDl.to) || !editDl.reason.trim()) { toast("새 납기와 사유를 입력하세요", "info"); return; }
+                      changeDeadline(current.id, editDl.to, editDl.reason.trim());
+                      toast(`납기 ${editDl.to}로 변경 — 사유가 이력에 남습니다`);
+                      setEditDl(null);
+                    }}
+                  >
+                    <input type="date" value={editDl.to} onChange={(e) => setEditDl({ ...editDl, to: e.target.value })} className="input" aria-label="새 납기" />
+                    <input value={editDl.reason} onChange={(e) => setEditDl({ ...editDl, reason: e.target.value })} className="input" aria-label="변경 사유" placeholder="사유 — 예: 발주처 CI 승인 지연" />
+                    <div className="flex justify-end gap-2">
+                      <button type="button" onClick={() => setEditDl(null)} className="tap btn btn-ghost btn-sm">취소</button>
+                      <button type="submit" className="tap btn btn-primary btn-sm">저장</button>
+                    </div>
+                  </form>
+                )}
+                {current.deadlineLog && current.deadlineLog.length > 0 && (
+                  <ol className="mt-2 space-y-1" aria-label="납기 변경 이력">
+                    {current.deadlineLog.map((l, i) => (
+                      <li key={i} className="text-xs text-ink-2">
+                        <span className="tabular-nums text-muted">{l.from}</span> → <b className="tabular-nums text-ink">{l.to}</b> · {l.reason} <span className="text-muted">({fmtTime(l.at)})</span>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </div>
 
               {/* 단계 이력 — KPI(문의→견적 소요일)의 측정 근거가 되는 시각 기록 */}
               {current.stageLog && current.stageLog.length > 0 && (

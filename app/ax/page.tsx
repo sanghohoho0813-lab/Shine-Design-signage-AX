@@ -2,14 +2,19 @@
 
 import Link from "next/link";
 import { useApp } from "@/lib/store";
-import { seedProduction, seedBids, partners, STAGES, fmtKRWshort, costTotal, IMG } from "@/lib/data";
+import { partners, STAGES, fmtKRWshort, costTotal, IMG } from "@/lib/data";
+import { resolveBids } from "@/lib/bids";
+import { resolveOrders } from "@/lib/production";
 import { AxSkeleton } from "@/components/ax/Skeleton";
 import { ActionStateControl } from "@/components/ax/ActionState";
 import { AiReadyBadge } from "@/components/ax/AiReady";
 import { Provenance } from "@/components/ax/Provenance";
 
 export default function AxDashboard() {
-  const { projects, inquiries, role, hydrated, actionStates, axOwner } = useApp();
+  const { projects, inquiries, role, hydrated, actionStates, axOwner , customBids, bidChecks, bidStates, customOrders, orderStates } = useApp();
+  const seedBids = resolveBids(customBids, bidChecks, bidStates);
+  const seedProduction = resolveOrders(customOrders, orderStates);
+  const todayIso = new Date().toISOString().slice(0, 10);
   if (!hydrated) return <AxSkeleton variant="dashboard" />;
 
   const active = projects.filter((p) => p.stage !== "완료");
@@ -82,14 +87,43 @@ export default function AxDashboard() {
         tone: "var(--ic-sales)",
       }),
     );
-  const topBid = [...seedBids].sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
-  todo.push({
-    id: "bid-" + topBid.id,
-    label: `${topBid.institution} 입찰 서류 점검`,
-    why: `마감 ${topBid.deadline} · 준비도 ${topBid.readiness}%`,
-    href: "/ax/bids",
-    tone: "var(--ic-crm)",
+  // 입찰: 결과가 없는 건 중 마감이 가장 가까운 것 + 마감 D-7 이내 전부
+  const openBids = [...seedBids].filter((b) => !b.record?.result).sort((a, b) => a.deadline.localeCompare(b.deadline));
+  openBids.forEach((b, i) => {
+    const days = Math.ceil((new Date(b.deadline + "T00:00:00").getTime() - Date.now()) / 86400000);
+    if (i === 0 || days <= 7) {
+      todo.push({
+        id: "bid-" + b.id,
+        label: `${b.institution} 입찰 서류 점검`,
+        why: `마감 ${b.deadline}${days >= 0 ? ` (D-${days})` : " (마감 지남)"} · 준비도 ${b.readiness}%`,
+        href: "/ax/bids",
+        tone: "var(--ic-crm)",
+      });
+    }
   });
+  // v15 — 지난 납기 · 원가 미입력 (Schedule Guard · Margin Guard 규칙)
+  projects
+    .filter((p) => p.stage !== "완료" && /^\d{4}-\d{2}-\d{2}$/.test(p.deadline) && p.deadline < todayIso)
+    .forEach((p) =>
+      todo.push({
+        id: "late-" + p.id,
+        label: `${p.client} 납기 조정 또는 완료 처리`,
+        why: `납기 ${p.deadline} 지남 · 현재 ${p.stage}`,
+        href: "/ax/schedule",
+        tone: "var(--ic-risk)",
+      }),
+    );
+  projects
+    .filter((p) => !p.costs && p.stage !== "완료" && p.stage !== "문의")
+    .forEach((p) =>
+      todo.push({
+        id: "cost-" + p.id,
+        label: `${p.client} 원가 입력`,
+        why: `${p.stage} 단계인데 원가 7항목이 비어 있음 — Margin 계산 불가`,
+        href: "/ax/quotes",
+        tone: "var(--ic-sales)",
+      }),
+    );
   const stateOf = (id: string) => actionStates[id]?.state ?? "todo";
   const doneCount = todo.filter((t) => stateOf(t.id) === "done").length;
   const handledCount = todo.filter((t) => ["done", "hold", "skip"].includes(stateOf(t.id))).length;
