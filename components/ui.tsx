@@ -65,7 +65,7 @@ export function SectionHeader({
       {action && (
         <Link
           href={action.href}
-          className={`tap shrink-0 text-sm font-semibold ${onDark ? "text-nav-inactive hover:text-white" : "text-muted hover:text-ink"}`}
+          className={`tap tap-pad shrink-0 text-sm font-semibold ${onDark ? "text-nav-inactive hover:text-white" : "text-muted hover:text-ink"}`}
         >
           {action.label} <span aria-hidden>→</span>
         </Link>

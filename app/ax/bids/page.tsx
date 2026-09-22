@@ -251,7 +251,7 @@ export default function BidsPage() {
                       className="h-4 w-4 shrink-0 accent-[var(--accent)]"
                     />
                     <span className="flex-1 font-medium">{c.label}</span>
-                    {c.demo && <span className="rounded bg-soft px-1.5 py-0.5 text-[0.5625rem] font-bold text-muted">DEMO</span>}
+                    {c.demo && <span className="rounded bg-soft px-1.5 py-0.5 text-[0.625rem] font-bold text-muted">DEMO</span>}
                     {!c.done && <span className="text-[0.6875rem] font-semibold text-[var(--ic-risk)]">미확인</span>}
                   </label>
                 </li>

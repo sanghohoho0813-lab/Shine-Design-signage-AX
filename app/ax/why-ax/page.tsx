@@ -331,8 +331,8 @@ export default function WhyAxPage() {
                   {g.stage}
                 </span>
                 <span className={`text-sm font-semibold ${g.vision ? "text-ink" : "text-ink-2"}`}>{g.label}</span>
-                {i === 0 && <span className="rounded bg-[var(--ic-evidence)]/12 px-1.5 py-0.5 text-[0.5625rem] font-bold text-[var(--ic-evidence)]">운영 중</span>}
-                {i > 0 && <span className="rounded bg-soft px-1.5 py-0.5 text-[0.5625rem] font-bold text-muted">향후 확장</span>}
+                {i === 0 && <span className="rounded bg-[var(--ic-evidence)]/12 px-1.5 py-0.5 text-[0.625rem] font-bold text-[var(--ic-evidence)]">운영 중</span>}
+                {i > 0 && <span className="rounded bg-soft px-1.5 py-0.5 text-[0.625rem] font-bold text-muted">향후 확장</span>}
               </li>
             ))}
           </ol>

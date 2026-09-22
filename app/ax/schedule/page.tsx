@@ -134,7 +134,7 @@ export default function SchedulePage() {
                           </Link>
                         </li>
                       ))}
-                      {es.length > 3 && <li className="px-1 text-[0.5625rem] text-muted">+{es.length - 3}</li>}
+                      {es.length > 3 && <li className="px-1 text-[0.625rem] text-muted">+{es.length - 3}</li>}
                     </ul>
                   </>
                 )}
@@ -172,7 +172,7 @@ export default function SchedulePage() {
                 {overdue.map((e, i) => (
                   <li key={i} className="flex items-center justify-between gap-2 rounded-lg bg-canvas px-3 py-2">
                     <span className="min-w-0 truncate text-ink-2"><b className="text-ink">{e.title}</b> — {e.sub}</span>
-                    <Link href={e.href} className="shrink-0 tabular-nums text-muted hover:text-ink">{e.date.slice(5)} →</Link>
+                    <Link href={e.href} className="tap tap-pad shrink-0 tabular-nums text-muted hover:text-ink">{e.date.slice(5)} →</Link>
                   </li>
                 ))}
               </ul>
@@ -191,7 +191,7 @@ export default function SchedulePage() {
                   <span className="w-12 shrink-0 tabular-nums text-xs font-bold text-ink">{e.date.slice(5).replace("-", ".")}</span>
                   <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: TONE[e.kind] }} aria-hidden />
                   <span className="min-w-0 flex-1 truncate text-ink-2"><b className="text-ink">{e.title}</b> — {e.sub}</span>
-                  <Link href={e.href} className="shrink-0 text-xs text-muted hover:text-ink">열기 →</Link>
+                  <Link href={e.href} className="tap tap-pad shrink-0 text-xs text-muted hover:text-ink">열기 →</Link>
                 </li>
               ))}
             </ul>

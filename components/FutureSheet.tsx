@@ -44,7 +44,7 @@ const TIER_STYLE_DARK: Record<FutureTier, string> = {
 export function FutureBadge({ tier, dark = false }: { tier: FutureTier; dark?: boolean }) {
   return (
     <span
-      className={`shrink-0 whitespace-nowrap rounded-full px-1.5 py-px text-[0.5625rem] font-bold tracking-wide ${
+      className={`shrink-0 whitespace-nowrap rounded-full px-1.5 py-px text-[0.625rem] font-bold tracking-wide ${
         (dark ? TIER_STYLE_DARK : TIER_STYLE)[tier]
       }`}
     >

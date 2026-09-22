@@ -202,7 +202,7 @@ export default function AxDashboard() {
         <section className="min-w-0 rounded-2xl border border-line bg-surface p-5 shadow-sm xl:col-span-2">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-bold text-ink">프로젝트 진행 현황</h2>
-            <Link href="/ax/pipeline" className="tap text-xs font-semibold text-muted hover:text-ink">전체 보기 →</Link>
+            <Link href="/ax/pipeline" className="tap tap-pad text-xs font-semibold text-muted hover:text-ink">전체 보기 →</Link>
           </div>
           <div className="flex flex-wrap items-center gap-y-1.5">
             {STAGES.map((s, i) => {
@@ -264,7 +264,7 @@ export default function AxDashboard() {
                   </p>
                   <p className="ml-7 mt-1 text-[0.75rem] leading-relaxed text-nav-inactive">{p.riskNote}</p>
                   <div className="ml-7 mt-2">
-                    <Link href="/ax/briefing" className="tap inline-block rounded-md bg-accent px-2.5 py-1 text-[0.6875rem] font-bold text-on-accent hover:brightness-110">
+                    <Link href="/ax/briefing" className="tap inline-flex min-h-9 items-center rounded-md bg-accent px-3 py-1 text-[0.6875rem] font-bold text-on-accent hover:brightness-110">
                       Action 보기
                     </Link>
                   </div>

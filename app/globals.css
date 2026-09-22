@@ -398,6 +398,25 @@ li {
   background: rgba(255, 255, 255, 0.12);
 }
 
+/* 터치 목표 (v17) — 폰·터치 기기에서 누르는 것은 최소 44px(2.25rem).
+   버튼·라디오·탭은 min-height로, 글줄 속 인라인 링크는 .tap-pad(안 보이는 세로 패딩)로 잡는다. */
+@media (max-width: 640px), (pointer: coarse) {
+  button.tap,
+  .tap[role="button"],
+  .tap[role="radio"],
+  .tap[role="tab"],
+  .tap[role="switch"] {
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+  }
+}
+.tap-pad {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0.5rem;
+  margin-block: -0.5rem;
+}
+
 /* KPI 타일 — 열 수를 rem 기준으로 자동 조정하되, 폰에서는 2열까지 좁힌다.
    숫자 8장이 세로로 쌓여 '오늘 할 일'이 화면 밖으로 밀리던 문제(v16). */
 .kpi-grid {

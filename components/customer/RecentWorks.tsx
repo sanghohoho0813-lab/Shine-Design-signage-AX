@@ -50,7 +50,7 @@ export function RecentWorks({ excludeId }: { excludeId?: string }) {
             } catch {}
             setIds([]);
           }}
-          className="tap text-[0.6875rem] text-muted hover:text-ink"
+          className="tap tap-pad text-[0.6875rem] text-muted hover:text-ink"
         >
           지우기
         </button>

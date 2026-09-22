@@ -130,11 +130,14 @@ export default function SettingsPage() {
           </span>
           <button
             role="switch"
+            aria-label="Motion 줄이기"
             aria-checked={app.reducedMotion}
             onClick={() => app.setReducedMotion(!app.reducedMotion)}
-            className={`tap relative h-6 w-11 rounded-full transition-colors ${app.reducedMotion ? "bg-accent" : "bg-line"}`}
+            className="tap flex h-11 w-14 shrink-0 items-center justify-center rounded-lg"
           >
-            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${app.reducedMotion ? "left-[22px]" : "left-0.5"}`} />
+            <span className={`relative block h-6 w-11 rounded-full transition-colors ${app.reducedMotion ? "bg-accent" : "bg-line"}`}>
+              <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${app.reducedMotion ? "left-[22px]" : "left-0.5"}`} />
+            </span>
           </button>
         </label>
       </Card>
@@ -410,7 +413,7 @@ export default function SettingsPage() {
             행동 이벤트 <span className="font-normal text-muted">— 최근 {events.length}건 · Primary Conversion 관련만 기록</span>
           </p>
           {events.length > 0 && (
-            <button onClick={() => { clearEvents(); toast("이벤트 로그를 비웠습니다"); }} className="tap text-[0.6875rem] font-semibold text-muted hover:text-ink">
+            <button onClick={() => { clearEvents(); toast("이벤트 로그를 비웠습니다"); }} className="tap tap-pad text-[0.6875rem] font-semibold text-muted hover:text-ink">
               비우기
             </button>
           )}

@@ -21,7 +21,7 @@ export default function CustomerFooter() {
             <div>
               <dt className="text-[0.625rem] font-semibold tracking-wider text-muted">TEL</dt>
               <dd>
-                <a href={`tel:${COMPANY.tel.replace(/-/g, "")}`} className="tap text-sm font-bold tabular-nums text-ink hover:text-primary">
+                <a href={`tel:${COMPANY.tel.replace(/-/g, "")}`} className="tap tap-pad text-sm font-bold tabular-nums text-ink hover:text-primary">
                   {COMPANY.tel}
                 </a>
               </dd>
@@ -33,7 +33,7 @@ export default function CustomerFooter() {
             <div className="min-w-0">
               <dt className="text-[0.625rem] font-semibold tracking-wider text-muted">E-MAIL</dt>
               <dd>
-                <a href={`mailto:${COMPANY.email}`} className="tap block truncate text-sm font-bold text-ink hover:text-primary">
+                <a href={`mailto:${COMPANY.email}`} className="tap tap-pad max-w-full truncate text-sm font-bold text-ink hover:text-primary">
                   {COMPANY.email}
                 </a>
               </dd>
@@ -61,7 +61,7 @@ export default function CustomerFooter() {
               ["/inquiry/status", "내 문의 현황"],
             ].map(([href, label]) => (
               <li key={href}>
-                <Link href={href} className="tap text-ink-2 hover:text-ink">
+                <Link href={href} className="tap tap-pad text-ink-2 hover:text-ink">
                   {label}
                 </Link>
               </li>

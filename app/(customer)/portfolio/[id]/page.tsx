@@ -37,7 +37,7 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
         <img src={p.image} alt={p.title} className="absolute inset-0 h-full w-full object-cover" />
         <div className="scrim-card" aria-hidden />
         <div className="container-page relative pb-10 pt-24">
-          <Link href="/portfolio" className="tap mb-4 inline-block text-sm text-nav-inactive hover:text-white">
+          <Link href="/portfolio" className="tap tap-pad mb-4 text-sm text-nav-inactive hover:text-white">
             ← 포트폴리오
           </Link>
           <span className="block w-fit rounded-full bg-accent px-3 py-1 text-[0.6875rem] font-bold text-on-accent">{p.category}</span>
@@ -109,7 +109,7 @@ export default async function PortfolioDetail({ params }: { params: Promise<{ id
             <Link
               key={dir}
               href={`/portfolio/${item.id}`}
-              className={`tap hover-lift flex items-center gap-4 rounded-xl border border-line bg-canvas p-4 ${align}`}
+              className={`tap hover-lift flex min-w-0 items-center gap-4 overflow-hidden rounded-xl border border-line bg-canvas p-4 ${align}`}
             >
               <img src={item.image} alt="" aria-hidden className="h-14 w-20 shrink-0 rounded-lg object-cover" loading="lazy" />
               <span className="min-w-0">

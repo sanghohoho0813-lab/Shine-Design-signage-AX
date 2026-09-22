@@ -152,8 +152,44 @@ export default function ProductionPage() {
         ))}
       </div>
 
-      {/* Orders table */}
-      <div className="overflow-x-auto rounded-2xl border border-line bg-surface shadow-sm">
+      {/* 폰: 카드 목록 — 9열 표를 옆으로 미는 대신 한 장씩 (v17) */}
+      <ul className="space-y-2 sm:hidden" aria-label="발주 목록">
+        {orders.map((o) => (
+          <li key={o.id} className="rounded-2xl border border-line bg-surface p-4 shadow-sm">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs text-muted">
+                  {projectName(o.projectId)}
+                  {o.custom && <span className="ml-1.5 rounded bg-accent/15 px-1.5 py-0.5 text-[0.625rem] font-bold text-accent">신규</span>}
+                </p>
+                <p className="mt-0.5 font-bold text-ink">{o.item}</p>
+                <p className="mt-0.5 text-xs text-ink-2">{o.partner} · 납기 <span className="tabular-nums">{o.due}</span></p>
+              </div>
+              <span className="shrink-0 rounded-full px-2 py-0.5 text-[0.6875rem] font-bold" style={{ color: STATUS_COLORS[o.status], background: `color-mix(in srgb, ${STATUS_COLORS[o.status]} 12%, transparent)` }}>
+                {o.status}
+              </span>
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
+              <span>제작비 <b className="tabular-nums text-ink-2">{o.cost.toLocaleString()}원</b></span>
+              <span>설치 {o.installLink}</span>
+              {o.risk && <span className="rounded bg-[var(--ic-risk)]/12 px-1.5 py-0.5 text-[0.625rem] font-bold text-[var(--ic-risk)]">{o.risk}</span>}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button onClick={() => toggleQc(o)} className={`tap rounded-lg border px-3 py-1.5 text-xs font-semibold ${o.qc === "완료" ? "border-[var(--ic-evidence)]/40 text-[var(--ic-evidence)]" : "border-line text-ink-2"}`} aria-label={`${o.item} 검수 ${o.qc === "완료" ? "완료 취소" : "완료 처리"}`}>
+                {o.qc === "완료" ? "✓ 검수 완료" : o.qc === "대기" ? "검수 대기 → 완료" : "검수 기록"}
+              </button>
+              {nextOrderStatus(o.status) && (
+                <button onClick={() => advance(o)} className="tap rounded-lg bg-shell px-3 py-1.5 text-xs font-bold text-white" aria-label={`${o.item} 다음 상태`}>
+                  → {nextOrderStatus(o.status)}
+                </button>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {/* Orders table — sm 이상 */}
+      <div className="hidden overflow-x-auto rounded-2xl border border-line bg-surface shadow-sm sm:block">
         <table className="w-full min-w-[860px] text-sm">
           <thead>
             <tr className="border-b border-line text-left text-[0.6875rem] text-muted">
@@ -173,7 +209,7 @@ export default function ProductionPage() {
               <tr key={o.id} className="border-b border-line last:border-0 hover:bg-canvas">
                 <td className="px-4 py-3 font-semibold text-ink">
                   {projectName(o.projectId)}
-                  {o.custom && <span className="ml-1.5 rounded bg-accent/15 px-1.5 py-0.5 text-[0.5625rem] font-bold text-accent">신규</span>}
+                  {o.custom && <span className="ml-1.5 rounded bg-accent/15 px-1.5 py-0.5 text-[0.625rem] font-bold text-accent">신규</span>}
                 </td>
                 <td className="px-4 py-3 text-ink-2">
                   {o.item}

@@ -186,8 +186,8 @@ export default function InquiryStatusPage() {
         <div className="mt-8 rounded-2xl border border-line bg-surface p-5 sm:p-6">
           <p className="t-h3 text-ink">급한 변경이 있으시면</p>
           <p className="mt-1 t-body">
-            전화 <a href={`tel:${COMPANY.tel.replace(/-/g, "")}`} className="tap font-bold text-ink hover:text-primary">{COMPANY.tel}</a> 또는{" "}
-            <a href={`mailto:${COMPANY.email}`} className="tap font-bold text-ink hover:text-primary">{COMPANY.email}</a>로 접수번호와 함께
+            전화 <a href={`tel:${COMPANY.tel.replace(/-/g, "")}`} className="tap tap-pad font-bold text-ink hover:text-primary">{COMPANY.tel}</a> 또는{" "}
+            <a href={`mailto:${COMPANY.email}`} className="tap tap-pad font-bold text-ink hover:text-primary">{COMPANY.email}</a>로 접수번호와 함께
             알려주세요.
           </p>
           <p className="mt-3 t-meta">

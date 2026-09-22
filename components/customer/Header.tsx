@@ -89,7 +89,7 @@ export default function CustomerHeader() {
             className="tap flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-ink-2 hover:bg-soft hover:text-ink"
           >
             {featuredFuture.label}
-            <sup className="rounded bg-accent/15 px-1 py-px text-[0.5625rem] font-bold text-accent">{featuredFuture.tier}</sup>
+            <sup className="rounded bg-accent/15 px-1 py-px text-[0.625rem] font-bold text-accent">{featuredFuture.tier}</sup>
           </button>
         </nav>
 

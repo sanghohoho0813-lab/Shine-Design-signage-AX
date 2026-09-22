@@ -237,7 +237,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
               >
                 {Icons.bell}
                 {unread.length > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--ic-risk)] px-1 text-[0.5625rem] font-bold text-white">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--ic-risk)] px-1 text-[0.625rem] font-bold text-white">
                     {unread.length}
                   </span>
                 )}
@@ -260,7 +260,7 @@ export default function AxShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 pb-20 lg:pb-8">
+        <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] lg:pb-8">
           <PageTransition>{children}</PageTransition>
         </main>
       </div>

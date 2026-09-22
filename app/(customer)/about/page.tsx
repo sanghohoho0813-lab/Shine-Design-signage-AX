@@ -263,7 +263,7 @@ export default function AboutPage() {
               <div>
                 <dt className="t-meta">전화</dt>
                 <dd className="mt-0.5">
-                  <a href={`tel:${COMPANY.tel.replace(/-/g, "")}`} className="tap text-sm font-bold text-ink hover:text-primary">
+                  <a href={`tel:${COMPANY.tel.replace(/-/g, "")}`} className="tap tap-pad text-sm font-bold text-ink hover:text-primary">
                     {COMPANY.tel}
                   </a>
                 </dd>
@@ -275,7 +275,7 @@ export default function AboutPage() {
               <div className="min-w-0">
                 <dt className="t-meta">이메일</dt>
                 <dd className="mt-0.5">
-                  <a href={`mailto:${COMPANY.email}`} className="tap block truncate text-sm font-bold text-ink hover:text-primary">
+                  <a href={`mailto:${COMPANY.email}`} className="tap tap-pad max-w-full truncate text-sm font-bold text-ink hover:text-primary">
                     {COMPANY.email}
                   </a>
                 </dd>
