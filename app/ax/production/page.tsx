@@ -171,7 +171,7 @@ export default function ProductionPage() {
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
               <span>제작비 <b className="tabular-nums text-ink-2">{o.cost.toLocaleString()}원</b></span>
-              <span>설치 {o.installLink}</span>
+              <span>{o.installLink.startsWith("설치") ? o.installLink : `설치 ${o.installLink}`}</span>
               {o.risk && <span className="rounded bg-[var(--ic-risk)]/12 px-1.5 py-0.5 text-[0.625rem] font-bold text-[var(--ic-risk)]">{o.risk}</span>}
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
